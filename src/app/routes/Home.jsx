@@ -11,7 +11,7 @@ export default function Home() {
                     <h1 className='home-title'>HUSKY WINTER SPORTS</h1>
                     <h2 className='home-subtitle'>SKI AND SNOWBOARD SCHOOL</h2>
                     <div className='banner-buttons'>
-                        <Link to="/lesson-registration" className='button register-button'>REGISTER NOW!!!!</Link>
+                        <Link to="/lesson-registration" className='button register-button'>REGISTRATION</Link>
                         <Link to="/become-an-instructor" className='button'>BECOME AN INSTRUCTOR</Link>
                     </div>             
                 </div>   

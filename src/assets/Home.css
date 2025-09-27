@@ -61,6 +61,9 @@
     border: 2px solid white;
     padding: 10px 20px;
     text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .button:hover {
@@ -103,7 +106,7 @@
 }
 
 .register-button {
-    animation: glow 1s infinite alternate;
+    /* animation: glow 1s infinite alternate; */
 }
 
 @keyframes glow {

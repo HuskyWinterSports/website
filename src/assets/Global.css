@@ -20,13 +20,13 @@ body {
 
 .fade-wrapper {
   display: flex;
-  flex-direction: column; /* Stacks children vertically */    min-height: 100vh;
+  flex-direction: column;
+  min-height: 50vh;
   justify-content: space-between;
 }
 
 main {
   margin-top: 60px;
-  margin-bottom: 80px;
 }
 
 h1 {

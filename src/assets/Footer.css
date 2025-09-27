@@ -24,6 +24,12 @@ footer ul {
     flex-wrap: wrap;
 }
 
+.footer-img {
+    display: flex;
+    margin: 80px auto;
+    justify-content: center;
+}
+
 footer ul li {
     margin: 20px;
 }

@@ -7,7 +7,7 @@ export default function LessonRegistration() {
             <section className='big-white-box'>
                 <h1>LESSON REGISTRATION</h1>
                 <div className='centered-text'>
-                    <p>Lesson registration for the 2025/26 ski and snowboard season will open <strong>September 15th at 9:00am PST.</strong></p>
+                    <p>Ski lessons for the 2025/26 season are now full. Please fill out the form to join the waitlist. <strong>We are still accepting snowboard lessons!</strong></p>
                     <p>Click <a href='https://docs.google.com/forms/d/e/1FAIpQLSfjLegq7v2dtmjG_YTOisGHB9gBcoSKPdTvs9VDIEcfnHs-0Q/viewform?usp=header' target='blank'>here</a> to open the form in a new window.</p>
                     <iframe className= 'big-form' src="https://docs.google.com/forms/d/e/1FAIpQLSfjLegq7v2dtmjG_YTOisGHB9gBcoSKPdTvs9VDIEcfnHs-0Q/viewform?embedded=true" width="640" height="500" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
                     <iframe className='small-form' src="https://docs.google.com/forms/d/e/1FAIpQLSfjLegq7v2dtmjG_YTOisGHB9gBcoSKPdTvs9VDIEcfnHs-0Q/viewform?embedded=true" width="250" height="300" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
@@ -15,7 +15,7 @@ export default function LessonRegistration() {
                     <p className='footnote'>*During the Spring and Summer months (March - August), email and voice messages are checked less frequently, and it may take up to one week to receive a response.</p>
                     {/* stars? */}
                     <h2>Lesson Availability</h2>
-                    <p className='footnote'>In the past, there has been more demand for Husky Winter Sports lessons than we can accommodate. </p>
+                    <p className='footnote'>In the past, there has been more demand for Husky Winter Sports lessons than we can accommodate. Ski lessons are currently full, but we are continuing to accept snowboard lessons.</p>
                     {/* stars? */}
                 </div>
             </section>

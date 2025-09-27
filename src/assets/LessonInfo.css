@@ -1,0 +1,28 @@
+.lesson-banner {
+    display: flex;
+    flex-direction: column;
+    color: rgb(45, 45, 45);
+    align-items: start;
+    margin: 40px 10%;
+    padding: 20px;
+    border-radius: 40px;
+}
+
+.lesson-title {
+    font-size: 2.5em;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-align: left;
+    letter-spacing: 2px;
+    max-width: 800px;
+}
+
+.lesson-subtitle {
+    max-width: 800px;
+    font-size: 1.5em;
+    margin: 0;
+    text-align: left;
+    font-weight: lighter;
+    letter-spacing: 3px;
+}

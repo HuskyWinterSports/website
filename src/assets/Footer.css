@@ -1,0 +1,91 @@
+footer {
+    background-color: #f8f8f8;
+    padding: 20px;
+    border-top: 1px solid #e7e7e7;
+}
+
+footer p {
+    text-align: center;
+    font-size: 0.9em;
+    margin: 0 auto;
+}
+
+footer a {
+  color: rgb(80, 44, 132);
+  text-decoration: none;
+}
+
+footer ul {
+    list-style: none;
+    padding: 0;
+    justify-content: center;
+    display: flex;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+footer ul li {
+    margin: 20px;
+}
+
+footer ul li img {
+    height: 70px;
+    width: auto;
+}
+
+.footer-info {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    text-align: center;
+}
+
+.footer-info ul {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-info li {
+    margin: 0px;
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    .footer-info {
+        flex-direction: row;
+        gap: 30px;
+        align-items: flex-start;
+        margin-top: 30px;
+    }
+
+    .footer-info li {
+        text-align: right;
+    }
+
+    .footer-info .copyright p {
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    .footer-info .copyright {
+        flex: 1;
+    }
+
+    .footer-info .contact-info {
+        flex: 1;
+    }
+
+    .footer-info h3 {
+        text-align: right;
+        margin-top: 0;
+        margin-bottom: 5px;
+    }
+}

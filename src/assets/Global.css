@@ -9,39 +9,120 @@
 }
 
 body {
-  background-image: url("../../public/imgs/2024-2025.jpg"); 
+  background-image: url("../../public/images/background_mountain.jpeg"); 
   background-repeat: no-repeat; 
-  background-position: center center;
+  background-position: bottom center;
   background-size: cover; 
   background-attachment: fixed;
   margin: 0;
   font-family: "Nunito Sans", sans-serif;
 }
 
-main {
-  margin-top: 60px;
+.fade-wrapper {
+  display: flex;
+  flex-direction: column; /* Stacks children vertically */    min-height: 100vh;
+  justify-content: space-between;
 }
 
-.news {
-  background-color: white;
+main {
+  margin-top: 60px;
+  margin-bottom: 80px;
+}
+
+h1 {
+    font-size: 2em;
+    margin: 10px auto;
+    letter-spacing: 1px;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin: 10px auto;
+    font-weight: lighter;
+    letter-spacing: 3px;
 }
 
 .purple-stripe {
-  background-color: #7f4ebe;
+  background-color: rgb(80, 44, 132);
+  color: white;
+  padding: 40px;
+  text-align: center;
 }
 
 .white-stripe {
   background-color: white;
+  padding: 40px;
 }
 
+.white-stripe h2 {
+  max-width: 800px;
+  margin-bottom: 30px;
+}
+
+.white-stripe p {
+  max-width: 800px;
+  margin: 10px auto 30px;
+  line-height: 1.6;
+}
+
+.white-stripe ol {
+  max-width: 800px;
+  padding: 0;
+  margin: 10px auto 30px;
+  line-height: 1.6;
+  list-style-position: inside;
+}
+
+.white-stripe .card {
+  padding: 20px;
+  margin: 10px auto 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  max-width: 800px;
+  background-color: #f9f9f9;
+}
+
+.white-stripe h3 {
+  margin: 0 auto;
+  max-width: 800px;
+}
+
+.white-stripe a {
+  color: rgb(80, 44, 132);
+  text-decoration: none;
+}
+
+.white-stripe .card p {
+  margin: 10px 0 0 0;
+  line-height: 1.6;
+}
 .big-white-box {
   background-color: white;
-  margin: 10%;
+  margin: 50px 5%;
+  max-width: 720px;
+  padding: 35px 30px;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.big-white-box a {
+  color: rgb(80, 44, 132);
+  text-decoration: none;
 }
 
 .big-purple-box {
-  background-color: #7f4ebe;
-  margin: 10%;
+  background-color: rgb(80, 44, 132);
+  margin: 50px 10%;
+  max-width: 720px;
+  padding: 35px 50px;
+  border-radius: 20px;
+  color: white;
+  text-align: center;
+}
+
+.big-purple-box a {
+  color: #c39ae4;
+  text-decoration: none;
 }
 
 .gray-stripe {
@@ -58,4 +139,99 @@ h1 {
 
 ul {
   text-align: left;
+}
+
+.topic {
+  margin: 40px 0;
+}
+
+.cards {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.card {
+  width: 130px;
+  text-align: center;
+}
+
+.card h3 {
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+
+.card p {
+  margin-top: 5px;
+  font-size: 0.9em;
+}
+
+.purple-stripe .boxes {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin: 30px auto;
+}
+
+.purple-stripe .box {
+  background-color: white;
+  color: black;
+  padding: 20px;
+  margin: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  flex: 1;
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.purple-stripe .box h3 {
+  margin: 0;
+}
+
+.purple-stripe .box ul {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0 0;
+}
+
+.purple-stripe .box ul li {
+  margin: 5px 0;  
+}
+
+.big-form {
+    display: none;
+}
+
+@media (min-width: 768px) {
+  .big-purple-box {
+    margin: 50px auto;
+  }
+
+  .purple-stripe .cards {
+    justify-content: space-between;
+    margin: 40px 10%;
+  }
+
+  .card {
+    width: 170px;
+    margin: auto;
+  }
+
+  .big-white-box {
+    margin: 50px auto;
+    padding: 35px 50px;
+  }
+
+  .big-form {
+      display: block;
+      margin: auto;
+  }
+
+  .small-form {
+      display: none;
+  }
 }

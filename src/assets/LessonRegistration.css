@@ -1,0 +1,14 @@
+.big-form {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .big-form {
+        display: block;
+        margin: auto;
+    }
+
+    .small-form {
+        display: none;
+    }
+}

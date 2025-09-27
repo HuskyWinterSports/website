@@ -5,6 +5,7 @@ export default function BecomeAnInstructor() {
         <>
             <section className='white-stripe'>
                 <div className='centered-text'>
+                    <h1>ABOUT US</h1>
                     <h2>WHO WE ARE AND WHAT WE DO</h2>
                     <p>Husky Winter Sports is a student-run organization at the University of Washington that provides ski and snowboard lessons to students and the greater Seattle community. Our mission is to make winter sports accessible to everyone, regardless of their skill level or background.</p>
                     <p className='quote'>“Provide fun, safe, high quality and affordable mountain experiences to skiers and snowboarders of all ability levels, and to foster friendships among like-minded winter sports enthusiasts.”</p>
@@ -20,7 +21,7 @@ export default function BecomeAnInstructor() {
             </section>
 
             <section className='big-white-box'>
-                <h1>BECOME AN INSTRUCTOR</h1>
+                <h2>BECOME AN INSTRUCTOR</h2>
                 <div className='centered-text'>
                     <p>Husky Winter Sports offers a unique opportunity for UW students who are excited about snow sports and interested in sharing them with children and adults of all levels from the Northwest community. All members are trained as ski or snowboard instructors and receive a season’s pass to the Summit at Snoqualmie in exchange for attending a minimum of two weekend-long training sessions and teaching for all our six lesson weekends. Other benefits include lodging and a meal on Saturday nights, as well as travel compensation for instructor carpools.</p>
                 </div>

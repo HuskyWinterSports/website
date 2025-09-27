@@ -7,7 +7,7 @@ export default function ContactUs() {
 
             <section className='big-white-box'>
                 <div className='centered-text'>
-                    <h2>Contact Us</h2>
+                    <h1>Contact Us</h1>
                     <ul className='address'>
                         <li>Husky Winter Sports</li>
                         <li>207 HUB SAO 130 Box 352238</li>

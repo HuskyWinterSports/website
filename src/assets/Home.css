@@ -1,0 +1,117 @@
+:root {
+  --bg-gradient: radial-gradient(circle at 73.05704752604166% 64.46940104166666%, #9475D1 0%, 17.5%, rgba(148,117,209,0) 35%),
+                 radial-gradient(circle at 61.503092447916664% 42.42350260416667%, #FEEE97 0%, 17.5%, rgba(254,238,151,0) 35%),
+                 radial-gradient(circle at 2.435302734375% 81.005859375%, #FEEE97 0%, 17.5%, rgba(254,238,151,0) 35%),
+                 radial-gradient(circle at 94.35384114583333% 89.61588541666666%, #CBB2F7 0%, 20%, rgba(203,178,247,0) 40%),
+                 radial-gradient(circle at 11.090087890625% 68.07454427083334%, rgba(183,154,237,0.99) 0%, 25%, rgba(183,154,237,0) 50%),
+                 radial-gradient(circle at 26.352945963541668% 25.252278645833332%, #9564A3 0%, 42%, rgba(149,100,163,0) 70%),
+                 radial-gradient(circle at 93.6865234375% 11.42578125%, #6C40C2 0%, 42%, rgba(108,64,194,0) 70%),
+                 radial-gradient(circle at 48.9013671875% 49.521484375%, #FFFFFF 0%, 100%, rgba(255,255,255,0) 100%);
+  --bg-overlay-color: transparent;
+}
+
+.home-banner {
+  background: var(--bg-gradient);
+  background-color: var(--bg-overlay-color);
+  background-repeat: no-repeat;
+  background-size: 100% 100%; /* stretch gradient to cover container */
+  background-position: center;
+  text-align: center;
+  padding: 30px 5%;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+.banner-overlay {
+    max-width: 800px;
+    margin: auto;
+}
+
+.home-title {
+    font-size: 3.5em;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    text-align: left;
+    letter-spacing: 2px;
+    color: white;
+}
+
+.home-subtitle {
+    font-size: 2em;
+    margin-top: 7px;
+    margin-bottom: 30px;
+    text-align: left;
+    margin-left: 0;
+    font-weight: lighter;
+    letter-spacing: 3px;
+    color: white;
+}
+
+.banner-buttons {
+    display: flex;
+    gap: 15px;
+    padding-bottom: 20px;
+}
+
+.button {
+    background-color: rgb(80, 44, 132);
+    color: white;
+    border: 2px solid white;
+    padding: 10px 20px;
+    text-decoration: none;
+}
+
+.button:hover {
+    background-color: #c39ae4;
+    transition-duration: 300ms;
+}
+
+.text-on-picture {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-image: url("../../public/images/2025group.jpeg");
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  background-size: cover; /* fills the width */
+  
+  height: min(700px, 50vw);
+  width: 100%;   /* expands with screen width */
+  filter: brightness(120%);
+}
+
+.text {
+    color: white;
+    background-color: rgb(80, 44, 132, 0.8);
+    padding: 10px;
+    margin: 40px;
+    margin-top: auto;
+    margin-right: auto;
+    bottom: 0;
+    left: 0;
+}
+
+.text h2 {
+    font-size: 1.2em;
+    font-weight: normal;
+    margin: 0;
+    text-align: left;
+    letter-spacing: 1px;
+}
+
+.register-button {
+    animation: glow 1s infinite alternate;
+}
+
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 5px rgb(80, 44, 132);
+    }
+    100% {
+        box-shadow: 0 0 35px rgb(80, 44, 132);
+    }
+}
+

@@ -1,12 +1,10 @@
-# React + Vite
+# Welcome to the HWS website!
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+I've set up a vite + react framework to make editing this in the future easier. The site is deployed through gh-pages and the domain name is registered through Name Cheap. 
 
-Currently, two official plugins are available:
+# Styling 
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The Styling is set up to look like the old wix website, with different blocks of content. Adding the ClassName of the section you want it to look like should take care of all of the styling work to make future changes easier. 
 
-## Expanding the ESLint configuration
+# HTML
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.

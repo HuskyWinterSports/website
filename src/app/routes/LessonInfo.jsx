@@ -4,7 +4,7 @@ import '../../assets/LessonInfo.css'
 export default function LessonInfo() {
     return (
         <>
-            <section className='lesson-banner'>
+            <section className='big-white-box'>
                 <h1 className='lesson-title'>Lesson Information</h1>
                 <h2 className='lesson-subtitle'>Come shred with us! Husky Winter Sports offers both ski and snowboarding lessons for kids and adults alike!</h2>           
             </section>

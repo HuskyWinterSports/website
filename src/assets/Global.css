@@ -110,6 +110,15 @@ h2 {
   text-decoration: none;
 }
 
+.big-white-box h2 {
+  margin: 0 auto 10px;
+}
+
+.big-white-box p {
+  margin: 10px 0 0 0;
+  line-height: 1.6;
+}
+
 .big-purple-box {
   background-color: rgb(80, 44, 132);
   margin: 50px 10%;
@@ -118,6 +127,15 @@ h2 {
   border-radius: 20px;
   color: white;
   text-align: center;
+}
+
+.big-purple-box h2 {
+  margin: 0 auto 10px;
+}
+
+.big-purple-box p {
+  margin: 10px 0 0 0;
+  line-height: 1.6;
 }
 
 .big-purple-box a {

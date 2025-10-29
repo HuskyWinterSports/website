@@ -105,9 +105,9 @@
     letter-spacing: 1px;
 }
 
-.register-button {
-    /* animation: glow 1s infinite alternate; */
-}
+/* .register-button {
+    animation: glow 1s infinite alternate;
+} */
 
 @keyframes glow {
     0% {

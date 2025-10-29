@@ -23,12 +23,6 @@ export default function Home() {
                     </div>
             </section>
 
-            {/* <section className='news'>
-                <h2>NEWS</h2>
-                <h3 className='excite'>Lesson registration for the 2025/26 season opens on September 15th!</h3>
-                <p>Joining our email list is the best way to stay up to date with information as lessons approach by signing up for our <Link to="/lessons/join-our-mailing-list">mailing list</Link>.</p>
-            </section> */}
-
             <section className='purple-stripe'>
                 <h2>WHY US?</h2>
                 <section className='cards'>
@@ -46,7 +40,7 @@ export default function Home() {
                     </div>
                     <div className='card'>
                         <h3>PSIA/AASI Certified</h3>
-                        <p>All our members are PSIA certified or in training for it.</p>
+                        <p>Instrutors are PSIA/AASI trained or are working towards it.</p>
                     </div>
                 </section>
             </section>

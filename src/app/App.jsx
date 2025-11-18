@@ -12,7 +12,6 @@ import DiversityAndInclusion from './routes/DiversityAndInclusion.jsx';
 import FAQ from './routes/FAQ.jsx';
 import ContactUs from './routes/ContactUs.jsx';
 
-// App structure and components
 
 function App() {
   const location = useLocation();

@@ -7,7 +7,7 @@ export default function LessonRegistration() {
             <section className='big-white-box'>
                 <h1>LESSON REGISTRATION</h1>
                 <div className='centered-text'>
-                    <p>Ski lessons for the 2025/26 season are now full. Please fill out the form to join the waitlist. <strong>We are still accepting snowboard lessons!</strong></p>
+                    <p>Ski & Snowboard lessons for the 2025/26 season are now full. Please fill out the form to join the waitlist.</p>
                     <p>Click <a href='https://docs.google.com/forms/d/e/1FAIpQLSfjLegq7v2dtmjG_YTOisGHB9gBcoSKPdTvs9VDIEcfnHs-0Q/viewform?usp=header' target='blank'>here</a> to open the form in a new window.</p>
                     <iframe className= 'big-form' src="https://docs.google.com/forms/d/e/1FAIpQLSfjLegq7v2dtmjG_YTOisGHB9gBcoSKPdTvs9VDIEcfnHs-0Q/viewform?embedded=true" width="640" height="500" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
                     <iframe className='small-form' src="https://docs.google.com/forms/d/e/1FAIpQLSfjLegq7v2dtmjG_YTOisGHB9gBcoSKPdTvs9VDIEcfnHs-0Q/viewform?embedded=true" width="250" height="300" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>

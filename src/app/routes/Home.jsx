@@ -1,9 +1,16 @@
 import '../../assets/Global.css'
 import '../../assets/Home.css'
-
-import { Link, Outlet } from 'react-router-dom';
+import { useState } from "react";
+import { Link } from 'react-router-dom';
 
 export default function Home() {
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const slides = [
+        { url: '/images/2025group.jpeg' },
+        { url: '/images/2025-2026.jpg' },
+        { url: '/images/2022-2023.jpg' }
+    ];
+
     return (
         <>
             <section className='home-banner'>
@@ -11,16 +18,39 @@ export default function Home() {
                     <h1 className='home-title'>HUSKY WINTER SPORTS</h1>
                     <h2 className='home-subtitle'>SKI AND SNOWBOARD SCHOOL</h2>
                     <div className='banner-buttons'>
-                        <Link to="/lesson-registration" className='button register-button'>REGISTRATION WAITLIST</Link>
+                        {/* <Link to="/lesson-registration" className='button register-button'>REGISTRATION WAITLIST</Link> */}
                         <Link to="/become-an-instructor" className='button'>BECOME AN INSTRUCTOR</Link>
                     </div>             
                 </div>   
             </section>
 
-            <section className='text-on-picture'>
-                <div className='text'>
+
+            <section className='image-slider'>
+                {slides.map((slide, index) => (
+                    <div
+                        key={index}
+                        className={`slide ${index === currentIndex ? 'active' : ''}`}
+                        style={{ backgroundImage: `url(${slide.url})` }}
+                        aria-hidden={index === currentIndex ? 'false' : 'true'}
+                    />
+                ))}
+
+                <button className='left-arrow' onClick={() => {
+                    const isFirstSlide = currentIndex === 0;
+                    const newIndex = isFirstSlide ? slides.length - 1 : currentIndex - 1;
+                    setCurrentIndex(newIndex);
+                }}>&#10094;</button>
+
+                <button className='right-arrow' onClick={() => {
+                    const isLastSlide = currentIndex === slides.length - 1;
+                    const newIndex = isLastSlide ? 0 : currentIndex + 1;
+                    setCurrentIndex(newIndex);
+                }}>&#10095;</button>
+
+                <div className='caption-text'>
                     <h2>"HELPING STUDENTS SKI FOR FREE SINCE 1937!"</h2>
-                    </div>
+                </div>
+
             </section>
 
             <section className='purple-stripe'>

@@ -24,8 +24,15 @@ export default function LessonRegistration() {
             </section>
             <section className='white-stripe'>
                 <h2>Cancellation and Refund Eligibility</h2>
-                <h3>Cancellation by December 27th - No Questions Asked:</h3>
-                <p>Customers can request a full cancellation of their lessons by December 27th, one month before the lessons' scheduled start date, without any questions asked. Full refunds will be provided for cancellations made within this period.</p>
+                {/* DEADLINE UNCONFIRMED: the club's policy document says
+                    December 27th, but this may have since been updated to the
+                    31st. Kept at the 31st deliberately — publishing a stricter
+                    deadline than the real policy would deter a parent from
+                    requesting a refund they are actually entitled to, whereas
+                    publishing a more generous one only costs the club.
+                    Confirm during the content pass. */}
+                <h3>Cancellation by December 31st - No Questions Asked:</h3>
+                <p>Customers can request a full cancellation of their lessons by December 31st, one month before the lessons' scheduled start date, without any questions asked. Full refunds will be provided for cancellations made within this period.</p>
                 <h3>Injuries:</h3>
                 <p>In the unfortunate event of a student sustaining an injury that prevents their continued participation in lessons, our refund procedure is as follows:</p>
                 <ol>

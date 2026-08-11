@@ -72,7 +72,57 @@ These are the tests any design decision gets judged against.
 The only path that requires a token is the optional "Publish now" accelerator.
 Remove it entirely and the system still works, just on cron latency.
 
-## 4. Transport — ⚠️ UNVERIFIED, BLOCKS IMPLEMENTATION
+## 4. Transport — ✅ VERIFIED 2026-08-10
+
+**Result: only "Publish to the web" URLs work unauthenticated. Every
+`export?format=*` endpoint returns a Google sign-in page.**
+
+| # | URL | Result |
+|---|---|---|
+| 1 | `/document/d/<id>/export?format=md` | ❌ sign-in page |
+| 1b | `/document/d/<id>/export?format=txt` | ❌ sign-in page |
+| 1c | `/document/d/<id>/export?format=html` | ❌ sign-in page |
+| 3 | `/document/d/e/<pubId>/pub` | ✅ **HTML, 143 KB** |
+| 4 | `/spreadsheets/d/<id>/gviz/tq?tqx=out:csv` | ❌ sign-in page |
+| 4b | `/spreadsheets/d/<id>/export?format=csv` | ❌ sign-in page |
+| 6 | `/spreadsheets/d/e/<pubId>/pub?output=csv` | ✅ **clean CSV** |
+
+The three failing doc endpoints returned byte-identical 8.9 KB bodies
+containing `accounts.google`, `Sign in` and `Error` — the false positive this
+script exists to catch, and one a logged-in browser would have hidden.
+
+**Consequences:**
+
+- **Sheets are solved.** `/pub?output=csv` returns exactly what we want:
+  `cell a1,cell b1` / `"cell a2, should export as csv?",` — correct quoting of
+  embedded commas included.
+- **Docs take the HTML path**, i.e. the middle option below, not the easy one.
+  Google's published HTML is semantic at the *tag* level (`h1`–`h6`, `p`, `ul`,
+  `ol`, `a`) but styles via generated class names (`c0`, `c2`) defined in an
+  inline `<style>` block. **Those class names regenerate on every republish, so
+  the parser must map by tag and never by class.** The 143 KB is mostly
+  Google's `publish_binary_core` JS bundle wrapped around the content, so the
+  parser must locate the content container rather than treating the document as
+  a whole.
+- Bold and italic are the one real complication: they are `<span class="cN">`
+  where `cN` resolves to `font-weight:700` in the `<style>` block. Supporting
+  them means resolving that mapping per fetch. The site does use bold in body
+  copy, so this is required, not optional.
+
+**Still open:** the verification doc contained no headings, bold, lists or
+links, so the exact markup Google emits for those is not yet observed. That is
+needed before the parser is written — see §10.
+
+**If HTML parsing proves too fragile**, the documented fallback is an Apps
+Script Web App returning clean JSON (see the original decision rule below). It
+needs one-time setup but eliminates the span-soup entirely. Recommendation:
+attempt HTML first, since it needs no extra setup, and fall back only if bold
+and italic resolution proves unmaintainable.
+
+<details>
+<summary>Original (pre-verification) decision rule, kept for context</summary>
+
+### Original section — UNVERIFIED, BLOCKED IMPLEMENTATION
 
 Everything else in this spec is stable regardless of how bytes get out of
 Google. This section is not, and it must be settled empirically before code is
@@ -124,6 +174,8 @@ Verification script: `scripts/verify-transport.sh` (to be written alongside).
     own deployment timestamp and the build to warn when that goes stale.
 
 Sheets are expected to be the easy half; Docs are where this can actually fail.
+
+</details>
 
 ## 5. Content model
 
@@ -360,7 +412,18 @@ Point 3 is the escape hatch that makes the whole thing safe to adopt.
 
 ## 10. Open questions
 
-1. **§4 transport** — blocking, empirical, cheap to resolve.
+1. ~~**§4 transport**~~ — ✅ **RESOLVED 2026-08-10.** Published-to-web only;
+   Docs via HTML, Sheets via CSV. **Remaining sub-task, now blocking the
+   parser:** the verification doc was effectively empty, so we have not yet
+   observed the markup Google emits for Heading 1/2/3, **bold**, *italic*,
+   bulleted lists, numbered lists and links. Add one of each to the test doc,
+   republish, and re-fetch:
+
+   ```
+   curl -sSL "https://docs.google.com/document/d/e/<PUB_ID>/pub" -o /tmp/doc.html
+   ```
+
+   This is the last thing needed before the parser can be written.
 2. What is the acceptable staleness window during registration season?
 3. Who is the human that receives failure emails — the shared inbox, or a
    named role? A shared inbox survives turnover; a person does not.

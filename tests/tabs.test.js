@@ -84,8 +84,28 @@ describe('selectTab', () => {
         assert.equal(selectTab(doc, '  Lessons  ', 'x').name, 'Lessons');
     });
 
-    test('a layout with no tab reads the whole document', () => {
-        assert.equal(selectTab(doc, undefined, 'x'), doc);
+    test('a layout with no tab reads an untabbed document whole', () => {
+        const plain = parseGoogleDoc(PLAIN);
+        assert.equal(selectTab(plain, undefined, 'x'), plain);
+    });
+
+    test('refuses to read a TABBED document whole', () => {
+        // Otherwise a layout file copied from another page and not updated
+        // would concatenate every page and take its title from whichever tab
+        // came first — a wrong page that syncs perfectly cleanly.
+        assert.throws(
+            () => selectTab(doc, undefined, 'lesson-info'),
+            (error) => {
+                assert.ok(error instanceof ContentError);
+                assert.match(error.message, /does not say which tab/);
+                assert.match(error.message, /lesson-info\.layout\.json/);
+                assert.match(error.message, /Lessons/);
+                // The same symptom is produced by a hand-applied Title style,
+                // so the message has to name that cause too.
+                assert.match(error.message, /"Title" style/);
+                return true;
+            }
+        );
     });
 
     test('a renamed tab names it AND lists the tabs that exist', () => {

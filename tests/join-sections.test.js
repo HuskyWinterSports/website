@@ -97,6 +97,25 @@ describe('failure messages', () => {
         );
     });
 
+    test('a deleted page title is caught rather than shipping a page with no h1', () => {
+        // The renderer skips the <h1> when the title is missing, so this would
+        // otherwise go out looking almost right and cost search traffic.
+        assert.throws(
+            () => joinSections(
+                layout([{ type: 'big-white-box', showTitle: true }]),
+                { ...parsed, title: null },
+                'diversity-and-inclusion'
+            ),
+            (error) => {
+                assert.ok(error instanceof ContentError);
+                assert.match(error.message, /no page title/);
+                assert.match(error.message, /Heading 1/);
+                assert.match(error.message, /website has not been changed/i);
+                return true;
+            }
+        );
+    });
+
     test('a missing opening paragraph is explained in plain language', () => {
         const noLead = { title: 'x', sections: [{ heading: 'A', blocks: [paragraph('t')] }] };
         assert.throws(

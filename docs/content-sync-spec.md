@@ -422,6 +422,35 @@ validation, the failure messages, the Action, and the officer runbook.
 and the change is live within the cron window without anyone touching GitHub.
 Test this with a real officer, not by assuming.
 
+### Phase 1b — Flesh out the source document ⬅️ NEXT
+
+**Owner: the club, not the developer.** The verification document is being
+renamed from its test name and reused as the real Diversity and Inclusion
+document, so `publishedId` in the layout file stays valid — renaming a Google
+Doc does not change its published ID. Only the section names need updating.
+
+What the document needs:
+
+1. **One Heading 1** — the page title.
+2. **A Heading 2 per section.** These are the join keys, so prefer stable
+   structural names over ones that read like prose; renaming one later breaks
+   the sync until someone renames it back or edits the layout. Suggested:
+   `Support Our Instructors`, `Where Your Donation Goes`, `How to Donate`.
+3. Body text under each, using only Heading 3, paragraphs, bold, italic, links,
+   and lists. Everything else is dropped by design (§5.2).
+
+Content decisions the club still owes:
+
+- Whether "Under Construction" goes away entirely. The page currently asks for
+  donations directly beneath that banner, which undercuts the ask.
+- The 501(c)(3) tax-deductibility wording.
+- Confirmation of the Zelle address (`huskyws@gmail.com` on this page vs
+  `huskywslessons@gmail.com` everywhere else).
+- Whether the Benevity URL should be officer-editable. **As specced it is a
+  `button` block in the layout file, so changing it needs a developer.** If the
+  club would rather control it themselves, it belongs in the Sheet instead —
+  worth deciding before phase 2, not after.
+
 ### Phase 2 — Sheets, and the rest of the pages
 
 Signup data (dates, prices, status), then Lesson Info, Lesson Registration, FAQ,

@@ -45,7 +45,7 @@ for (const route of ROUTES) {
             }
         });
 
-        await page.goto(`/#${route}`);
+        await page.goto(route);
         await page.waitForLoadState('load');
 
         await expect(page.locator('main')).toBeVisible();

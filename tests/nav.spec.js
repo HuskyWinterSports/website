@@ -68,9 +68,9 @@ async function openMenu(page) {
 }
 
 /**
- * Assert we landed on `path`, tolerating either routing style.
- * The site currently uses HashRouter (/#/faq); if it moves to BrowserRouter
- * (/faq) these assertions keep passing.
+ * Assert we landed on `path`. The optional `#` is tolerated only so this
+ * keeps working if the site is ever moved back to hash routing; as of the
+ * BrowserRouter switch, URLs are plain paths like /faq.
  */
 async function expectPath(page, path) {
     await expect(page).toHaveURL(new RegExp(`(#)?${path}$`));
@@ -98,7 +98,7 @@ test.describe('every page is reachable from the nav', () => {
     }
 
     test('Home is reachable', async ({ page }) => {
-        await page.goto('/#/faq');
+        await page.goto('/faq');
         await openMenu(page);
         await activate(page.getByRole('link', { name: 'Home', exact: true }));
         await expect(page.locator('main h1')).toBeVisible();

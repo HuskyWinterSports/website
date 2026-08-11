@@ -215,7 +215,15 @@ Fix: make the dropdown toggle on click/tap and on keyboard focus, and un-comment
 finish) the desktop nav. Also worth adding real links in the footer, which currently
 lists Instagram and Facebook as **plain text, not links** (`Footer.jsx:16-17`).
 
-### 🟠 P2 — `HashRouter` costs you search traffic
+### ✅ FIXED — `HashRouter` was costing search traffic
+
+**Resolved 2026-08-10.** Now `BrowserRouter`, with a build step that writes a
+real HTML file per route carrying that page's title, description, canonical URL
+and Open Graph tags, plus `404.html`, `sitemap.xml` and `robots.txt`. Flat
+`faq.html` rather than `faq/index.html`, so GitHub Pages serves `/faq` with no
+redirect and the canonical tag matches the served URL. A `NotFound` route was
+added so unknown paths render a helpful page instead of a blank screen.
+Original analysis below.
 
 `main.jsx:7` uses `HashRouter`, so every URL is `huskywintersports.org/#/faq`. Google
 does not index content behind a fragment well, there are no Open Graph tags, and no

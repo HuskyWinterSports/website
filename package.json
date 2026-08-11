@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/build/prerender.js",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "npm run test:unit && playwright test --project=desktop-chrome --project=mobile-chrome",

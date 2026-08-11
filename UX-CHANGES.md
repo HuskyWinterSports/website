@@ -138,6 +138,35 @@ that person is studying abroad. Both facts expire with turnover, and this is a
 document that ought to stay accurate for years. Using the role and the shared
 inbox instead would mean one less thing for next year's officers to remember.
 
+### 8. Page links are now normal web addresses
+
+**What was wrong:** every page on the site had a `#` in its address —
+`huskywintersports.org/#/faq` instead of `huskywintersports.org/faq`. Google
+handles those poorly, so our pages were much harder to find by searching. And
+every link shared to Facebook, Instagram or a group chat showed the same
+generic preview no matter which page it pointed to.
+
+**What you'll notice:**
+
+- Addresses are now clean: **`huskywintersports.org/lesson-info`**.
+- Sharing a link shows that page's own title, description and a photo, rather
+  than one identical preview for the whole site.
+- Each page now has its own description written for a parent searching
+  something like "UW ski lessons for kids" — that's the grey text under a
+  Google result.
+- We now publish a sitemap, which is the standard way of telling search
+  engines every page we have.
+- Mistyped or outdated addresses show a friendly "Page Not Found" page with
+  links onward, instead of a blank screen.
+
+**Old links still work.** Any `#` link already sitting in an old mailing-list
+email or Instagram post now redirects to the right page automatically. Without
+that, they would have quietly dumped visitors on the home page — which looks
+exactly like a broken link.
+
+This was the last planned change to page addresses, so links shared from now on
+are safe to put in print or on social media.
+
 ### Behind the scenes
 
 - Added an automated test suite that opens the real site in simulated phone and

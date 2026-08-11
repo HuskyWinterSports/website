@@ -434,10 +434,18 @@ rather than as a separate mechanical step.
 Written 2026-08-10. Transport verified 2026-08-10 (§4); document tabs verified
 2026-08-11 (§4.2b).
 
-**Status 2026-08-11.** `/diversity-and-inclusion` is rendered from a Google Doc
-tab, at parity with the page it replaced. The remaining and most important
-piece is the **scheduled pull** — until that Action exists, pressing Publish
-does nothing on its own and a developer has to run `npm run sync` by hand.
+**Status 2026-08-11.** Phase 1 is built end to end.
+`/diversity-and-inclusion` renders from a Google Doc tab, and
+`.github/workflows/sync-content.yml` pulls hourly, commits only on a real
+change, and rebuilds — no credential anywhere.
+
+Two things remain before this can be called done:
+
+- **Test it with an officer who has never seen the repo** (spec §9.2 is the
+  runbook to hand them). That was the stated success criterion and assuming it
+  works is not the same as knowing.
+- **The email watcher** (spec §7.2/§7.3). A failed sync is currently visible
+  only on GitHub, which is where this project's users specifically do not go.
 
 The notes below are the original framing, kept for context.
 

@@ -638,6 +638,21 @@ Become an Instructor, Contact Us. Lesson Info and Lesson Registration mix prose
 and tabular data, so they interleave doc-sourced and sheet-sourced blocks in one
 layout file — which the per-block `source` design already allows.
 
+**[`doc-tabs-blockout.md`](doc-tabs-blockout.md) is the paste-ready text** for
+every remaining tab, drawn verbatim from the live pages, with the split against
+Sheets already drawn and the known content bugs flagged inline rather than
+copied across.
+
+**Layout files are added one page at a time, as each tab is filled in.** Not
+up front: `npm run sync` runs hourly against a live site, so a layout naming a
+tab that does not exist yet would fail every hour, and a watcher that cries
+wolf every hour is a watcher nobody reads. A tab with no layout is free; a
+layout with no tab is not.
+
+The one renderer gap is a **card-grid block type**, needed by Home's "Why Us",
+Lesson Info's "Levels" and the never-written events grid on Become an
+Instructor. One block type covers all three.
+
 ### Phase 3 — Deferred
 
 Template slots (§5.5). The "Publish now" accelerator, if cron latency proves

@@ -242,10 +242,39 @@ heading it was looking for and lists the ones the document actually has.
 anything that had to be renewed would eventually stop being renewed, and the
 site would quietly stop updating with nobody knowing why.
 
-**One gap worth naming:** if an update does fail, nothing emails anybody yet.
-The failure is visible on GitHub, which is exactly where the people this is
-designed for don't look. A small script on the club's Google account can watch
-for that and email `huskywslessons@gmail.com`; it isn't built yet.
+### 11. Something now watches the website and emails us if it stops updating
+
+**The problem it solves:** every failure in this system is *quiet*. The website
+keeps working and keeps showing the last good version, which is the right
+behaviour — but it means a broken update looks exactly like a week when nobody
+edited anything. The worst case is the off-season: **GitHub switches off
+automatic jobs after 60 days of nothing happening**, so a quiet summer can turn
+the updates off, and in September someone edits the document and nothing
+happens, forever, with no error anywhere.
+
+**What's been written:** a small script that runs on the club's Google account,
+once a day, and emails `huskywslessons@gmail.com` if:
+
+- the automatic updates have been switched off — with the three clicks to turn
+  them back on;
+- nothing has changed for 45 days, so we can act *before* the 60-day cutoff;
+- an update failed — with a link to the plain-English explanation;
+- nothing has run at all for two days.
+
+It also emails when things go back to normal, because silence after a problem
+email is indistinguishable from the watcher itself having died. And it won't
+send the same complaint more than once a week — an inbox that gets a daily
+email about a known problem stops being read, and then the next real one is
+invisible too.
+
+**It needs about two minutes of setup on the club Google account** and is not
+installed yet. Instructions are in `docs/content-sync-spec.md` §7.2. Nothing
+about it involves a password or account key, same as the rest of this system.
+
+**A calendar reminder is worth having as well**, independent of any of this:
+one recurring event each September — *"Check the website is still updating
+itself"* — on the club calendar. It costs nothing and doesn't depend on a
+script anyone has to maintain.
 
 ### Behind the scenes
 

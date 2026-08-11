@@ -474,6 +474,53 @@ all**. A time-driven trigger checks for a failed run and emails
 This satisfies principle 1: no token anywhere, and it works even if the sync
 itself is completely broken, because it is an independent watcher.
 
+#### ✅ Written 2026-08-11 — `scripts/watcher/sync-watcher.gs`
+
+Verified against the real unauthenticated API: `/actions/workflows/<file>`
+exposes `state`, `/repos/<repo>` exposes `pushed_at`, and
+`/actions/workflows/<file>/runs` exposes `status`, `conclusion`, `created_at`
+and `html_url`. All readable with no token.
+
+It reports four things, and stays quiet otherwise:
+
+| Condition | Why it is not obvious | What the email says |
+|---|---|---|
+| Workflow `state` is not `active` | §7.3 route 3 — no error exists anywhere | Nothing is broken; here are the three clicks to switch it back on |
+| No push for 45+ days | The cutoff arrives silently | A warning, not a fault; make any real edit to reset the clock |
+| Last completed run failed | Officers do not watch the repo | The site still shows the previous version; here is the run to read |
+| Nothing succeeded in 48h | A dead cron looks like a quiet week | Edits are probably not reaching the site |
+
+Three properties that matter more than the checks themselves:
+
+- **It says when things recover.** Silence after a problem email is
+  indistinguishable from the watcher having died.
+- **It re-nags at most weekly per problem.** A daily email about a known
+  problem gets filtered, and then the next real one is invisible too.
+- **Losing contact with GitHub is not a fault.** Apps Script shares outbound
+  addresses, so the unauthenticated rate limit can be exhausted by an unrelated
+  script. It stays silent for four days, then reports *being blind* as the
+  problem — and never reads a blind day as "all clear".
+
+The decision logic is tested in `tests/sync-watcher.test.js` against stubbed
+Apps Script services. A watcher that never emails looks exactly like a website
+that never breaks, so "it seems fine" is not evidence about this file.
+
+**Install (once, on the shared Google account — about two minutes):**
+
+1. Go to <https://script.google.com> signed in as the club account.
+2. **New project**. Name it `Website update watcher`.
+3. Replace the contents of `Code.gs` with `scripts/watcher/sync-watcher.gs`
+   from this repository. Save.
+4. Choose `testWatcherNow` from the function dropdown and press **Run**.
+   Approve the permission prompt — it asks to send mail as the club account and
+   to fetch a web page, which is all it does. **Check the email arrived.**
+5. Left sidebar → **Triggers** (clock icon) → **Add Trigger**:
+   function `checkWebsiteUpdates`, event source **Time-driven**, type **Day
+   timer**, any hour. Save.
+
+If the club account's address ever changes, `NOTIFY` at the top of the script
+is the only thing to edit.
+
 ### 7.3 Staleness is a failure too
 
 A pipeline that stops running looks identical to a pipeline with nothing to do.
@@ -504,6 +551,16 @@ to keep the repo "active" defeats the point of the diff-and-skip step and
 buries real changes. **It is the strongest argument for the §7.2 watcher**,
 which lives on the club's Google account and does not care whether GitHub is
 still running anything.
+
+**Detection is the right goal here, not prevention.** A schedule that switches
+itself off after two months of a genuinely dormant site is not misbehaving; the
+only real failure is nobody noticing. The watcher reads workflow `state`
+directly, so it reports route 3 as a fact rather than inferring it, and warns
+at 45 days so the club can act before the cutoff rather than after.
+
+Note that the sync's own commits reset the inactivity clock, so an active
+season never approaches it — verified: the bot's content commit updated the
+repository's `pushed_at`. The exposure is exactly the quiet off-season.
 
 ## 8. Phasing
 

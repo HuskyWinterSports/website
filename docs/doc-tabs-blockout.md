@@ -551,6 +551,7 @@ gap is visible rather than discovered later.
 | Sheet-sourced blocks | Lesson Info dates and prices, Lesson Registration status | Phase 2, already specced |
 
 Things that look missing and are not: `centered-text` works today by writing
-the layout's type as `"big-white-box centered-text"`, and `footnote`, `quote`,
+the layout's type as `"big-white-box centered-text"` — **checked in a browser,
+not assumed**; the class lands and the text centres. And `footnote`, `quote`,
 `address` and `little-white-box` carry **no CSS at all** on the live site, so
 losing them changes nothing a visitor can see.

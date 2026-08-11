@@ -9,9 +9,11 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "playwright test --project=desktop-chrome --project=mobile-chrome",
-    "test:all": "playwright test",
-    "test:report": "playwright show-report"
+    "test": "npm run test:unit && playwright test --project=desktop-chrome --project=mobile-chrome",
+    "test:unit": "node --test tests/**/*.test.js",
+    "test:all": "npm run test:unit && playwright test",
+    "test:report": "playwright show-report",
+    "sync": "node scripts/sync/sync-content.js"
   },
   "dependencies": {
     "react": "^19.1.1",
@@ -28,6 +30,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
+    "node-html-parser": "^9.0.1",
     "vite": "^7.1.0"
   }
 }

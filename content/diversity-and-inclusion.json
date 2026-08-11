@@ -1,0 +1,140 @@
+{
+  "route": "/diversity-and-inclusion",
+  "title": "Heading 1",
+  "blocks": [
+    {
+      "section": "Heading 2",
+      "type": "white-stripe",
+      "heading": "Heading 2",
+      "content": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "normal text"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Heading 3"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "normal text"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": true,
+              "italic": false,
+              "href": null,
+              "text": "bold text"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": true,
+              "href": null,
+              "text": "italic text"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": "https://gentoo.org/",
+              "text": "hyperlink text"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "ordered": false,
+          "items": [
+            [
+              {
+                "bold": false,
+                "italic": false,
+                "href": null,
+                "text": "a"
+              }
+            ],
+            [
+              {
+                "bold": false,
+                "italic": false,
+                "href": null,
+                "text": "bulleted"
+              }
+            ],
+            [
+              {
+                "bold": false,
+                "italic": false,
+                "href": null,
+                "text": "list"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "list",
+          "ordered": true,
+          "items": [
+            [
+              {
+                "bold": false,
+                "italic": false,
+                "href": null,
+                "text": "a "
+              }
+            ],
+            [
+              {
+                "bold": false,
+                "italic": false,
+                "href": null,
+                "text": "numbered"
+              }
+            ],
+            [
+              {
+                "bold": false,
+                "italic": false,
+                "href": null,
+                "text": "list"
+              }
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}

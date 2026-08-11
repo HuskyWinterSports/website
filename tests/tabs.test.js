@@ -2,7 +2,7 @@ import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { parseGoogleDoc } from '../scripts/sync/parse-google-doc.js';
-import { selectTab, ContentError } from '../scripts/sync/join-sections.js';
+import { joinSections, selectTab, ContentError } from '../scripts/sync/join-sections.js';
 
 // A real response body from a document with three tabs, captured 2026-08-11.
 // Publish-to-web ignores ?tab=t.N — every tab always arrives in one stream —
@@ -69,6 +69,28 @@ describe('resilience to Google regenerating its markup', () => {
         const renamed = FIXTURE.replace(/\bc(\d+)\b/g, (_, n) => `z${Number(n) + 500}`);
         assert.notEqual(renamed, FIXTURE, 'fixture should actually have been rewritten');
         assert.deepEqual(parseGoogleDoc(renamed), parseGoogleDoc(FIXTURE));
+    });
+});
+
+describe('tabs the website does not use', () => {
+    test('are invisible to the page being built', () => {
+        // Officers are told they can keep planning/draft tabs in the document.
+        // That promise holds only because an unused tab is never read at all —
+        // not merely ignored later. A draft tab must not be able to warn, break
+        // a build, or leak a heading into another page.
+        const doc = parseGoogleDoc(FIXTURE);
+        const tab = selectTab(doc, 'Diversity and Inclusion', 'diversity-and-inclusion');
+
+        const { blocks, orphans } = joinSections(
+            { route: '/x', blocks: [{ section: 'Support our Stoked Volunteer Instructors!', type: 'white-stripe' }] },
+            tab,
+            'diversity-and-inclusion'
+        );
+
+        // "Lessons" and "Tab 3" are both present in the document and unused.
+        assert.ok(doc.tabs.length > 1, 'fixture should have unused tabs');
+        assert.deepEqual(orphans, [], 'an unused tab must not be reported as an orphan section');
+        assert.equal(blocks.length, 1);
     });
 });
 

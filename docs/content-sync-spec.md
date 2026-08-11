@@ -1,7 +1,9 @@
 # Content Sync Spec — editing the website from Google Workspace
 
-**Status:** draft, 2026-08-10. One section (§4 Transport) is **unverified** and
-blocks implementation. Everything else is decided.
+**Status:** draft, 2026-08-10. §4 Transport is **verified**: published-to-web
+only, Docs via HTML, Sheets via CSV. One sub-task now blocks the parser —
+observing the markup Google emits for headings, bold, lists and links (§10.1).
+Everything else is decided.
 
 **Goal of this document:** be concrete enough that the next step is writing
 code, not more design.

@@ -181,7 +181,12 @@ different position from one who sees nothing happen.
 Ranked by impact on the business, not by category. Every claim below was verified by
 reading the source, building, or querying DNS — not inferred.
 
-### 🔴 P1 — Four pages are effectively unreachable on phones
+### ✅ FIXED — Four pages were effectively unreachable on phones
+
+**Resolved 2026-08-10 in PR #1.** Menus now open on click/tap at every size,
+with Escape, outside-click and keyboard support; the desktop nav bar is
+restored. Locked in by `tests/nav.spec.js`, which taps through every route on
+emulated Pixel 5 and iPhone 13. Original analysis below.
 
 `Navbar.jsx:36-57` opens dropdowns **only** via `onMouseEnter`/`onMouseLeave`.
 `Navbar.css:78-80` has `.dropdown { display: none }` with `.is-active` as the only
@@ -222,7 +227,9 @@ standard fix is the `404.html` copy trick: add `cp dist/index.html dist/404.html
 the build, then switch to `BrowserRouter`. `main.jsx:3` still imports `BrowserRouter`
 unused, suggesting this was already considered.
 
-### 🟠 P2 — 4.7 MB deploy; ~2.5 MB of it is pure waste
+### ✅ FIXED — 4.7 MB deploy; ~2.5 MB of it was pure waste
+
+**Resolved 2026-08-10. `dist/` is now 1.1 MB.** Original analysis below.
 
 Verified by building. `dist/` is 4.7 MB, and **two files are shipped twice**:
 
@@ -249,7 +256,10 @@ loading="lazy">` would let the two off-screen slides defer entirely.
 Note `index.html:5` also declares `type="image/svg+xml"` for a `.ico` file — harmless
 but wrong.
 
-### 🟡 P3 — Both Google Form iframes load on every visit
+### ✅ FIXED — Both Google Form iframes loaded on every visit
+
+**Resolved 2026-08-10.** Each page now renders one `<iframe>`, sized by CSS,
+with a `title` for screen readers and `loading="lazy"`. Original analysis below.
 
 `LessonRegistration.jsx:12-13` and `JoinMailingList.jsx:12-13` each render the *same*
 form twice — a `.big-form` and a `.small-form` — and hide one with `display: none`
@@ -258,7 +268,11 @@ fetching.** Every visitor downloads a full Google Forms bundle twice.
 
 Fix: render one iframe and size it with CSS.
 
-### 🟡 P3 — `npm run lint` fails, and CI never runs it
+### ✅ FIXED — `npm run lint` failed, and CI never ran it
+
+**Resolved 2026-08-10.** Lint is clean and now runs in CI, together with the
+browser tests, as a required check on every pull request. Original analysis
+below.
 
 ```
 src/app/App.jsx    1:10  'useState' is defined but never used
@@ -271,7 +285,11 @@ src/components/Footer.jsx  3:32  'props' is defined but never used
 Adding a lint step is the cheap part; the valuable part is that CI becomes the thing
 that catches a future admin's mistake *before* it reaches the public site.
 
-### 🟡 P3 — Workflow will break silently on a future runner
+### ✅ FIXED — Workflow would have broken silently on a future runner
+
+**Resolved 2026-08-10.** Node pinned to 22, actions bumped to current majors,
+and pull requests are now built and tested without deploying. Original analysis
+below.
 
 `deploy.yml:18` uses `actions/setup-node@v3` **with no `node-version`**, so the build
 pins to whatever Node the runner happens to ship. That will change without warning,
@@ -376,3 +394,52 @@ rather than as a separate mechanical step.
 5. **Pick and wire the editing surface** — the reversible decision.
 6. **`BrowserRouter` + `404.html` + OG tags + sitemap** — do this after 4, since the
    content files make per-page meta tags trivial to generate.
+
+---
+
+## Docket: write the Google Workspace sync spec
+
+**Status: not started. This is the next design task, and it should be written
+before any of step 4/5 above is built**, because it determines the shape the
+content files need to take.
+
+Revised premise (confirmed 2026-08-10): the club passes down **both** a
+GitHub org account and a **single shared Google Drive org account**. That
+invalidates the strongest objection to the original Google Docs idea — the
+credential does *not* die when a student graduates. The stated preference is
+still to avoid needing to touch GitHub at all.
+
+The design to spec out, in one line: **make the credential optional rather
+than load-bearing.**
+
+```
+  Google Sheet/Doc  ──published to web (NO credential)──┐
+                                                        ▼
+  GitHub Action on `schedule:` + `workflow_dispatch:` ──> fetch, validate,
+                                                          commit, deploy
+                    ▲
+  Apps Script "Publish now" button ──repository_dispatch (PAT)──┘
+                                     OPTIONAL ACCELERATOR ONLY
+```
+
+If the PAT lapses, the failure mode degrades to *"edits go live within a few
+hours instead of instantly"* — never *"the site silently stopped updating."*
+That property is the whole point, and it's what the naive design lacks.
+
+The spec needs to answer:
+
+1. **Split.** Which content is a Sheet (tabular, volatile: session dates,
+   prices, registration open/full/waitlist status) versus prose that stays in
+   the repo? Prose in spreadsheet cells is miserable to edit.
+2. **Schema.** What does the Sheet look like, and how is it validated so a bad
+   edit fails the build *loudly* rather than publishing a broken page? What
+   does the failure email say, and who does it go to?
+3. **Doc-to-HTML.** If prose *does* come from Docs, what sanitizes the
+   span-soup export, and which formatting is supported vs. silently dropped?
+4. **Cadence.** How often does the cron run, and is the staleness window
+   acceptable during registration season?
+5. **Onboarding.** The one-page instruction sheet the next officer reads. This
+   is the actual deliverable — the automation is worthless if nobody knows the
+   doc exists.
+6. **Recovery.** What a future admin does when it breaks and no one technical
+   is around. Every design decision above should be judged against this.

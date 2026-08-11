@@ -76,6 +76,27 @@ back if the club prefers; it's a preference, not a technical limit.
 - **No more sideways scrolling** on desktop, caused by the menu bar being
   very slightly wider than the window.
 
+### 5. The site is about four times smaller to load
+
+**What was wrong:** Loading the site downloaded **4.7 MB**. Three separate
+problems stacked up:
+
+- Two large photos were saved at far higher quality than a screen can show —
+  the group photo alone was 1.7 MB.
+- Two files (the mountain background and the site icon) were accidentally
+  being sent to visitors **twice**, because of how they were referenced.
+- Both pages with a Google Form embedded the form **twice** — once sized for
+  phones, once for computers — and hid one with a rule that hides it visually
+  but does *not* stop it downloading. Every visitor fetched the whole form
+  twice.
+
+**What you'll notice:** The site now loads about **1.1 MB instead of 4.7 MB**,
+roughly a quarter of what it was. This matters most on a phone on mountain
+wifi, which is exactly where parents check lesson details.
+
+The photos were re-compressed and measured to confirm no visible quality loss
+(39 and 41 decibels PSNR — above about 38 is indistinguishable to the eye).
+
 ### Behind the scenes
 
 - Added an automated test suite that opens the real site in simulated phone and
@@ -104,9 +125,6 @@ would care about:
   and Inclusion page says to Zelle `huskyws@gmail.com`; everywhere else uses
   `huskywslessons@gmail.com`. **Please confirm which is correct** — a wrong
   address here means donations go nowhere.
-- **The site is slow to load**, especially on phones over mountain wifi. About
-  half the download is two oversized photos, and a couple of files are
-  accidentally sent twice.
 - **Page links look like `huskywintersports.org/#/faq`.** The `#` makes it
   harder for Google to index our pages, so we lose search traffic from parents
   searching for ski lessons.

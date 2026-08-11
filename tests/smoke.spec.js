@@ -91,6 +91,27 @@ test('every image has meaningful alt text', async ({ page }) => {
     }
 });
 
+test('CSS background images resolve to real images', async ({ page, request }) => {
+    await page.goto('/');
+
+    // CSS backgrounds are invisible to the <img> checks above, and a wrong
+    // path here previously caused a 1.2 MB file to ship twice. Check the
+    // content type, not the status: `vite preview` answers unknown paths
+    // with 200 + index.html, so a 404 would otherwise look like success.
+    const url = await page.evaluate(() => {
+        const value = getComputedStyle(document.body).backgroundImage;
+        return value.match(/url\(["']?([^"')]+)["']?\)/)?.[1] ?? null;
+    });
+    expect(url, 'body has no background image').not.toBeNull();
+
+    const response = await request.get(url);
+    expect(response.status()).toBe(200);
+    expect(
+        response.headers()['content-type'],
+        `${url} did not return an image`
+    ).toMatch(/^image\//);
+});
+
 test('the site has a page title and meta description', async ({ page }) => {
     await page.goto('/');
     await expect(page).toHaveTitle(/.+/);

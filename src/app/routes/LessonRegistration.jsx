@@ -1,5 +1,4 @@
 import '../../assets/Global.css'
-import '../../assets/LessonRegistration.css'
 
 export default function LessonRegistration() {
     return (
@@ -9,8 +8,12 @@ export default function LessonRegistration() {
                 <div className='centered-text'>
                     <p>Ski & Snowboard lessons for the 2025/26 season are now full. Please fill out the form to join the waitlist.</p>
                     <p>Click <a href='https://docs.google.com/forms/d/e/1FAIpQLSfjLegq7v2dtmjG_YTOisGHB9gBcoSKPdTvs9VDIEcfnHs-0Q/viewform?usp=header' target='blank'>here</a> to open the form in a new window.</p>
-                    <iframe className= 'big-form' src="https://docs.google.com/forms/d/e/1FAIpQLSfjLegq7v2dtmjG_YTOisGHB9gBcoSKPdTvs9VDIEcfnHs-0Q/viewform?embedded=true" width="640" height="500" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
-                    <iframe className='small-form' src="https://docs.google.com/forms/d/e/1FAIpQLSfjLegq7v2dtmjG_YTOisGHB9gBcoSKPdTvs9VDIEcfnHs-0Q/viewform?embedded=true" width="250" height="300" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+                    <iframe
+                        className='embedded-form'
+                        title='Lesson registration waitlist form'
+                        src="https://docs.google.com/forms/d/e/1FAIpQLSfjLegq7v2dtmjG_YTOisGHB9gBcoSKPdTvs9VDIEcfnHs-0Q/viewform?embedded=true"
+                        loading='lazy'
+                    >Loading…</iframe>
                     <p>If you have questions, please email <a href='mailto:huskywslessons@gmail.com'>huskywslessons@gmail.com</a>. We will get back to you in 1 to 2 business days.*</p>
                     <p className='footnote'>*During the Spring and Summer months (March - August), email and voice messages are checked less frequently, and it may take up to one week to receive a response.</p>
                     {/* stars? */}

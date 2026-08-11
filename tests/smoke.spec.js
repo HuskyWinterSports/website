@@ -91,6 +91,18 @@ test('every image has meaningful alt text', async ({ page }) => {
     }
 });
 
+test('the home banner offers both a lessons and an instructor route', async ({ page }) => {
+    await page.goto('/');
+
+    // Booking lessons is the site's primary purpose, so the home page must
+    // always offer a route into the lessons side. Asserted by destination
+    // rather than button text, so the wording stays free to change.
+    const buttons = page.locator('.banner-buttons a');
+    await expect(buttons).toHaveCount(2);
+    await expect(buttons.first()).toHaveAttribute('href', /lesson/);
+    await expect(page.locator('.banner-buttons a[href*="become-an-instructor"]')).toBeVisible();
+});
+
 test('CSS background images resolve to real images', async ({ page, request }) => {
     await page.goto('/');
 

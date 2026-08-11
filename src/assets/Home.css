@@ -51,6 +51,7 @@
 
 .banner-buttons {
     display: flex;
+    flex-wrap: wrap; /* two buttons will not fit on one line on a phone */
     gap: 15px;
     padding-bottom: 20px;
 }

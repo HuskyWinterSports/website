@@ -97,6 +97,19 @@ wifi, which is exactly where parents check lesson details.
 The photos were re-compressed and measured to confirm no visible quality loss
 (39 and 41 decibels PSNR — above about 38 is indistinguishable to the eye).
 
+### 6. The home page now points at lessons, not just instructor recruiting
+
+**What was wrong:** The only button on the home page said "BECOME AN
+INSTRUCTOR". Most people arriving at the site are parents and adults looking
+to book lessons, not UW students looking to join the club — so the one thing
+we asked visitors to do was aimed at the smaller audience.
+
+**What you'll notice:** Two buttons now, with **LESSON INFO** first, followed by
+BECOME AN INSTRUCTOR. Both look the same; the ordering carries the priority.
+
+When registration opens for a season, that first button should be repointed at
+the registration page. There's a note in the code saying so.
+
 ### Behind the scenes
 
 - Added an automated test suite that opens the real site in simulated phone and
@@ -119,12 +132,20 @@ would care about:
   "lessons are now full", and "© 2025". Needs a content update for 2026/27.
 - **The refund policy has a hole in it.** On the Lesson Registration page, the
   section on injuries lists the same sentence twice, and as a result the case
-  for *"injury before lessons start"* is missing entirely. **Someone needs to
-  tell us what that policy actually is** so it can be written in.
+  for *"injury before lessons start"* is missing entirely. We believe the
+  actual policy is a **100% refund for injury before the season starts**, and
+  that it is currently treated as implicit. **This needs confirming and then
+  writing down explicitly** — "it was implied" is a weak position if a parent
+  ever disputes a refund.
 - **Two different donation email addresses appear on the site.** The Diversity
   and Inclusion page says to Zelle `huskyws@gmail.com`; everywhere else uses
-  `huskywslessons@gmail.com`. **Please confirm which is correct** — a wrong
-  address here means donations go nowhere.
+  `huskywslessons@gmail.com`. Believed correct as-is, but **worth one explicit
+  confirmation** — a wrong address here means donations go nowhere.
+- **The home page photo looks slightly soft on large monitors.** The photo is
+  1701 pixels wide and gets stretched across the full width of the screen. This
+  is a limit of the original photo, not of how we save it, and it was equally
+  true before recent changes. **The fix is a higher-resolution original from
+  the club photo archive** — ideally 2560 pixels wide or more.
 - **Page links look like `huskywintersports.org/#/faq`.** The `#` makes it
   harder for Google to index our pages, so we lose search traffic from parents
   searching for ski lessons.

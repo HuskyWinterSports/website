@@ -247,6 +247,14 @@ resolves and re-bundles them **in addition to** copying the originals.
 Fix: reference them as `/images/background_mountain.jpeg` and `/favicon.ico`. Files in
 `public/` are served at the root and must never be imported by path.
 
+**Open item — source resolution, not compression.** `2025group.jpeg` is
+1701×1088. The slider is full-viewport-width, so on a 1920px display the photo
+is upscaled ~13% and on a 2560px display ~50%, which reads as slightly soft.
+This was equally true before the 2026-08-10 re-compression (dimensions were
+never changed, only quality), so restoring the larger file would not sharpen
+it. **The fix is a higher-resolution original from the club photo archive**,
+ideally ≥2560px wide. Same applies to `background_mountain.jpeg` (1662×1097).
+
 Separately, the images themselves are heavy: `2025group.jpeg` is 1.7 MB and
 `background_mountain.jpeg` is 1.2 MB — ~2.9 MB of the original 3.2 MB. Converting to
 AVIF/WebP (as was already done for the logos) would cut this by roughly 10×. The
@@ -304,6 +312,11 @@ You mentioned wanting a content pass — here's what I found while reading:
   line 27 verbatim ("In the unfortunate event of a student sustaining an injury…"),
   so the "Injury Before Lessons Start" case is **missing entirely**. This is a
   published refund policy with a hole in it — the highest-stakes item in this section.
+  **Per the current admin (2026-08-10): the policy is believed to be a 100%
+  refund for injury before the season starts, treated as implicit today.
+  Confirm with the club, then write it in explicitly during the content pass** —
+  an unwritten refund policy is the kind of thing that gets disputed by a
+  parent, and "it was implied" is a bad position to argue from.
 - **`LessonRegistration.jsx:34,42`** and the site generally name a specific lesson
   director. Given annual turnover, use the role and the shared inbox, not a name.
 - **`LessonRegistration.jsx:10` vs `:18`** contradict each other: "lessons are now

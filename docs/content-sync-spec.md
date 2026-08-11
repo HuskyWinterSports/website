@@ -1,9 +1,9 @@
 # Content Sync Spec — editing the website from Google Workspace
 
-**Status:** draft, 2026-08-10. §4 Transport is **verified**: published-to-web
-only, Docs via HTML, Sheets via CSV. One sub-task now blocks the parser —
-observing the markup Google emits for headings, bold, lists and links (§10.1).
-Everything else is decided.
+**Status:** draft, 2026-08-10. §4 Transport is **fully verified**:
+published-to-web only, Docs via HTML, Sheets via CSV, with the markup contract
+recorded in §4.1–4.3. **Nothing blocks implementation.** The next step is
+writing the parser.
 
 **Goal of this document:** be concrete enough that the next step is writing
 code, not more design.
@@ -111,9 +111,58 @@ script exists to catch, and one a logged-in browser would have hidden.
   them means resolving that mapping per fetch. The site does use bold in body
   copy, so this is required, not optional.
 
-**Still open:** the verification doc contained no headings, bold, lists or
-links, so the exact markup Google emits for those is not yet observed. That is
-needed before the parser is written — see §10.
+### 4.1 Observed markup contract — verified 2026-08-10
+
+Measured against a real doc containing every construct we need. **The parser is
+now unblocked.**
+
+| Construct | Google emits | Parser rule |
+|---|---|---|
+| Content region | `<div id="contents">` | Parse **only** inside this. Everything outside is Google's banner and JS bundle. |
+| Heading 1/2/3 | `<h1 class="c5">`, `<h2 class="c6">`, `<h3 class="c13">` | Real semantic tags. **Match on tag, ignore the class.** |
+| Paragraph | `<p class="c1">` | → block body paragraph |
+| Bulleted list | `<ul class="c0 lst-kix_… start">` + `<li class="c3 c4 li-bullet-0">` | → `ul` / `li` |
+| Numbered list | `<ol class="c0 lst-kix_… start" start="1">` | → `ol` / `li` |
+| Link | `<a class="c11" href="…">` | See §4.2 — **must unwrap** |
+| **Bold** | `<span class="c7">`, where `.c7{font-weight:700}` | Resolve from `<style>`, see below |
+| *Italic* | `<span class="c10">`, where `.c10{font-style:italic}` | Resolve from `<style>` |
+
+**Class numbers are arbitrary and regenerate on republish.** `c7` meaning bold
+is true of *this* fetch only. The parser must read the inline `<style>` block,
+build a map of `className → {bold, italic}` by looking for `font-weight:700`
+and `font-style:italic`, and apply that map per fetch. Hard-coding `c7` would
+work in testing and break silently the first time an officer edits the doc.
+
+### 4.2 ⚠️ Links are wrapped, and this matters more than it looks
+
+Google rewrites every hyperlink through a redirector:
+
+```
+https://www.google.com/url?q=https://google.com/&sa=D&source=editors
+       &ust=1786416850508734&usg=AOvVaw39JV…
+```
+
+The parser **must** extract the `q` parameter and discard the wrapper. Two
+independent reasons, the second of which is easy to miss:
+
+1. Site links would otherwise bounce visitors through Google, which is slower,
+   leaks referrer data, and looks untrustworthy in a status bar.
+2. **`ust` is a timestamp and `usg` is a signature — both change on every
+   republish.** Left in, the generated content would differ on *every single
+   sync* even when nobody edited anything. That silently defeats the "diff, and
+   exit without committing if unchanged" step in §6, producing a junk commit
+   every cron run and burying real content changes in noise.
+
+Reason 2 is a good argument for a broader rule: **the parser must be
+deterministic given identical document content.** Anything Google varies per
+request has to be stripped, or the no-op detection is worthless.
+
+### 4.3 `output=` is ignored for Docs
+
+Tested at the club's suggestion: `/pub?output=md`, `?output=txt` and
+`?output=html` all return `text/html` at ~149 KB, byte-differing only in
+nonces inside the JS bundle. Sheets honour `output=csv`; **Docs do not honour
+`output=` at all.** There is no Markdown escape hatch on the published path.
 
 **If HTML parsing proves too fragile**, the documented fallback is an Apps
 Script Web App returning clean JSON (see the original decision rule below). It
@@ -414,18 +463,9 @@ Point 3 is the escape hatch that makes the whole thing safe to adopt.
 
 ## 10. Open questions
 
-1. ~~**§4 transport**~~ — ✅ **RESOLVED 2026-08-10.** Published-to-web only;
-   Docs via HTML, Sheets via CSV. **Remaining sub-task, now blocking the
-   parser:** the verification doc was effectively empty, so we have not yet
-   observed the markup Google emits for Heading 1/2/3, **bold**, *italic*,
-   bulleted lists, numbered lists and links. Add one of each to the test doc,
-   republish, and re-fetch:
-
-   ```
-   curl -sSL "https://docs.google.com/document/d/e/<PUB_ID>/pub" -o /tmp/doc.html
-   ```
-
-   This is the last thing needed before the parser can be written.
+1. ~~**§4 transport**~~ — ✅ **FULLY RESOLVED 2026-08-10.** Published-to-web
+   only; Docs via HTML, Sheets via CSV; markup contract recorded in §4.1–4.3.
+   Nothing blocks the parser.
 2. What is the acceptable staleness window during registration season?
 3. Who is the human that receives failure emails — the shared inbox, or a
    named role? A shared inbox survives turnover; a person does not.

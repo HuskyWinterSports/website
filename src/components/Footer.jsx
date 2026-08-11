@@ -1,10 +1,10 @@
 import '../assets/Footer.css';
 
-export default function Footer(props) {
+export default function Footer() {
     return (
         <>
             <div className='footer-img'>
-                <img src="/images/HWS_logo.avif" alt="footer image"/>
+                <img src="/images/HWS_logo.avif" alt="Husky Winter Sports"/>
             </div>
             <footer>
                 <div className='footer-info'>
@@ -23,10 +23,10 @@ export default function Footer(props) {
                     </div>
                 </div>
                 <ul>
-                    <li><img src='/images/summit.avif' alt="summit logo"/></li>
-                    <li><img src='/images/forrest_service.avif' alt="forrest service logo"/></li>
-                    <li><img src='/images/PSIA.avif' alt="PSIA logo"/></li>
-                    <li><img src='/images/AASI.gif' alt="AASI logo"/></li>
+                    <li><img src='/images/summit.avif' alt="The Summit at Snoqualmie"/></li>
+                    <li><img src='/images/forrest_service.avif' alt="United States Forest Service"/></li>
+                    <li><img src='/images/PSIA.avif' alt="Professional Ski Instructors of America"/></li>
+                    <li><img src='/images/AASI.gif' alt="American Association of Snowboard Instructors"/></li>
                 </ul>
             </footer>
         </>

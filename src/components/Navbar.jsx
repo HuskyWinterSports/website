@@ -1,60 +1,123 @@
-import { Link, NavLink } from 'react-router-dom';
-import React, { useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
 
 import '../assets/Navbar.css';
 
-import { useLocation } from 'react-router-dom';
+// Nav structure lives here so links can be added/reordered in one place.
+// A group's first item is also where its parent label would have pointed,
+// so making the parent a toggle button loses no destinations.
+const NAV_ITEMS = [
+    { label: 'Home', to: '/', end: true },
+    {
+        label: 'Lessons',
+        items: [
+            { label: 'Lesson Info', to: '/lesson-info' },
+            { label: 'Lesson Registration', to: '/lesson-registration' },
+            { label: 'Join Our Mailing List', to: '/join-our-mailing-list' },
+        ],
+    },
+    {
+        label: 'About Us',
+        items: [
+            { label: 'Become an Instructor', to: '/become-an-instructor' },
+            { label: 'Diversity and Inclusion', to: '/diversity-and-inclusion' },
+        ],
+    },
+    {
+        label: 'Questions',
+        items: [
+            { label: 'FAQ', to: '/faq' },
+            { label: 'Contact Us', to: '/contact-us' },
+        ],
+    },
+];
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
-    const [hoveredQuestions, setHoveredQuestions] = useState(false);
-    const [hoveredLessons, setHoveredLessons] = useState(false);
-    const [hoveredClub, setHoveredClub] = useState(false);
+    const [openGroup, setOpenGroup] = useState(null);
     const location = useLocation();
+    const navRef = useRef(null);
 
-    // Close menu on route change
-    React.useEffect(() => {
+    // NOTE: menus open on click/tap at every screen size, deliberately.
+    // Mixing hover-to-open with click-to-toggle means a mouse user who hovers
+    // (opening the menu) then clicks the toggle immediately closes it again,
+    // and a hover rule also outranks Escape while the pointer rests on the
+    // menu. One behaviour everywhere is simpler to use and to maintain.
+
+    // Close everything on route change
+    useEffect(() => {
         setIsOpen(false);
+        setOpenGroup(null);
     }, [location.pathname]);
 
-    const toggleMenu = () => {
-        setIsOpen(!isOpen);
-    };
+    // Escape closes; click outside the nav closes
+    useEffect(() => {
+        const onKeyDown = (e) => {
+            if (e.key !== 'Escape') return;
+            setOpenGroup(null);
+            setIsOpen(false);
+        };
+        const onPointerDown = (e) => {
+            if (navRef.current?.contains(e.target)) return;
+            setOpenGroup(null);
+            setIsOpen(false);
+        };
+        document.addEventListener('keydown', onKeyDown);
+        document.addEventListener('pointerdown', onPointerDown);
+        return () => {
+            document.removeEventListener('keydown', onKeyDown);
+            document.removeEventListener('pointerdown', onPointerDown);
+        };
+    }, []);
 
     return (
-        <nav className="navbar">
-            <button className={`navbar-toggle ${isOpen ? 'is-active' : ''}`} onClick={toggleMenu}>
+        <nav className="navbar" ref={navRef}>
+            <button
+                className={`navbar-toggle ${isOpen ? 'is-active' : ''}`}
+                onClick={() => setIsOpen((open) => !open)}
+                aria-expanded={isOpen}
+                aria-controls="navbar-menu"
+                aria-label={isOpen ? 'Close menu' : 'Open menu'}
+            >
                 <span className="bar bar-one"></span>
                 <span className="bar bar-two"></span>
                 <span className="bar bar-three"></span>
             </button>
-            <div className={`navbar-menu ${isOpen ? 'is-active' : ''}`}>
+            <div id="navbar-menu" className={`navbar-menu ${isOpen ? 'is-active' : ''}`}>
                 <ul className="navbar-links">
-                    <li className='dom-link'>
-                        <NavLink to="/" end>Home</NavLink>
-                    </li>
-                    <li className='dom-link' onMouseEnter={() => setHoveredLessons(true)} onMouseLeave={() => setHoveredLessons(false)}>
-                        <NavLink to="/lesson-info">Lessons</NavLink>
-                        <ul className={`dropdown ${hoveredLessons ? 'is-active' : ''}`}>
-                            <li><NavLink to="/lesson-info">Lesson Info</NavLink></li>
-                            <li><NavLink to="/lesson-registration">Lesson Registration</NavLink></li>
-                            <li><NavLink to="/join-our-mailing-list">Join Our Mailing List</NavLink></li>
-                        </ul>
-                    </li>
-                    <li className='dom-link' onMouseEnter={() => setHoveredClub(true)} onMouseLeave={() => setHoveredClub(false)}>
-                        <NavLink to="/become-an-instructor">About Us</NavLink>
-                        <ul className={`dropdown ${hoveredClub ? 'is-active' : ''}`}>
-                            <li><NavLink to="/become-an-instructor">Become an Instructor</NavLink></li>
-                            <li><NavLink to="/diversity-and-inclusion">Diversity and Inclusion</NavLink></li>
-                        </ul>
-                    </li>
-                    <li className='dom-link' onMouseEnter={() => setHoveredQuestions(true)} onMouseLeave={() => setHoveredQuestions(false)}>
-                        <NavLink to="/faq">Questions</NavLink>
-                        <ul className={`dropdown ${hoveredQuestions ? 'is-active' : ''}`}>
-                            <li><NavLink to="/faq">FAQ</NavLink></li>
-                            <li><NavLink to="/contact-us">Contact Us</NavLink></li>
-                        </ul>
-                    </li>
+                    {NAV_ITEMS.map((item, index) => (
+                        <li className="dom-link" key={item.label}>
+                            {item.items ? (
+                                <>
+                                    <button
+                                        className="dropdown-toggle"
+                                        onClick={() =>
+                                            setOpenGroup((open) => (open === index ? null : index))
+                                        }
+                                        aria-expanded={openGroup === index}
+                                        aria-controls={`dropdown-${index}`}
+                                    >
+                                        {item.label}
+                                        <span className="caret" aria-hidden="true" />
+                                    </button>
+                                    <ul
+                                        id={`dropdown-${index}`}
+                                        className={`dropdown ${openGroup === index ? 'is-active' : ''}`}
+                                    >
+                                        {item.items.map((sub) => (
+                                            <li key={sub.to}>
+                                                <NavLink to={sub.to}>{sub.label}</NavLink>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </>
+                            ) : (
+                                <NavLink to={item.to} end={item.end}>
+                                    {item.label}
+                                </NavLink>
+                            )}
+                        </li>
+                    ))}
                 </ul>
             </div>
         </nav>

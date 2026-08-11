@@ -1,0 +1,11 @@
+{
+  "_note": "PROOF OF CONCEPT. publishedId currently points at a throwaway test document, NOT the real Diversity and Inclusion doc. The /diversity-and-inclusion route is still served by src/app/routes/DiversityAndInclusion.jsx and is unaffected. To finish: create the real doc, publish it to the web, replace publishedId below, set the section names to match its Heading 2s, then switch the route to render content/diversity-and-inclusion.json via ContentBlocks.",
+  "route": "/diversity-and-inclusion",
+  "source": {
+    "kind": "google-doc",
+    "publishedId": "2PACX-1vQ53bIBpIbYs7rqDxydTDD9aO20F7JeeqxmLwaH33FMV2dZ0MyEy9Pf8N6BRZgsdbtRGtdwS226v7Eh"
+  },
+  "blocks": [
+    { "section": "Heading 2", "type": "white-stripe" }
+  ]
+}

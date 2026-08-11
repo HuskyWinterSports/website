@@ -51,7 +51,11 @@
 
 .banner-buttons {
     display: flex;
-    gap: 15px;
+    flex-wrap: wrap; /* two buttons will not fit on one line on a phone */
+    /* row-gap then column-gap. The two buttons address different audiences
+       (parents booking vs students joining), so they get generous horizontal
+       separation, while the stacked phone layout stays tight. */
+    gap: 15px 30px;
     padding-bottom: 20px;
 }
 

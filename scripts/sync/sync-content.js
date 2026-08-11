@@ -1,0 +1,184 @@
+import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
+import { join, dirname, basename } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { parseGoogleDoc } from './parse-google-doc.js';
+
+/**
+ * Fetches published Google content, validates it against the repo's layout
+ * files, and writes content/<page>.json.
+ *
+ * Design rules from docs/content-sync-spec.md:
+ *   - Never write a partial or unvalidated result. If anything is wrong the
+ *     site keeps serving the previous content.
+ *   - Every failure message names the file, says what is wrong, and gives the
+ *     two ways to fix it. The reader is an officer with no technical
+ *     background and nobody to ask.
+ *   - Exit 0 without writing when nothing changed, so cron does not produce a
+ *     commit every hour.
+ */
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+const CONTENT_DIR = join(ROOT, 'content');
+
+const docUrl = (publishedId) =>
+    `https://docs.google.com/document/d/e/${publishedId}/pub`;
+
+class ContentError extends Error {}
+
+async function fetchDoc(publishedId, layoutName) {
+    const url = docUrl(publishedId);
+    let response;
+    try {
+        response = await fetch(url, { redirect: 'follow' });
+    } catch (cause) {
+        throw new ContentError(
+            `Could not reach Google to read the document for ${layoutName}.\n\n` +
+            `  ${url}\n\n` +
+            `This is usually a temporary network problem. The website has not ` +
+            `been changed; it is still showing the previous version.\n` +
+            `Cause: ${cause.message}`
+        );
+    }
+
+    if (!response.ok) {
+        throw new ContentError(
+            `Google returned an error (HTTP ${response.status}) for ${layoutName}.\n\n` +
+            `  ${url}\n\n` +
+            `This usually means the document is no longer published to the web.\n` +
+            `To fix it, open the document and choose File > Share > Publish to ` +
+            `the web, then press Publish.\n\n` +
+            `The website has not been changed. It is still showing the previous version.`
+        );
+    }
+    return response.text();
+}
+
+/**
+ * Match the sections a layout expects against the sections a document
+ * actually contains. This is where a renamed heading gets caught.
+ */
+function joinSections(layout, parsed, layoutName) {
+    const bySection = new Map(
+        parsed.sections.filter((s) => s.heading).map((s) => [s.heading.trim(), s])
+    );
+
+    const blocks = layout.blocks.map((entry) => {
+        // Blocks with no `section` carry their own content (e.g. a button),
+        // so they never need to exist in the document.
+        if (!entry.section) return { ...entry };
+
+        const match = bySection.get(entry.section.trim());
+        if (!match) {
+            const available = parsed.sections
+                .filter((s) => s.heading)
+                .map((s) => `  • ${s.heading}`)
+                .join('\n') || '  (the document has no Heading 2 sections at all)';
+
+            throw new ContentError(
+                `The section "${entry.section}" was not found in the ${layoutName} document.\n\n` +
+                `The document currently contains these sections:\n${available}\n\n` +
+                `This usually means a heading was renamed, or its style was ` +
+                `changed away from "Heading 2". Either:\n` +
+                `  1. Rename the heading in the document back to "${entry.section}", or\n` +
+                `  2. Ask a developer to update content/${layoutName}.layout.json\n\n` +
+                `The website has not been changed. It is still showing the previous version.`
+            );
+        }
+
+        if (match.blocks.length === 0) {
+            throw new ContentError(
+                `The section "${entry.section}" in the ${layoutName} document is empty.\n\n` +
+                `Add some text underneath that heading, or ask a developer to ` +
+                `remove the section from content/${layoutName}.layout.json\n\n` +
+                `The website has not been changed. It is still showing the previous version.`
+            );
+        }
+
+        return { ...entry, heading: match.heading, content: match.blocks };
+    });
+
+    const orphans = parsed.sections
+        .filter((s) => s.heading && !layout.blocks.some((b) => b.section?.trim() === s.heading.trim()))
+        .map((s) => s.heading);
+
+    return { blocks, orphans };
+}
+
+async function syncLayout(layoutPath) {
+    const layoutName = basename(layoutPath, '.layout.json');
+    const layout = JSON.parse(readFileSync(layoutPath, 'utf8'));
+
+    if (layout.source?.kind !== 'google-doc') {
+        throw new ContentError(
+            `content/${layoutName}.layout.json has an unsupported source kind: ` +
+            `${layout.source?.kind ?? '(missing)'}`
+        );
+    }
+
+    const html = await fetchDoc(layout.source.publishedId, layoutName);
+    const parsed = parseGoogleDoc(html);
+    const { blocks, orphans } = joinSections(layout, parsed, layoutName);
+
+    const output = { route: layout.route, title: parsed.title, blocks };
+    const outputPath = join(CONTENT_DIR, `${layoutName}.json`);
+    const serialised = JSON.stringify(output, null, 2) + '\n';
+
+    let previous = null;
+    try { previous = readFileSync(outputPath, 'utf8'); } catch { /* first run */ }
+
+    if (previous === serialised) {
+        return { layoutName, changed: false, orphans };
+    }
+
+    writeFileSync(outputPath, serialised);
+    return { layoutName, changed: true, orphans };
+}
+
+async function main() {
+    const layouts = readdirSync(CONTENT_DIR)
+        .filter((f) => f.endsWith('.layout.json'))
+        .map((f) => join(CONTENT_DIR, f));
+
+    if (layouts.length === 0) {
+        console.log('No layout files found in content/. Nothing to do.');
+        return;
+    }
+
+    let changedCount = 0;
+    for (const layoutPath of layouts) {
+        const result = await syncLayout(layoutPath);
+
+        // Orphans are a warning, not a failure: an editor adding a section
+        // before a developer wires it up should not take the site down.
+        for (const heading of result.orphans) {
+            console.log(
+                `NOTE: the ${result.layoutName} document has a section ` +
+                `"${heading}" that the website does not use yet. It has been ` +
+                `ignored. Ask a developer to add it if it should appear.`
+            );
+        }
+
+        console.log(
+            result.changed
+                ? `updated content/${result.layoutName}.json`
+                : `content/${result.layoutName}.json is already up to date`
+        );
+        if (result.changed) changedCount++;
+    }
+
+    console.log(
+        changedCount === 0
+            ? '\nNothing changed. No commit needed.'
+            : `\n${changedCount} page(s) updated.`
+    );
+}
+
+main().catch((error) => {
+    if (error instanceof ContentError) {
+        console.error(`\n${'='.repeat(72)}\nCONTENT SYNC FAILED\n${'='.repeat(72)}\n`);
+        console.error(error.message);
+        console.error(`\n${'='.repeat(72)}\n`);
+        process.exit(1);
+    }
+    throw error;
+});

@@ -18,7 +18,11 @@ export default function Home() {
                     <h1 className='home-title'>HUSKY WINTER SPORTS</h1>
                     <h2 className='home-subtitle'>SKI AND SNOWBOARD SCHOOL</h2>
                     <div className='banner-buttons'>
-                        {/* <Link to="/lesson-registration" className='button register-button'>REGISTRATION WAITLIST</Link> */}
+                        {/* Lessons come first: most visitors are parents and
+                            adults looking to book, not students looking to
+                            join. When registration opens for a season, point
+                            this at /lesson-registration instead. */}
+                        <Link to="/lesson-info" className='button'>LESSON INFO</Link>
                         <Link to="/become-an-instructor" className='button'>BECOME AN INSTRUCTOR</Link>
                     </div>             
                 </div>   

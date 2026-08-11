@@ -9,7 +9,10 @@
 }
 
 body {
-  background-image: url("../../public/images/background_mountain.jpeg"); 
+  /* Must be an absolute /images/... URL. Reaching into public/ with a
+     relative path makes Vite bundle a second hashed copy of the file
+     alongside the one it already copies, doubling the download. */
+  background-image: url("/images/background_mountain.jpeg");
   background-repeat: no-repeat; 
   background-position: bottom center;
   background-size: cover; 
@@ -220,11 +223,24 @@ ul {
   margin: 5px 0;  
 }
 
-.big-form {
-    display: none;
+/* One embedded Google Form, sized with CSS.
+   Previously each page rendered the form twice and hid one with
+   `display: none` — which does NOT stop an iframe loading, so every
+   visitor downloaded the whole form twice. */
+.embedded-form {
+    display: block;
+    width: 100%;
+    max-width: 640px;
+    height: 480px;
+    margin: 20px auto;
+    border: 0;
 }
 
 @media (min-width: 768px) {
+    .embedded-form {
+        height: 600px;
+    }
+
   .big-purple-box {
     margin: 50px auto;
   }
@@ -244,12 +260,4 @@ ul {
     padding: 35px 50px;
   }
 
-  .big-form {
-      display: block;
-      margin: auto;
-  }
-
-  .small-form {
-      display: none;
-  }
 }

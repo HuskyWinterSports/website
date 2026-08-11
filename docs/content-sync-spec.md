@@ -1,0 +1,503 @@
+# Content Sync Spec — editing the website from Google Workspace
+
+**Status:** draft, 2026-08-10. §4 Transport is **fully verified**:
+published-to-web only, Docs via HTML, Sheets via CSV, with the markup contract
+recorded in §4.1–4.3. **Nothing blocks implementation.** The next step is
+writing the parser.
+
+**Goal of this document:** be concrete enough that the next step is writing
+code, not more design.
+
+---
+
+## 1. Why
+
+Officers turn over annually and are not assumed to be technical. Today, changing
+a lesson date means editing JSX, so every content edit is a code edit. The site
+currently advertises the 2025/26 season, five months after it ended — the
+problem is not hypothetical.
+
+The club already runs on Google Workspace, and signup data (dates, prices,
+capacity) already originates in spreadsheets during normal club operations.
+Sourcing the site from there removes a re-typing step rather than adding a
+system.
+
+## 2. Principles
+
+These are the tests any design decision gets judged against.
+
+1. **The credential is optional, never load-bearing.** The club passes down a
+   shared Google org account and a GitHub org account, so credentials do not
+   die with a graduating student. Even so, no token may sit on the critical
+   path. If a token lapses, the failure mode must degrade to *"edits go live
+   within a few hours instead of instantly"* — never *"the site silently
+   stopped updating."*
+2. **Fail loudly, in words the person who broke it can act on.** The worst
+   outcome is not a broken build. It is an officer editing a doc, seeing
+   nothing happen, having no error to read and nobody to ask — which lands
+   them back at "go find a CS major."
+3. **Editors control words. Code controls layout.** Editors never choose block
+   types, colours, or ordering. This is what stops a well-meaning officer from
+   destroying the page design, and it is why the content lives in a doc but the
+   *structure* stays in the repo.
+4. **Every piece degrades to a plain file in the repo.** If Google, or this
+   pipeline, or its author disappears, the content is still checked-in text
+   that anyone can edit by hand.
+
+## 3. Architecture
+
+```
+   ┌──────────────────────┐         ┌───────────────────────┐
+   │  Google Doc          │         │  Google Sheet         │
+   │  prose, per page     │         │  signup data          │
+   └──────────┬───────────┘         └───────────┬───────────┘
+              │  published, NO credential       │
+              └────────────────┬────────────────┘
+                               ▼
+        ┌──────────────────────────────────────────┐
+        │  GitHub Action                           │
+        │    schedule:  (cron)                     │
+        │    workflow_dispatch:  (manual button)   │
+        │    repository_dispatch:  (optional)  ◄───┼──── Apps Script
+        │                                          │     "Publish now"
+        │  fetch → parse → VALIDATE → commit       │     (PAT, optional
+        │                          → build → deploy│      accelerator)
+        └──────────────────────────────────────────┘
+                               │
+                               ▼  on failure
+        ┌──────────────────────────────────────────┐
+        │  Apps Script polls the public Actions    │
+        │  API (no credential) and emails the club │
+        └──────────────────────────────────────────┘
+```
+
+The only path that requires a token is the optional "Publish now" accelerator.
+Remove it entirely and the system still works, just on cron latency.
+
+## 4. Transport — ✅ VERIFIED 2026-08-10
+
+**Result: only "Publish to the web" URLs work unauthenticated. Every
+`export?format=*` endpoint returns a Google sign-in page.**
+
+| # | URL | Result |
+|---|---|---|
+| 1 | `/document/d/<id>/export?format=md` | ❌ sign-in page |
+| 1b | `/document/d/<id>/export?format=txt` | ❌ sign-in page |
+| 1c | `/document/d/<id>/export?format=html` | ❌ sign-in page |
+| 3 | `/document/d/e/<pubId>/pub` | ✅ **HTML, 143 KB** |
+| 4 | `/spreadsheets/d/<id>/gviz/tq?tqx=out:csv` | ❌ sign-in page |
+| 4b | `/spreadsheets/d/<id>/export?format=csv` | ❌ sign-in page |
+| 6 | `/spreadsheets/d/e/<pubId>/pub?output=csv` | ✅ **clean CSV** |
+
+The three failing doc endpoints returned byte-identical 8.9 KB bodies
+containing `accounts.google`, `Sign in` and `Error` — the false positive this
+script exists to catch, and one a logged-in browser would have hidden.
+
+**Consequences:**
+
+- **Sheets are solved.** `/pub?output=csv` returns exactly what we want:
+  `cell a1,cell b1` / `"cell a2, should export as csv?",` — correct quoting of
+  embedded commas included.
+- **Docs take the HTML path**, i.e. the middle option below, not the easy one.
+  Google's published HTML is semantic at the *tag* level (`h1`–`h6`, `p`, `ul`,
+  `ol`, `a`) but styles via generated class names (`c0`, `c2`) defined in an
+  inline `<style>` block. **Those class names regenerate on every republish, so
+  the parser must map by tag and never by class.** The 143 KB is mostly
+  Google's `publish_binary_core` JS bundle wrapped around the content, so the
+  parser must locate the content container rather than treating the document as
+  a whole.
+- Bold and italic are the one real complication: they are `<span class="cN">`
+  where `cN` resolves to `font-weight:700` in the `<style>` block. Supporting
+  them means resolving that mapping per fetch. The site does use bold in body
+  copy, so this is required, not optional.
+
+### 4.1 Observed markup contract — verified 2026-08-10
+
+Measured against a real doc containing every construct we need. **The parser is
+now unblocked.**
+
+| Construct | Google emits | Parser rule |
+|---|---|---|
+| Content region | `<div id="contents">` | Parse **only** inside this. Everything outside is Google's banner and JS bundle. |
+| Heading 1/2/3 | `<h1 class="c5">`, `<h2 class="c6">`, `<h3 class="c13">` | Real semantic tags. **Match on tag, ignore the class.** |
+| Paragraph | `<p class="c1">` | → block body paragraph |
+| Bulleted list | `<ul class="c0 lst-kix_… start">` + `<li class="c3 c4 li-bullet-0">` | → `ul` / `li` |
+| Numbered list | `<ol class="c0 lst-kix_… start" start="1">` | → `ol` / `li` |
+| Link | `<a class="c11" href="…">` | See §4.2 — **must unwrap** |
+| **Bold** | `<span class="c7">`, where `.c7{font-weight:700}` | Resolve from `<style>`, see below |
+| *Italic* | `<span class="c10">`, where `.c10{font-style:italic}` | Resolve from `<style>` |
+
+**Class numbers are arbitrary and regenerate on republish.** `c7` meaning bold
+is true of *this* fetch only. The parser must read the inline `<style>` block,
+build a map of `className → {bold, italic}` by looking for `font-weight:700`
+and `font-style:italic`, and apply that map per fetch. Hard-coding `c7` would
+work in testing and break silently the first time an officer edits the doc.
+
+### 4.2 ⚠️ Links are wrapped, and this matters more than it looks
+
+Google rewrites every hyperlink through a redirector:
+
+```
+https://www.google.com/url?q=https://google.com/&sa=D&source=editors
+       &ust=1786416850508734&usg=AOvVaw39JV…
+```
+
+The parser **must** extract the `q` parameter and discard the wrapper. Two
+independent reasons, the second of which is easy to miss:
+
+1. Site links would otherwise bounce visitors through Google, which is slower,
+   leaks referrer data, and looks untrustworthy in a status bar.
+2. **`ust` is a timestamp and `usg` is a signature — both change on every
+   republish.** Left in, the generated content would differ on *every single
+   sync* even when nobody edited anything. That silently defeats the "diff, and
+   exit without committing if unchanged" step in §6, producing a junk commit
+   every cron run and burying real content changes in noise.
+
+Reason 2 is a good argument for a broader rule: **the parser must be
+deterministic given identical document content.** Anything Google varies per
+request has to be stripped, or the no-op detection is worthless.
+
+### 4.3 `output=` is ignored for Docs
+
+Tested at the club's suggestion: `/pub?output=md`, `?output=txt` and
+`?output=html` all return `text/html` at ~149 KB, byte-differing only in
+nonces inside the JS bundle. Sheets honour `output=csv`; **Docs do not honour
+`output=` at all.** There is no Markdown escape hatch on the published path.
+
+**If HTML parsing proves too fragile**, the documented fallback is an Apps
+Script Web App returning clean JSON (see the original decision rule below). It
+needs one-time setup but eliminates the span-soup entirely. Recommendation:
+attempt HTML first, since it needs no extra setup, and fall back only if bold
+and italic resolution proves unmaintainable.
+
+<details>
+<summary>Original (pre-verification) decision rule, kept for context</summary>
+
+### Original section — UNVERIFIED, BLOCKED IMPLEMENTATION
+
+Everything else in this spec is stable regardless of how bytes get out of
+Google. This section is not, and it must be settled empirically before code is
+written.
+
+**"Publish to the web" and "Share with link" are different mechanisms with
+different URL shapes, and export endpoints behave differently between them.**
+Do not assume; measure.
+
+### Test matrix
+
+Create one throwaway Doc and one throwaway Sheet in the shared org account.
+Apply *both* sharing modes to each, then record the result of every row:
+
+| # | URL | Sharing mode | Want |
+|---|---|---|---|
+| 1 | `/document/d/<id>/export?format=md` | link-shared | 200, `text/markdown` |
+| 2 | `/document/d/<id>/export?format=md` | published | 200, `text/markdown` |
+| 3 | `/document/d/e/<pubId>/pub` | published | 200, what HTML shape? |
+| 4 | `/spreadsheets/d/<id>/gviz/tq?tqx=out:csv&sheet=<name>` | link-shared | 200, `text/csv` |
+| 5 | `/spreadsheets/d/<id>/gviz/tq?tqx=out:csv&sheet=<name>` | published | 200, `text/csv` |
+| 6 | `/spreadsheets/d/e/<pubId>/pub?output=csv` | published | 200, `text/csv` |
+
+Record **status, final URL after redirects, `content-type`, and the first 40
+lines of body** for each. Crucially, test from a context with **no Google
+session** (`curl` from CI, not a logged-in browser) — a browser that is signed
+into the org account will happily return 200 for URLs that are closed to the
+public.
+
+Verification script: `scripts/verify-transport.sh` (to be written alongside).
+
+### Decision rule
+
+- **If row 1 or 2 returns real Markdown unauthenticated** → use it. Markdown
+  maps cleanly onto headings, bold, links and lists, and needs no sanitizer.
+  This is by far the best outcome and makes §5 trivial.
+- **Else if row 3 works** → parse the published HTML. Google's export HTML is
+  `<span>`-soup with inline styles and regenerated class names, so this
+  requires a sanitizer that maps a small allowlist (h2/h3/p/ul/ol/a/strong/em)
+  and *drops everything else*. More code, more fragility, still workable.
+- **Else** → fall back to an **Apps Script Web App** deployed from the org
+  account as "execute as me, anyone with the link", returning clean JSON via
+  `DocumentApp`. No token, clean structure. Two footguns to spec if we go here:
+  - Web Apps **302 to `googleusercontent.com`**; the fetcher must follow
+    redirects.
+  - **Deployments are versioned.** Editing the script does *not* change what
+    the URL serves until it is redeployed. That is a silent-staleness trap and
+    directly violates principle 2, so it would need the script to return its
+    own deployment timestamp and the build to warn when that goes stale.
+
+Sheets are expected to be the easy half; Docs are where this can actually fail.
+
+</details>
+
+## 5. Content model
+
+### 5.1 Layout lives in the repo
+
+One file per page. Editors never touch these.
+
+```jsonc
+// content/diversity-and-inclusion.layout.json
+{
+  "route": "/diversity-and-inclusion",
+  "source": { "kind": "google-doc", "id": "<doc id>" },
+  "blocks": [
+    { "section": "Diversity and Inclusion",  "type": "big-white-box" },
+    { "section": "Support Our Instructors",  "type": "white-stripe"  },
+    { "section": "Donate",                   "type": "white-stripe"  },
+    { "type": "button", "label": "DONATE VIA BENEVITY", "href": "https://..." }
+  ]
+}
+```
+
+`type` is drawn from the existing CSS vocabulary already documented in the
+README — `white-stripe`, `purple-stripe`, `big-white-box`, `big-purple-box`,
+`cards`, `boxes`, `button`. No new design language is introduced.
+
+A block with no `section` (like `button`) takes its content from the layout
+file itself, not the doc. That is how the Benevity button gets added without
+an editor needing to express "a button" inside a Google Doc.
+
+### 5.2 The doc convention
+
+Deliberately minimal, because every rule is a rule an officer can get wrong:
+
+| In the doc | Means |
+|---|---|
+| **Heading 1** | Page title. One per doc. |
+| **Heading 2** | Starts a new block. **Its text is the join key.** |
+| **Heading 3** | A subheading inside the current block. |
+| Paragraphs, **bold**, *italic*, links, bulleted and numbered lists | Rendered as-is. |
+| Anything else — colours, fonts, sizes, images, tables | **Silently dropped.** |
+
+That last row is a feature: it is what stops pasted-in formatting from wrecking
+the site design.
+
+### 5.3 The join key is the known weak point
+
+Heading text is both the join key *and* prose, so editors will eventually
+rename one and silently orphan a block. **We are not solving this with a
+cleverer key** (hidden IDs, bookmarks, comments) — every such scheme adds a
+rule that an officer can violate without noticing, and makes the doc look
+alarming to a newcomer.
+
+We solve it by failing loudly with an actionable message. See §7.
+
+### 5.4 Sheets schema
+
+Three tabs, one concern each. Column headers are the contract.
+
+**`status`** — key/value, the things that change most often:
+
+| key | value |
+|---|---|
+| `season_label` | `2026/27` |
+| `registration_state` | `open` \| `waitlist` \| `full` \| `not_yet_open` |
+| `ski_state` | `full` |
+| `snowboard_state` | `open` |
+
+**`dates`**:
+
+| session | lesson | dates |
+|---|---|---|
+| A | 1 | Jan 31st & Feb 1st |
+
+**`prices`**:
+
+| lesson_type | weeks | price |
+|---|---|---|
+| Group | 3 | 240 |
+
+`registration_state` is the single source of truth for the "lessons are full /
+join the waitlist" copy that currently contradicts itself between two paragraphs
+of the same page. The site picks the sentence; the sheet picks the state.
+
+### 5.5 Explicitly out of scope for now
+
+Template slots — `"Registration opens on {LESSON_START_DATE}"` — are
+**deferred**, per the club's call to keep the first version simple. Nothing here
+precludes them: prose already comes from Docs and values already come from
+Sheets, so slots are a later substitution pass over block text, not a
+re-architecture.
+
+## 6. Pipeline
+
+A single Action, triggered three ways:
+
+```yaml
+on:
+  schedule:    [{ cron: '17 * * * *' }]   # hourly; see cadence note
+  workflow_dispatch:                       # manual "update now" button
+  repository_dispatch:                     # optional Apps Script accelerator
+    types: [content-updated]
+```
+
+Steps:
+
+1. **Fetch** each source. Any non-200, wrong content-type, or empty body →
+   **fail**, do not proceed.
+2. **Parse** into the block structure of §5.
+3. **Validate** against a JSON Schema: every `section` named in a layout file
+   exists in its doc; every sheet has its required columns; `registration_state`
+   is one of the permitted values; no block body is empty.
+4. **Diff.** If nothing changed, exit successfully without committing. This
+   keeps history readable and avoids an empty commit every hour.
+5. **Commit** the generated `content/*.json` to `main` with a message naming
+   what changed.
+6. Existing build/test/deploy runs as it already does — including the browser
+   test suite, so a content change that breaks the site is caught before deploy.
+
+**Cadence:** hourly is a starting point. The real question is the acceptable
+staleness window during registration season, when a "we just filled up" edit is
+time-sensitive. If hourly proves too slow, that is precisely what the optional
+"Publish now" accelerator is for — and note it can be added later without
+changing anything else.
+
+**Content is committed, not fetched at runtime.** The site stays a static build
+with no dependency on Google being reachable when a visitor loads the page, and
+every content change is an ordinary reviewable commit that can be reverted.
+
+## 7. Failure handling
+
+This section is the whole point. Design it first, not last.
+
+### 7.1 The messages
+
+Every validation failure must name the file, the thing that is wrong, and the
+two ways to fix it. The target reader is an officer with no technical
+background.
+
+> **The section "LOGISTICS" was not found in the Lesson Info document.**
+>
+> The document currently contains these sections:
+>   • Welcome
+>   • Logistics and Scheduling
+>   • Group Lessons
+>
+> This usually means a heading was renamed. Either:
+>   1. Rename the heading in the document back to "LOGISTICS", or
+>   2. Ask a developer to update `content/lesson-info.layout.json`.
+>
+> The website has not been changed. It is still showing the previous version.
+
+That last line matters as much as the rest: it tells a worried officer that
+nothing is broken in public.
+
+### 7.2 Getting the message to a human who doesn't use GitHub
+
+GitHub notifies on failed workflows — but only people who watch the repo, which
+is exactly the population we are designing *around*.
+
+**Mechanism: an Apps Script in the org account polls the public Actions API and
+emails the club.** Because the repository is public, `api.github.com/repos/
+HuskyWinterSports/website/actions/runs` is readable **with no credential at
+all**. A time-driven trigger checks for a failed run and emails
+`huskywslessons@gmail.com` with the message from §7.1.
+
+This satisfies principle 1: no token anywhere, and it works even if the sync
+itself is completely broken, because it is an independent watcher.
+
+### 7.3 Staleness is a failure too
+
+A pipeline that stops running looks identical to a pipeline with nothing to do.
+The same watcher must alert if no successful run has occurred in 48 hours.
+Without this, "silently stopped updating" is still reachable.
+
+## 8. Phasing
+
+### Phase 1 — Proof of concept: one page, end-to-end, from a Doc
+
+**Page: Diversity and Inclusion.** Chosen because it is the smallest page, it
+already needs rewriting, and it is where the Benevity donation button is going —
+so the PoC delivers something the club actually wants rather than a throwaway.
+
+Deliverables: transport verified (§4), one layout file, the doc parser, schema
+validation, the failure messages, the Action, and the officer runbook.
+
+> **Note on ordering:** this deliberately tackles **Docs before Sheets**, which
+> is the reverse of easiest-first. Sheets→CSV is well-understood and low-risk;
+> Docs→structured-blocks is where this design can actually fail — the parse, the
+> heading convention, and whether a non-technical officer can operate it. A PoC
+> that proved the easy half would teach us nothing about the hard half.
+
+**Success criterion:** an officer who has never seen the repo edits the doc,
+and the change is live within the cron window without anyone touching GitHub.
+Test this with a real officer, not by assuming.
+
+### Phase 1b — Flesh out the source document ⬅️ NEXT
+
+**Owner: the club, not the developer.** The verification document is being
+renamed from its test name and reused as the real Diversity and Inclusion
+document, so `publishedId` in the layout file stays valid — renaming a Google
+Doc does not change its published ID. Only the section names need updating.
+
+What the document needs:
+
+1. **One Heading 1** — the page title.
+2. **A Heading 2 per section.** These are the join keys, so prefer stable
+   structural names over ones that read like prose; renaming one later breaks
+   the sync until someone renames it back or edits the layout. Suggested:
+   `Support Our Instructors`, `Where Your Donation Goes`, `How to Donate`.
+3. Body text under each, using only Heading 3, paragraphs, bold, italic, links,
+   and lists. Everything else is dropped by design (§5.2).
+
+Content decisions the club still owes:
+
+- Whether "Under Construction" goes away entirely. The page currently asks for
+  donations directly beneath that banner, which undercuts the ask.
+- The 501(c)(3) tax-deductibility wording.
+- Confirmation of the Zelle address (`huskyws@gmail.com` on this page vs
+  `huskywslessons@gmail.com` everywhere else).
+- Whether the Benevity URL should be officer-editable. **As specced it is a
+  `button` block in the layout file, so changing it needs a developer.** If the
+  club would rather control it themselves, it belongs in the Sheet instead —
+  worth deciding before phase 2, not after.
+
+### Phase 2 — Sheets, and the rest of the pages
+
+Signup data (dates, prices, status), then Lesson Info, Lesson Registration, FAQ,
+Become an Instructor, Contact Us. Lesson Info and Lesson Registration mix prose
+and tabular data, so they interleave doc-sourced and sheet-sourced blocks in one
+layout file — which the per-block `source` design already allows.
+
+### Phase 3 — Deferred
+
+Template slots (§5.5). The "Publish now" accelerator, if cron latency proves
+annoying.
+
+## 9. Runbooks
+
+### 9.1 One-time setup (current admin)
+
+1. Create the Docs and Sheet in the **shared org account**, never a personal one.
+2. Apply the sharing mode determined by §4.
+3. Record every document ID in the layout files.
+4. Deploy the failure-watcher Apps Script from the org account.
+5. **Write the IDs and the Apps Script location into the club's handover
+   document.** A pipeline whose inputs nobody can find is a pipeline that gets
+   abandoned.
+
+### 9.2 Annual (incoming officers)
+
+Edit the doc. Wait for the cron window. Done.
+
+### 9.3 When it breaks
+
+1. Read the email. It names the file and the fix.
+2. If the fix is "rename a heading back", do that.
+3. If not, everything is a plain file: `content/*.json` in the repo can be
+   edited directly through github.com and the site will deploy from it. **The
+   sync being broken never blocks updating the website** — it only removes the
+   convenience.
+
+Point 3 is the escape hatch that makes the whole thing safe to adopt.
+
+## 10. Open questions
+
+1. ~~**§4 transport**~~ — ✅ **FULLY RESOLVED 2026-08-10.** Published-to-web
+   only; Docs via HTML, Sheets via CSV; markup contract recorded in §4.1–4.3.
+   Nothing blocks the parser.
+2. What is the acceptable staleness window during registration season?
+3. Who is the human that receives failure emails — the shared inbox, or a
+   named role? A shared inbox survives turnover; a person does not.
+4. Should FAQ entries be a Sheet rather than a Doc? They are highly repetitive
+   question/answer pairs, which is more tabular than prose. Worth revisiting
+   after the PoC.

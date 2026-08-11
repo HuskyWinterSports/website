@@ -167,6 +167,51 @@ exactly like a broken link.
 This was the last planned change to page addresses, so links shared from now on
 are safe to put in print or on social media.
 
+---
+
+## 2026-08-11 — The Diversity and Inclusion page is now edited in Google Docs
+
+### 9. "Under Construction" is gone, and that page's words now live in a Doc
+
+**What was wrong:** the page said *"Under Construction! ദ്ദി（• ˕ •マ.ᐟ"* directly
+above a request for donations, which undercuts the ask. More importantly,
+changing a single word on it required a developer.
+
+**What you'll notice:**
+
+- The "Under Construction" line is gone. Everything else on the page reads
+  exactly as it did before — same words, same order, same layout.
+- The heading now reads **Diversity and Inclusion** rather than
+  **DIVERSITY AND INCLUSION**. That matches the FAQ, Contact Us and Email List
+  pages, which were already in ordinary capitals. **Say the word if you'd
+  rather it stayed in capitals** — but then it's worth putting the other pages
+  in capitals too, so the site is consistent either way.
+
+**What changed underneath — this is the part that matters for the club:**
+
+The words on that page are no longer typed into the code. They come from a tab
+in the club's Google Doc on the shared Drive account. An officer edits the
+document, presses **Publish**, and the site picks the change up.
+
+- **You cannot break the page design by editing.** The document supplies words;
+  the code supplies the layout. Colours, fonts and pasted-in formatting are
+  ignored on purpose.
+- **A mistake stops the update rather than publishing a broken page.** If a
+  heading gets renamed or a section emptied, the site keeps showing the previous
+  version and the error says, in plain English, which heading it couldn't find
+  and what the document actually contains.
+- **One document, one tab per page.** Adding a page later means adding a tab,
+  not registering another document to keep track of.
+
+> ⚠️ **One rule when editing the document:** use **Heading 1** for a page title
+> and **Heading 2** for its sections. Do **not** apply the **Title** style
+> yourself — Google uses that style to mark where each tab begins, so using it
+> inside a page would cut that page in half.
+
+> **Not yet automatic.** Today a developer still has to run the update by hand.
+> Making it run on a schedule, so that pressing Publish is genuinely all an
+> officer does, is the next piece of work.
+
 ### Behind the scenes
 
 - Added an automated test suite that opens the real site in simulated phone and
@@ -197,11 +242,9 @@ would care about:
   is a limit of the original photo, not of how we save it, and it was equally
   true before recent changes. **The fix is a higher-resolution original from
   the club photo archive** — ideally 2560 pixels wide or more.
-- **Page links look like `huskywintersports.org/#/faq`.** The `#` makes it
-  harder for Google to index our pages, so we lose search traffic from parents
-  searching for ski lessons.
-- **The Diversity and Inclusion page** still says "Under Construction" directly
-  above a request for donations.
+- ~~Page links look like `huskywintersports.org/#/faq`.~~ **Fixed — see item 8.**
+- ~~The Diversity and Inclusion page says "Under Construction" directly above a
+  request for donations.~~ **Fixed — see item 9.**
 - A few typos: "Instrutors", "forrest service", a run-on sentence in the
   footer, and a broken Google Maps link on the Lesson Info page. One of our
   image files is also misspelled (`forrest_service.avif`). A dedicated typo

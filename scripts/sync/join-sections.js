@@ -10,6 +10,35 @@
 
 export class ContentError extends Error {}
 
+/**
+ * Narrows a parsed document to the one tab a page is built from.
+ *
+ * A layout with no `tab` reads the whole document, which is what a
+ * single-page document looks like. Tab names are the join key, exactly as
+ * Heading 2 names are inside a tab.
+ */
+export function selectTab(parsed, tabName, layoutName) {
+    if (!tabName) return parsed;
+
+    const match = parsed.tabs.find((t) => t.name.trim() === tabName.trim());
+    if (match) return match;
+
+    const found = parsed.tabs.length
+        ? `The document currently has these tabs:\n` +
+          parsed.tabs.map((t) => `  • ${t.name}`).join('\n')
+        : `The document has no tabs at all. Tabs are the panel down the left ` +
+          `side of Google Docs; if it is not showing, use View > Show tabs & outlines.`;
+
+    throw new ContentError(
+        `The tab "${tabName}" was not found in the ${layoutName} document.\n\n` +
+        `${found}\n\n` +
+        `This usually means a tab was renamed or deleted. Either:\n` +
+        `  1. Rename the tab back to "${tabName}", or\n` +
+        `  2. Ask a developer to update content/${layoutName}.layout.json\n\n` +
+        `The website has not been changed. It is still showing the previous version.`
+    );
+}
+
 export function joinSections(layout, parsed, layoutName) {
     const bySection = new Map(
         parsed.sections.filter((s) => s.heading).map((s) => [s.heading.trim(), s])

@@ -16,6 +16,13 @@ import { parse } from 'node-html-parser';
  *   - Links are wrapped in google.com/url?q=… and MUST be unwrapped. The
  *     wrapper carries `ust`/`usg` values that change on republish, so leaving
  *     them in would make the output differ when nothing was edited.
+ *   - Document tabs are flattened into one stream. `?tab=t.N` is ignored by
+ *     publish-to-web (measured), so every tab always arrives together. Google
+ *     marks each one with a Title-styled paragraph carrying the tab's name:
+ *     <p class="cN title">Lessons</p>. `title` is a semantic class, not a
+ *     regenerated `cN`, so it survives republish — but it is the ordinary
+ *     Title paragraph style, so using that style inside a tab body would forge
+ *     a boundary. Every sync logs the tabs it found so that shows up.
  *
  * The output must be a pure function of the document's visible content.
  * Anything Google varies per request or per republish has to be dropped, or
@@ -50,6 +57,14 @@ export function unwrapHref(href) {
     }
     if (!/(^|\.)google\.com$/.test(url.hostname) || url.pathname !== '/url') return href;
     return url.searchParams.get('q') ?? href;
+}
+
+/**
+ * Read the class attribute directly rather than through the parser's
+ * classList, so this does not depend on a helper API that may not exist.
+ */
+function hasClass(node, name) {
+    return (node.getAttribute?.('class') ?? '').split(/\s+/).includes(name);
 }
 
 function styleOf(node, styleMap) {
@@ -123,7 +138,9 @@ function readList(element, styleMap) {
 
 /**
  * @param {string} html Raw response body from /document/d/e/<pubId>/pub
- * @returns {{title: string|null, sections: Array}}
+ * @returns {{title: string|null, sections: Array, tabs: Array}}
+ *   `title`/`sections` describe the whole document; `tabs` is empty for a
+ *   document with no tabs, so a caller that ignores it behaves as before.
  */
 export function parseGoogleDoc(html) {
     const root = parse(html, { blockTextElements: { style: true, script: false } });
@@ -140,7 +157,17 @@ export function parseGoogleDoc(html) {
 
     let title = null;
     const sections = [];
+    const tabs = [];
+    let currentTab = null;
     let current = null;
+
+    // Sections are shared by reference between the flat document view and the
+    // tab they belong to, so the two can never disagree.
+    const openSection = (heading) => {
+        current = { heading, blocks: [] };
+        sections.push(current);
+        currentTab?.sections.push(current);
+    };
 
     const visit = (node) => {
         for (const child of node.childNodes) {
@@ -152,29 +179,41 @@ export function parseGoogleDoc(html) {
                 continue;
             }
 
+            // A Title-styled paragraph is the start of a tab. Its text is the
+            // tab's name in the Docs sidebar, not page content.
+            if (tag === 'P' && hasClass(child, 'title')) {
+                const name = readSpans(child, styleMap).map((s) => s.text).join('').trim();
+                currentTab = { name, title: null, sections: [] };
+                tabs.push(currentTab);
+                current = null;
+                continue;
+            }
+
             if (tag === 'H1') {
                 const text = readSpans(child, styleMap).map((s) => s.text).join('').trim();
-                // Only the first H1 is the document title; later ones start
-                // sections, so an editor adding one does not silently vanish.
-                if (title === null) title = text;
-                else { current = { heading: text, blocks: [] }; sections.push(current); }
+                // The first H1 is the title — of its tab, or of the document
+                // when there are none. Later ones start sections, so an editor
+                // adding one does not silently vanish.
+                if (currentTab && currentTab.title === null) {
+                    currentTab.title = text;
+                    if (title === null) title = text;
+                } else if (title === null) {
+                    title = text;
+                } else {
+                    openSection(text);
+                }
                 continue;
             }
 
             if (tag === 'H2') {
-                const text = readSpans(child, styleMap).map((s) => s.text).join('').trim();
-                current = { heading: text, blocks: [] };
-                sections.push(current);
+                openSection(readSpans(child, styleMap).map((s) => s.text).join('').trim());
                 continue;
             }
 
             // Content before the first H2 has nowhere to live. Rather than
             // dropping it silently, park it in an unnamed leading section so
             // validation can report it.
-            if (!current) {
-                current = { heading: null, blocks: [] };
-                sections.push(current);
-            }
+            if (!current) openSection(null);
 
             if (tag === 'UL' || tag === 'OL') {
                 const list = readList(child, styleMap);
@@ -194,5 +233,5 @@ export function parseGoogleDoc(html) {
     };
 
     visit(contents);
-    return { title, sections };
+    return { title, sections, tabs };
 }

@@ -3,7 +3,8 @@
   "route": "/diversity-and-inclusion",
   "source": {
     "kind": "google-doc",
-    "publishedId": "2PACX-1vQ53bIBpIbYs7rqDxydTDD9aO20F7JeeqxmLwaH33FMV2dZ0MyEy9Pf8N6BRZgsdbtRGtdwS226v7Eh"
+    "publishedId": "2PACX-1vQ53bIBpIbYs7rqDxydTDD9aO20F7JeeqxmLwaH33FMV2dZ0MyEy9Pf8N6BRZgsdbtRGtdwS226v7Eh",
+    "tab": "Diversity and Inclusion"
   },
   "blocks": [
     { "type": "big-white-box", "showTitle": true },

@@ -471,6 +471,31 @@ A pipeline that stops running looks identical to a pipeline with nothing to do.
 The same watcher must alert if no successful run has occurred in 48 hours.
 Without this, "silently stopped updating" is still reachable.
 
+Three concrete routes into that state, all found while implementing §6. Two are
+now closed in code; the third cannot be:
+
+1. **Committed but never deployed** — `GITHUB_TOKEN` pushes do not trigger
+   workflows. Closed by the explicit `workflow_call` (§6.1).
+2. **Deployed once, failed, never retried** — a transient deploy failure leaves
+   the content commit on `main`, so every later run regenerates identical JSON,
+   diffs clean, skips the deploy and reports success. Closed by making
+   `workflow_dispatch` deploy unconditionally, so "update now" is also the
+   recovery lever §9.3 otherwise lacked.
+3. **⚠️ GitHub disables the schedule.** Scheduled workflows in a public repo
+   are switched off automatically after **60 days with no repository
+   activity**. A quiet off-season — nobody edits the doc, so the sync makes no
+   commits, so there is no activity — disables the cron. In September an
+   officer edits the doc and nothing happens, permanently, with no error
+   anywhere. GitHub emails repository admins beforehand with a re-enable link,
+   which is worth exactly as much as whether a graduating student's
+   notifications are still being read.
+
+Route 3 cannot be fixed from inside the repository: any workflow that commits
+to keep the repo "active" defeats the point of the diff-and-skip step and
+buries real changes. **It is the strongest argument for the §7.2 watcher**,
+which lives on the club's Google account and does not care whether GitHub is
+still running anything.
+
 ## 8. Phasing
 
 ### Phase 1 — Proof of concept: one page, end-to-end, from a Doc
@@ -590,6 +615,11 @@ is the only step in normal operation that touches GitHub at all.
 
 ### 9.3 When it breaks
 
+0. **If the site is stale but nothing looks wrong**, press **Actions → Sync
+   content from Google → Run workflow**. That rebuilds and republishes whether
+   or not the document changed, which recovers from a failed deploy. If the
+   Actions tab says scheduled workflows have been disabled for inactivity,
+   re-enable them there — see §7.3, route 3.
 1. Read the email. It names the file and the fix.
 2. If the fix is "rename a heading back", do that.
 3. If not, everything is a plain file: `content/*.json` in the repo can be

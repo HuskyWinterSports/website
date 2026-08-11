@@ -40,6 +40,10 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v5
+        with:
+          # Full history: this job rebases onto main before pushing, and a
+          # rebase in the default shallow clone can fail if main has moved on.
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v5
@@ -81,10 +85,14 @@ jobs:
             exit 0
           fi
 
+          # `paste -d` takes a cyclic list of single characters, so ', ' would
+          # alternate the two and produce "a,b c". Join, then space out.
           PAGES=$(git diff --name-only -- content/ \
             | xargs -n1 basename \
             | sed 's/\.json$//' \
-            | paste -sd', ' -)
+            | sort \
+            | paste -sd, - \
+            | sed 's/,/, /g')
           echo "pages=$PAGES" >> "$GITHUB_OUTPUT"
 
           git config user.name 'github-actions[bot]'
@@ -107,7 +115,12 @@ jobs:
           if [ '${{ steps.commit.outputs.changed }}' = 'true' ]; then
             echo "## Updated: ${{ steps.commit.outputs.pages }}" >> "$GITHUB_STEP_SUMMARY"
             echo 'The site is rebuilding now and will be live in a few minutes.' >> "$GITHUB_STEP_SUMMARY"
-          elif [ '${{ job.status }}' = 'success' ]; then
+          elif [ '${{ job.status }}' != 'success' ]; then
+            : # the failure step above has already written the explanation
+          elif [ '${{ github.event_name }}' = 'workflow_dispatch' ]; then
+            echo '## No changes to the document' >> "$GITHUB_STEP_SUMMARY"
+            echo 'It already matches the website. Rebuilding and republishing anyway, since this run was started by hand.' >> "$GITHUB_STEP_SUMMARY"
+          else
             echo '## No changes' >> "$GITHUB_STEP_SUMMARY"
             echo 'The document matches what the website is already showing.' >> "$GITHUB_STEP_SUMMARY"
           fi
@@ -115,7 +128,13 @@ jobs:
   deploy:
     name: Build and deploy the update
     needs: sync
-    if: needs.sync.outputs.changed == 'true'
+    # "Content changed" is the normal reason to deploy. `workflow_dispatch` also
+    # deploys unconditionally, because otherwise a transient deploy failure is
+    # unrecoverable: the content commit is already on main, so every later run
+    # regenerates identical JSON, sees no diff, skips the deploy, and reports
+    # success — green forever, stale forever, with no button to press. This
+    # makes "update now" double as "rebuild and republish".
+    if: needs.sync.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
     # Runs the ordinary pipeline — lint, the full browser suite on Chromium and
     # WebKit, build, publish — so content that breaks a page is caught before it
     # reaches visitors, exactly as a developer's change would be.

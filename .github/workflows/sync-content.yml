@@ -1,0 +1,126 @@
+name: Sync content from Google
+
+# Pulls the club's published Google Doc, regenerates content/*.json, and — only
+# if something actually changed — commits it and rebuilds the site.
+#
+# No credential is involved. The document is read over "Publish to the web",
+# which needs no token, so there is nothing here that expires when an officer
+# graduates. See docs/content-sync-spec.md.
+
+on:
+  schedule:
+    # Hourly, at :17 rather than :00 — GitHub's scheduler is heavily contended
+    # on the hour and delays runs by up to 20 minutes.
+    - cron: '17 * * * *'
+  # The "update now" button, for when an officer does not want to wait an hour.
+  # Actions tab -> Sync content from Google -> Run workflow.
+  workflow_dispatch:
+  # Reserved for the optional Apps Script accelerator described in the spec.
+  # Adding it later needs no change here.
+  repository_dispatch:
+    types: [content-updated]
+
+# Never let two syncs race each other into a push conflict. Queue, don't cancel:
+# a cancelled sync looks identical to one with nothing to do.
+concurrency:
+  group: content-sync
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    name: Pull from Google
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+      pages: ${{ steps.commit.outputs.pages }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Pull the latest content from Google
+        run: |
+          set -o pipefail
+          npm run sync 2>&1 | tee sync.log
+
+      - name: Explain the failure in plain language
+        if: failure()
+        # The error text is written for an officer, not a developer, but it is
+        # buried in a log by default. The run summary is the first thing shown
+        # when someone opens a failed run, and it is what the email watcher
+        # described in spec 7.2 can quote.
+        run: |
+          {
+            echo '## The website could not be updated'
+            echo
+            echo 'The site is unchanged and still shows the previous version.'
+            echo
+            echo '```'
+            cat sync.log 2>/dev/null || echo '(the sync failed before producing any output)'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit the change, if there is one
+        id: commit
+        run: |
+          if git diff --quiet -- content/; then
+            echo 'Nothing changed. Not committing, not deploying.'
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          PAGES=$(git diff --name-only -- content/ \
+            | xargs -n1 basename \
+            | sed 's/\.json$//' \
+            | paste -sd', ' -)
+          echo "pages=$PAGES" >> "$GITHUB_OUTPUT"
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add content/
+          git commit \
+            -m "Update content: $PAGES" \
+            -m 'Pulled from the club Google Doc by the scheduled sync.'
+
+          # main may have moved while Google was being fetched. Rebase rather
+          # than force: the generated file is the only thing this job touches.
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+          echo 'changed=true' >> "$GITHUB_OUTPUT"
+
+      - name: Record what happened
+        if: always()
+        run: |
+          if [ '${{ steps.commit.outputs.changed }}' = 'true' ]; then
+            echo "## Updated: ${{ steps.commit.outputs.pages }}" >> "$GITHUB_STEP_SUMMARY"
+            echo 'The site is rebuilding now and will be live in a few minutes.' >> "$GITHUB_STEP_SUMMARY"
+          elif [ '${{ job.status }}' = 'success' ]; then
+            echo '## No changes' >> "$GITHUB_STEP_SUMMARY"
+            echo 'The document matches what the website is already showing.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  deploy:
+    name: Build and deploy the update
+    needs: sync
+    if: needs.sync.outputs.changed == 'true'
+    # Runs the ordinary pipeline — lint, the full browser suite on Chromium and
+    # WebKit, build, publish — so content that breaks a page is caught before it
+    # reaches visitors, exactly as a developer's change would be.
+    uses: ./.github/workflows/deploy.yml
+    with:
+      ref: main
+    permissions:
+      contents: write

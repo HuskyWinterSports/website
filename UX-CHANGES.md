@@ -208,9 +208,36 @@ document, presses **Publish**, and the site picks the change up.
 > yourself — Google uses that style to mark where each tab begins, so using it
 > inside a page would cut that page in half.
 
-> **Not yet automatic.** Today a developer still has to run the update by hand.
-> Making it run on a schedule, so that pressing Publish is genuinely all an
-> officer does, is the next piece of work.
+### 10. Editing that page no longer needs a developer at all
+
+The update now runs by itself, **every hour**. The whole procedure for changing
+words on the Diversity and Inclusion page is:
+
+1. Open the club's Google Doc, go to the **Diversity and Inclusion** tab, edit.
+2. **File → Share → Publish to the web → Publish.** Saving alone does nothing —
+   this button is what makes the change public.
+3. Wait up to an hour.
+
+That's it. Nobody touches GitHub.
+
+**If you don't want to wait an hour**, there's an "update now" button — on
+github.com, **Actions → Sync content from Google → Run workflow**. That's the
+one step that needs a GitHub login, and it's optional.
+
+**What happens if someone makes a mistake:** the update stops and the site keeps
+showing the previous version. It does not publish a half-broken page. The most
+likely mistake is renaming a heading, because heading names are how the site
+knows which paragraph goes where — if that happens, the error says which
+heading it was looking for and lists the ones the document actually has.
+
+**No password or account key is involved anywhere in this.** That's deliberate:
+anything that had to be renewed would eventually stop being renewed, and the
+site would quietly stop updating with nobody knowing why.
+
+**One gap worth naming:** if an update does fail, nothing emails anybody yet.
+The failure is visible on GitHub, which is exactly where the people this is
+designed for don't look. A small script on the club's Google account can watch
+for that and email `huskywslessons@gmail.com`; it isn't built yet.
 
 ### Behind the scenes
 

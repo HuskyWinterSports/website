@@ -9,6 +9,26 @@ on:
   pull_request:
     branches:
       - main
+  # Callable by sync-content.yml. A commit pushed with GITHUB_TOKEN does not
+  # trigger the `push` event above — GitHub blocks that to prevent workflows
+  # looping — so the content sync has to ask for the deploy explicitly. Without
+  # this the sync would commit content that never reached the site, which looks
+  # exactly like "the sync stopped working".
+  workflow_call:
+    inputs:
+      ref:
+        description: Commit or branch to build. Defaults to whatever triggered the run.
+        type: string
+        required: false
+        default: ''
+
+# Deploys to the same branch must not overlap. Two runs building different
+# commits publish whichever finishes last, so an older build can overwrite a
+# newer one — and because the content sync only deploys when content *changed*,
+# nothing would come along to correct it. Queue, never cancel.
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -18,6 +38,13 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v5
+        with:
+          # The sync passes `main` so the build includes the content commit it
+          # just pushed. A scheduled run's default SHA predates that commit, so
+          # taking the default here would deploy the *old* content and report
+          # success. Empty means "use the default", which is right everywhere
+          # else.
+          ref: ${{ inputs.ref }}
 
       - name: Setup Node
         uses: actions/setup-node@v5
@@ -63,8 +90,11 @@ jobs:
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
-    # Only real pushes to main reach production; PR runs stop after `build`.
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # PR runs stop after `build`; everything else that got this far is a change
+    # already on main — a direct push, or the content sync calling in. Note
+    # `github.event_name` inside a called workflow is the *caller's* event, so
+    # this cannot test for 'push' specifically.
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
 
     permissions:
       contents: write

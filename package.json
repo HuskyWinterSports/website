@@ -8,7 +8,10 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "playwright test --project=desktop-chrome --project=mobile-chrome",
+    "test:all": "playwright test",
+    "test:report": "playwright show-report"
   },
   "dependencies": {
     "react": "^19.1.1",
@@ -17,6 +20,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
+    "@playwright/test": "^1.62.1",
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^4.7.0",

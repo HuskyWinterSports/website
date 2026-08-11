@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import '../assets/Global.css';
 import Home from './routes/Home.jsx';

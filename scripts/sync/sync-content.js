@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseGoogleDoc } from './parse-google-doc.js';
+import { joinSections, ContentError } from './join-sections.js';
 
 /**
  * Fetches published Google content, validates it against the repo's layout
@@ -22,8 +23,6 @@ const CONTENT_DIR = join(ROOT, 'content');
 
 const docUrl = (publishedId) =>
     `https://docs.google.com/document/d/e/${publishedId}/pub`;
-
-class ContentError extends Error {}
 
 async function fetchDoc(publishedId, layoutName) {
     const url = docUrl(publishedId);
@@ -51,57 +50,6 @@ async function fetchDoc(publishedId, layoutName) {
         );
     }
     return response.text();
-}
-
-/**
- * Match the sections a layout expects against the sections a document
- * actually contains. This is where a renamed heading gets caught.
- */
-function joinSections(layout, parsed, layoutName) {
-    const bySection = new Map(
-        parsed.sections.filter((s) => s.heading).map((s) => [s.heading.trim(), s])
-    );
-
-    const blocks = layout.blocks.map((entry) => {
-        // Blocks with no `section` carry their own content (e.g. a button),
-        // so they never need to exist in the document.
-        if (!entry.section) return { ...entry };
-
-        const match = bySection.get(entry.section.trim());
-        if (!match) {
-            const available = parsed.sections
-                .filter((s) => s.heading)
-                .map((s) => `  • ${s.heading}`)
-                .join('\n') || '  (the document has no Heading 2 sections at all)';
-
-            throw new ContentError(
-                `The section "${entry.section}" was not found in the ${layoutName} document.\n\n` +
-                `The document currently contains these sections:\n${available}\n\n` +
-                `This usually means a heading was renamed, or its style was ` +
-                `changed away from "Heading 2". Either:\n` +
-                `  1. Rename the heading in the document back to "${entry.section}", or\n` +
-                `  2. Ask a developer to update content/${layoutName}.layout.json\n\n` +
-                `The website has not been changed. It is still showing the previous version.`
-            );
-        }
-
-        if (match.blocks.length === 0) {
-            throw new ContentError(
-                `The section "${entry.section}" in the ${layoutName} document is empty.\n\n` +
-                `Add some text underneath that heading, or ask a developer to ` +
-                `remove the section from content/${layoutName}.layout.json\n\n` +
-                `The website has not been changed. It is still showing the previous version.`
-            );
-        }
-
-        return { ...entry, heading: match.heading, content: match.blocks };
-    });
-
-    const orphans = parsed.sections
-        .filter((s) => s.heading && !layout.blocks.some((b) => b.section?.trim() === s.heading.trim()))
-        .map((s) => s.heading);
-
-    return { blocks, orphans };
 }
 
 async function syncLayout(layoutPath) {

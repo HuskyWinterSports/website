@@ -56,7 +56,7 @@ function Block({ block }) {
     }
 }
 
-function Section({ block }) {
+function Section({ block, title }) {
     // Layout-only blocks carry their own content and never touch the document.
     if (block.type === 'button') {
         return (
@@ -77,6 +77,9 @@ function Section({ block }) {
 
     return (
         <section className={block.type}>
+            {/* The document's Heading 1 becomes the page's <h1>, rendered by
+                whichever block opts in. Every page needs exactly one. */}
+            {block.showTitle && title && <h1>{title}</h1>}
             {block.heading && <h2>{block.heading}</h2>}
             {block.content?.map((child, index) => <Block key={index} block={child} />)}
         </section>
@@ -86,7 +89,9 @@ function Section({ block }) {
 export default function ContentBlocks({ page }) {
     return (
         <>
-            {page.blocks.map((block, index) => <Section key={index} block={block} />)}
+            {page.blocks.map((block, index) => (
+                <Section key={index} block={block} title={page.title} />
+            ))}
         </>
     );
 }

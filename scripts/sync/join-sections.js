@@ -10,6 +10,53 @@
 
 export class ContentError extends Error {}
 
+/**
+ * Narrows a parsed document to the one tab a page is built from.
+ *
+ * A layout with no `tab` reads the whole document, which is what a
+ * single-page document looks like. Tab names are the join key, exactly as
+ * Heading 2 names are inside a tab.
+ */
+export function selectTab(parsed, tabName, layoutName) {
+    if (!tabName) {
+        // Reading a tabbed document whole would concatenate every page and
+        // take its title from whichever tab happens to be first — a wrong
+        // page that syncs cleanly. Refuse instead.
+        if (parsed.tabs.length) {
+            throw new ContentError(
+                `content/${layoutName}.layout.json does not say which tab of the ` +
+                `document it is built from, but the document has tabs:\n` +
+                parsed.tabs.map((t) => `  • ${t.name}`).join('\n') + `\n\n` +
+                `Ask a developer to add a "tab" to the "source" section of that file.\n\n` +
+                `If the document is not supposed to have tabs, this can also mean ` +
+                `the "Title" style was used somewhere inside it — that style is how ` +
+                `Google marks the start of a tab, so using it splits the page. Use ` +
+                `Heading 1 for a page title instead.\n\n` +
+                `The website has not been changed. It is still showing the previous version.`
+            );
+        }
+        return parsed;
+    }
+
+    const match = parsed.tabs.find((t) => t.name.trim() === tabName.trim());
+    if (match) return match;
+
+    const found = parsed.tabs.length
+        ? `The document currently has these tabs:\n` +
+          parsed.tabs.map((t) => `  • ${t.name}`).join('\n')
+        : `The document has no tabs at all. Tabs are the panel down the left ` +
+          `side of Google Docs; if it is not showing, use View > Show tabs & outlines.`;
+
+    throw new ContentError(
+        `The tab "${tabName}" was not found in the ${layoutName} document.\n\n` +
+        `${found}\n\n` +
+        `This usually means a tab was renamed or deleted. Either:\n` +
+        `  1. Rename the tab back to "${tabName}", or\n` +
+        `  2. Ask a developer to update content/${layoutName}.layout.json\n\n` +
+        `The website has not been changed. It is still showing the previous version.`
+    );
+}
+
 export function joinSections(layout, parsed, layoutName) {
     const bySection = new Map(
         parsed.sections.filter((s) => s.heading).map((s) => [s.heading.trim(), s])
@@ -38,6 +85,20 @@ export function joinSections(layout, parsed, layoutName) {
                 );
             }
             return { ...entry, content: leading.blocks };
+        }
+
+        // A block that renders the page title needs a Heading 1 to render.
+        // Without this the page would ship with no <h1> at all — invisible in
+        // a diff, and costly for search.
+        if (entry.showTitle && !parsed.title) {
+            throw new ContentError(
+                `The ${layoutName} document has no page title.\n\n` +
+                `The website takes it from the first line styled "Heading 1". ` +
+                `That line seems to have been deleted, or restyled to something else.\n\n` +
+                `Set the page's title line back to "Heading 1", or ask a developer ` +
+                `to remove "showTitle" from content/${layoutName}.layout.json\n\n` +
+                `The website has not been changed. It is still showing the previous version.`
+            );
         }
 
         // Blocks with no `section` carry their own content (a button, or a

@@ -431,8 +431,13 @@ rather than as a separate mechanical step.
 ## Docket: Google Workspace sync
 
 ➡️ **The full spec now lives in [`docs/content-sync-spec.md`](docs/content-sync-spec.md).**
-Written 2026-08-10. One section (transport) is unverified and blocks
-implementation; `scripts/verify-transport.sh` resolves it.
+Written 2026-08-10. Transport verified 2026-08-10 (§4); document tabs verified
+2026-08-11 (§4.2b).
+
+**Status 2026-08-11.** `/diversity-and-inclusion` is rendered from a Google Doc
+tab, at parity with the page it replaced. The remaining and most important
+piece is the **scheduled pull** — until that Action exists, pressing Publish
+does nothing on its own and a developer has to run `npm run sync` by hand.
 
 The notes below are the original framing, kept for context.
 

@@ -1,11 +1,15 @@
 {
   "route": "/diversity-and-inclusion",
-  "title": "Heading 1",
+  "title": "Diversity and Inclusion",
   "blocks": [
     {
-      "section": "Heading 2",
+      "type": "big-white-box",
+      "showTitle": true
+    },
+    {
+      "section": "Support our Stoked Volunteer Instructors!",
       "type": "white-stripe",
-      "heading": "Heading 2",
+      "heading": "Support our Stoked Volunteer Instructors!",
       "content": [
         {
           "type": "paragraph",
@@ -14,19 +18,7 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "normal text"
-            }
-          ]
-        },
-        {
-          "type": "heading",
-          "level": 3,
-          "spans": [
-            {
-              "bold": false,
-              "italic": false,
-              "href": null,
-              "text": "Heading 3"
+              "text": "Help us keep the slopes alive! Our dedicated instructors volunteer their time to teach skiing and snowboarding to enthusiasts of all ages. With your donation, we can provide them with the resources they need to continue sharing their passion for the sport."
             }
           ]
         },
@@ -37,29 +29,7 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "normal text"
-            }
-          ]
-        },
-        {
-          "type": "paragraph",
-          "spans": [
-            {
-              "bold": true,
-              "italic": false,
-              "href": null,
-              "text": "bold text"
-            }
-          ]
-        },
-        {
-          "type": "paragraph",
-          "spans": [
-            {
-              "bold": false,
-              "italic": true,
-              "href": null,
-              "text": "italic text"
+              "text": "Your donation will go to support our DEI programs, such as Zero to Triple 60 and Spread the Shred, by providing equipment and passes."
             }
           ]
         },
@@ -69,69 +39,9 @@
             {
               "bold": false,
               "italic": false,
-              "href": "https://gentoo.org/",
-              "text": "hyperlink text"
+              "href": null,
+              "text": "Help us make the mountain accessible to everyone! Please Zelle huskyws@gmail.com or send a check to our address to donate."
             }
-          ]
-        },
-        {
-          "type": "list",
-          "ordered": false,
-          "items": [
-            [
-              {
-                "bold": false,
-                "italic": false,
-                "href": null,
-                "text": "a"
-              }
-            ],
-            [
-              {
-                "bold": false,
-                "italic": false,
-                "href": null,
-                "text": "bulleted"
-              }
-            ],
-            [
-              {
-                "bold": false,
-                "italic": false,
-                "href": null,
-                "text": "list"
-              }
-            ]
-          ]
-        },
-        {
-          "type": "list",
-          "ordered": true,
-          "items": [
-            [
-              {
-                "bold": false,
-                "italic": false,
-                "href": null,
-                "text": "a "
-              }
-            ],
-            [
-              {
-                "bold": false,
-                "italic": false,
-                "href": null,
-                "text": "numbered"
-              }
-            ],
-            [
-              {
-                "bold": false,
-                "italic": false,
-                "href": null,
-                "text": "list"
-              }
-            ]
           ]
         }
       ]

@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseGoogleDoc } from './parse-google-doc.js';
-import { joinSections, ContentError } from './join-sections.js';
+import { joinSections, selectTab, ContentError } from './join-sections.js';
 
 /**
  * Fetches published Google content, validates it against the repo's layout
@@ -64,7 +64,8 @@ async function syncLayout(layoutPath) {
     }
 
     const html = await fetchDoc(layout.source.publishedId, layoutName);
-    const parsed = parseGoogleDoc(html);
+    const document = parseGoogleDoc(html);
+    const parsed = selectTab(document, layout.source.tab, layoutName);
     const { blocks, orphans } = joinSections(layout, parsed, layoutName);
 
     const output = { route: layout.route, title: parsed.title, blocks };
@@ -74,12 +75,14 @@ async function syncLayout(layoutPath) {
     let previous = null;
     try { previous = readFileSync(outputPath, 'utf8'); } catch { /* first run */ }
 
+    const tabs = document.tabs.map((t) => t.name);
+
     if (previous === serialised) {
-        return { layoutName, changed: false, orphans };
+        return { layoutName, changed: false, orphans, tabs };
     }
 
     writeFileSync(outputPath, serialised);
-    return { layoutName, changed: true, orphans };
+    return { layoutName, changed: true, orphans, tabs };
 }
 
 async function main() {
@@ -95,6 +98,13 @@ async function main() {
     let changedCount = 0;
     for (const layoutPath of layouts) {
         const result = await syncLayout(layoutPath);
+
+        // Printed every run so a forged tab boundary is visible. Tabs are
+        // marked by the Title paragraph style, so applying that style inside a
+        // tab's body would split it in two and silently strip the remainder.
+        if (result.tabs.length) {
+            console.log(`tabs in the ${result.layoutName} document: ${result.tabs.join(', ')}`);
+        }
 
         // Orphans are a warning, not a failure: an editor adding a section
         // before a developer wires it up should not take the site down.

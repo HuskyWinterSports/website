@@ -1,12 +1,10 @@
-# Husky Winter Sports website
+# Husky Winter Sports Website
 
-Source for [huskywintersports.org](https://www.huskywintersports.org). Built with
-Vite + React, deployed automatically to GitHub Pages. The domain is registered
-through Namecheap.
+Source for [huskywintersports.org](https://www.huskywintersports.org).
+Built with Vite + React, deployed automatically to GitHub Pages.
+The domain is registered through Namecheap.
 
-**New officer taking this over?** Read `UX-CHANGES.md` for a plain-language
-history of what's changed, and `ASSESSMENT.md` for the current list of known
-issues and the plan for making the site editable without writing code.
+Read `UX-CHANGES.md` for a plain-language history of what's changed, and `ASSESSMENT.md` for the current list of known issues and the plan for making the site editable without writing code.
 
 ## Working on the site
 
@@ -44,7 +42,7 @@ a green check or a red X before anything is public.
 Merging to `main` deploys automatically. **Anything merged to `main` goes live**,
 so use pull requests rather than pushing to `main` directly.
 
-## Where things are
+## Content locations
 
 ```
 src/app/routes/     one file per page

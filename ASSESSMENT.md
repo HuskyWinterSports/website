@@ -410,11 +410,13 @@ rather than as a separate mechanical step.
 
 ---
 
-## Docket: write the Google Workspace sync spec
+## Docket: Google Workspace sync
 
-**Status: not started. This is the next design task, and it should be written
-before any of step 4/5 above is built**, because it determines the shape the
-content files need to take.
+➡️ **The full spec now lives in [`docs/content-sync-spec.md`](docs/content-sync-spec.md).**
+Written 2026-08-10. One section (transport) is unverified and blocks
+implementation; `scripts/verify-transport.sh` resolves it.
+
+The notes below are the original framing, kept for context.
 
 Revised premise (confirmed 2026-08-10): the club passes down **both** a
 GitHub org account and a **single shared Google Drive org account**. That
@@ -441,9 +443,12 @@ That property is the whole point, and it's what the naive design lacks.
 
 The spec needs to answer:
 
-1. **Split.** Which content is a Sheet (tabular, volatile: session dates,
-   prices, registration open/full/waitlist status) versus prose that stays in
-   the repo? Prose in spreadsheet cells is miserable to edit.
+1. ~~**Split.**~~ **SETTLED 2026-08-10.** Anything pertaining to **signups**
+   comes from Sheets — session dates, prices, registration open/full/waitlist
+   status — which is a natural fit because that data already originates in
+   spreadsheets during club operations. Prose stays in the repo. The remaining
+   design work is drawing the exact boundary on the Lesson Info and Lesson
+   Registration pages, which mix both.
 2. **Schema.** What does the Sheet look like, and how is it validated so a bad
    edit fails the build *loudly* rather than publishing a broken page? What
    does the failure email say, and who does it go to?

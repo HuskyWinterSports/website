@@ -439,13 +439,32 @@ Written 2026-08-10. Transport verified 2026-08-10 (§4); document tabs verified
 `.github/workflows/sync-content.yml` pulls hourly, commits only on a real
 change, and rebuilds — no credential anywhere.
 
-Two things remain before this can be called done:
+Proven end to end on 2026-08-11: an edit to the document produced commit
+`f88d901` from the workflow and reached the live site with nobody touching
+GitHub.
 
-- **Test it with an officer who has never seen the repo** (spec §9.2 is the
-  runbook to hand them). That was the stated success criterion and assuming it
-  works is not the same as knowing.
-- **The email watcher** (spec §7.2/§7.3). A failed sync is currently visible
-  only on GitHub, which is where this project's users specifically do not go.
+**Two things are waiting on the club, not on a developer:**
+
+1. **Install the watcher** — `scripts/watcher/sync-watcher.gs`, written and
+   tested, ~2 minutes on the shared Google account. Steps in spec §7.2. Until
+   it is installed, the off-season failure it exists for is diagnosed but not
+   defended against: GitHub disables the schedule after 60 quiet days and
+   nothing anywhere reports it.
+2. **Paste the tabs** — [`docs/doc-tabs-blockout.md`](docs/doc-tabs-blockout.md)
+   is paste-ready text for every remaining page, verbatim from the live site.
+   Cheapest first: Contact Us, Email List, then FAQ and Become an Instructor,
+   then Lesson Info and Lesson Registration. **One page at a time** — a layout
+   file naming a tab that does not exist yet fails the sync every hour.
+
+The blockout also carries four `[CONFIRM]` flags that only the club can settle:
+the refund deadline (27th vs 31st), whether Daphanie is still lesson director,
+whether the "studying abroad" line is still true, and the August 2023 policy
+date. All four are the kind that go stale silently.
+
+Still open: **the cron has not yet been observed firing on its own** — every
+run so far was started by hand. And Phase 1's own success criterion says to
+test with an officer who has never seen the repo (spec §9.2 is the runbook),
+which is not the same as it having worked for the person who built it.
 
 The notes below are the original framing, kept for context.
 

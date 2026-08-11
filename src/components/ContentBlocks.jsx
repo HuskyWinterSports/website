@@ -76,6 +76,9 @@ function Section({ block, title }) {
     }
 
     return (
+        // `type` is written straight out as the class, so a layout may pass
+        // more than one — "big-white-box centered-text" is used for the pages
+        // whose text is centred. Verified in a browser, not assumed.
         <section className={block.type}>
             {/* The document's Heading 1 becomes the page's <h1>, rendered by
                 whichever block opts in. Every page needs exactly one. */}

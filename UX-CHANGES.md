@@ -110,6 +110,34 @@ BECOME AN INSTRUCTOR. Both look the same; the ordering carries the priority.
 When registration opens for a season, that first button should be repointed at
 the registration page. There's a note in the code saying so.
 
+### 7. ⚠️ The published refund policy was wrong in three places
+
+The club supplied the authoritative refund policy, and the website did not
+match it. All three are now corrected.
+
+**1. The cancellation deadline was wrong by four days.** The page said
+customers could cancel with no questions asked **by December 31st**. The actual
+policy says **December 27th**. Any parent who cancelled on the 28th, 29th, 30th
+or 31st would have been relying on our published date and then refused a full
+refund. This is the most serious error found anywhere on the site.
+
+**2. An entire refund case was missing.** The injuries section listed the same
+sentence twice, and the effect was that **"Injury Before Lessons Start" never
+appeared at all**. The real policy is an **80% refund** if the injury happens
+within one month of the start date.
+
+For clarity, since these two can look contradictory: cancelling *before* that
+one-month window is a **full** refund under the December 27th clause. An injury
+*inside* the window is **80%**. Different situations, different figures.
+
+**3. The named lesson director was out of date**, and has been updated along
+with the note that the director is currently studying abroad.
+
+**Worth a club discussion:** the policy names a specific person and mentions
+that person is studying abroad. Both facts expire with turnover, and this is a
+document that ought to stay accurate for years. Using the role and the shared
+inbox instead would mean one less thing for next year's officers to remember.
+
 ### Behind the scenes
 
 - Added an automated test suite that opens the real site in simulated phone and
@@ -130,13 +158,7 @@ would care about:
 
 - **The site still shows last season's information** — "2025/2026 dates",
   "lessons are now full", and "© 2025". Needs a content update for 2026/27.
-- **The refund policy has a hole in it.** On the Lesson Registration page, the
-  section on injuries lists the same sentence twice, and as a result the case
-  for *"injury before lessons start"* is missing entirely. We believe the
-  actual policy is a **100% refund for injury before the season starts**, and
-  that it is currently treated as implicit. **This needs confirming and then
-  writing down explicitly** — "it was implied" is a weak position if a parent
-  ever disputes a refund.
+- ~~The refund policy has a hole in it.~~ **Fixed — see below.**
 - **Two different donation email addresses appear on the site.** The Diversity
   and Inclusion page says to Zelle `huskyws@gmail.com`; everywhere else uses
   `huskywslessons@gmail.com`. Believed correct as-is, but **worth one explicit

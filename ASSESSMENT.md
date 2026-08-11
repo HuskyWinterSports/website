@@ -308,15 +308,25 @@ and it will break for exactly the admin least able to diagnose it. Pin
 
 You mentioned wanting a content pass — here's what I found while reading:
 
-- **`LessonRegistration.jsx:29`** — the first `<li>` of the refund list repeats
-  line 27 verbatim ("In the unfortunate event of a student sustaining an injury…"),
-  so the "Injury Before Lessons Start" case is **missing entirely**. This is a
-  published refund policy with a hole in it — the highest-stakes item in this section.
-  **Per the current admin (2026-08-10): the policy is believed to be a 100%
-  refund for injury before the season starts, treated as implicit today.
-  Confirm with the club, then write it in explicitly during the content pass** —
-  an unwritten refund policy is the kind of thing that gets disputed by a
-  parent, and "it was implied" is a bad position to argue from.
+- ✅ **FIXED 2026-08-10 — `LessonRegistration.jsx`, refund policy.** The
+  authoritative policy text was supplied by the club and the page now matches
+  it. Three separate defects were corrected:
+  1. The first `<li>` repeated the intro paragraph verbatim, so **"Injury
+     Before Lessons Start" was missing entirely**. It is an **80% refund**
+     when the injury falls within one month of the start date.
+  2. The page stated the no-questions-asked cancellation deadline as
+     **December 31st; the real deadline is December 27th**. Four days in which
+     a parent could have relied on the published date and been refused. This
+     was the highest-stakes error on the site.
+  3. The named lesson director was out of date.
+
+  Note the two refund figures are not in conflict: cancelling **before** the
+  one-month window is a full refund under the December 27th clause; an
+  **injury inside** that window is 80%.
+
+  Standing recommendation (not yet applied, needs a club decision): the policy
+  names an individual and states that person is "currently studying abroad".
+  Both go stale with turnover. Prefer the role plus the shared inbox.
 - **`LessonRegistration.jsx:34,42`** and the site generally name a specific lesson
   director. Given annual turnover, use the role and the shared inbox, not a name.
 - **`LessonRegistration.jsx:10` vs `:18`** contradict each other: "lessons are now

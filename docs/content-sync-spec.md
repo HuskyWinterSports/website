@@ -197,6 +197,15 @@ ever sees that tab's sections.
 A layout with no `tab` reads the whole document, which is what a document
 without tabs looks like. Existing single-page documents keep working unchanged.
 
+**Unused tabs cost nothing, deliberately.** Only the tab a layout names is
+read; the rest are never parsed for content at all. So officers can keep draft,
+planning and next-season tabs in the same document without any risk of warning
+noise, a broken build, or a heading leaking into another page. That is a
+promise made to the club, so `tests/tabs.test.js` asserts it rather than leaving
+it as a property of the current implementation. Note the contrast with an
+unused **section inside a tab that is in use**, which logs a NOTE — harmless,
+but it does appear.
+
 ### 4.3 `output=` is ignored for Docs
 
 Tested at the club's suggestion: `/pub?output=md`, `?output=txt` and
@@ -595,9 +604,19 @@ annoying.
 
 1. Open the club's Google Doc on the shared Drive account.
 2. Pick the tab for the page you want to change. Edit the words.
-3. **File → Share → Publish to the web → Publish.** Nothing reaches the site
-   until this is pressed; saving is not enough.
-4. Wait up to an hour. The site updates itself.
+3. Wait up to an hour. The site updates itself.
+
+**Do you have to press Publish again after every edit?** Probably not. Under
+**File → Share → Publish to the web → Published content & settings** there is a
+checkbox, **"Automatically republish when changes are made"**, which is ticked
+by default. While it is ticked, editing is enough and Publish is never pressed
+again. If someone unticks it, edits stop reaching the site with no error
+anywhere — the sync keeps succeeding and keeps seeing the last published
+version. **Leave it ticked.**
+
+**You may keep extra tabs** for drafts, planning or next season. Only the tabs
+the website is built from are read; anything else is ignored completely and
+cannot break a page (§4.2b).
 
 **To skip the wait**, on github.com: **Actions → Sync content from Google →
 Run workflow**. This needs a GitHub account with access to the repository, and

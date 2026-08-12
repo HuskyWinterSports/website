@@ -20,7 +20,39 @@
 
 var REPO = 'HuskyWinterSports/website';
 var WORKFLOW = 'sync-content.yml';
-var NOTIFY = 'huskywslessons@gmail.com';
+var NOTIFY = 'huskyws@gmail.com';
+
+/**
+ * WHAT THIS WILL AND WILL NOT EMAIL YOU
+ *
+ * It sends nothing on a normal day. There is no heartbeat, no weekly digest,
+ * no "everything is fine" — an inbox that receives routine mail from a robot
+ * stops being read, and then the one message that mattered is invisible too.
+ *
+ * It emails only when something needs a person:
+ *   - the automatic updates have been switched off
+ *   - an update failed
+ *   - nothing has run for two days
+ *   - it has been unable to check for five days running
+ *
+ * It also sends one message when a reported problem clears, because silence
+ * after a problem email is indistinguishable from the watcher having died.
+ * That is the closing half of a message you already received, not a new one.
+ * Set ANNOUNCE_RECOVERY to false if you would rather not have it.
+ */
+var ANNOUNCE_RECOVERY = true;
+
+/**
+ * Warn at 45 days that GitHub is about to switch the schedule off at 60.
+ *
+ * OFF by default: it fires when nothing is wrong, which is exactly the kind of
+ * mail that trains people to ignore this address. The cost of leaving it off is
+ * small — if the schedule does get switched off, the check above catches it and
+ * says so, and the only consequence in the meantime is that document edits wait
+ * until somebody clicks the button. During the quiet months when this can
+ * happen, nobody is editing anyway.
+ */
+var WARN_BEFORE_CUTOFF = false;
 
 // How long the website may go without a successful check before that is
 // itself treated as a fault. The sync runs hourly, so 48h is ~48 misses.
@@ -68,8 +100,9 @@ function checkWebsiteUpdates() {
         });
     }
 
-    // 2. Is the repository drifting towards that cutoff?
-    var repo = getJson('https://api.github.com/repos/' + REPO);
+    // 2. Is the repository drifting towards that cutoff? Off by default —
+    //    see WARN_BEFORE_CUTOFF.
+    var repo = WARN_BEFORE_CUTOFF ? getJson('https://api.github.com/repos/' + REPO) : null;
     if (repo && workflow.state === 'active') {
         var quietDays = daysSince(repo.pushed_at);
         if (quietDays >= INACTIVITY_WARN_DAYS) {
@@ -140,7 +173,7 @@ function deliver(problems) {
     if (problems.length === 0) {
         store.setProperty('state', 'ok');
         clearSentKeys(store);
-        if (wasBroken) {
+        if (wasBroken && ANNOUNCE_RECOVERY) {
             send('Husky Winter Sports website: updates are working again',
                 'The website is updating itself from the Google Doc again. ' +
                 'No action needed.');

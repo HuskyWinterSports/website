@@ -21,6 +21,18 @@ const HOUR = 36e5;
 const DAY = 864e5;
 const ago = (ms) => new Date(Date.now() - ms).toISOString();
 
+/** A stub that answers every endpoint as if everything were fine. */
+const healthy = (url) => ({
+    getResponseCode: () => 200,
+    getContentText: () => JSON.stringify(
+        url.includes('/runs?')
+            ? { workflow_runs: [{ id: 1, status: 'completed', conclusion: 'success', created_at: ago(HOUR), html_url: 'x' }] }
+            : url.includes('/actions/workflows/')
+                ? { state: 'active' }
+                : { pushed_at: ago(DAY) }
+    ),
+});
+
 function load({ workflowState = 'active', pushedAt = ago(DAY), runs = null, offline = false } = {}) {
     const sent = [];
     const properties = new Map();
@@ -64,7 +76,13 @@ function load({ workflowState = 'active', pushedAt = ago(DAY), runs = null, offl
     });
 
     runInContext(SOURCE, context);
-    return { context, sent, properties, run: () => runInContext('checkWebsiteUpdates()', context) };
+    return {
+        context,
+        sent,
+        properties,
+        set: (name, value) => runInContext(name + ' = ' + JSON.stringify(value), context),
+        run: () => runInContext('checkWebsiteUpdates()', context),
+    };
 }
 
 describe('a healthy site', () => {
@@ -83,7 +101,7 @@ describe('GitHub switched the schedule off', () => {
 
     test('emails the club', () => {
         assert.equal(w.sent.length, 1);
-        assert.equal(w.sent[0].to, 'huskywslessons@gmail.com');
+        assert.equal(w.sent[0].to, 'huskyws@gmail.com');
     });
 
     test('says the site is not broken, because it is not', () => {
@@ -103,8 +121,18 @@ describe('GitHub switched the schedule off', () => {
 });
 
 describe('drifting towards the cutoff', () => {
-    test('warns before it happens, not after', () => {
+    test('is silent by default, because nothing is wrong yet', () => {
+        // The club asked for no mail unless something needs attention. A
+        // warning that fires while everything works is exactly the kind that
+        // teaches people to ignore this address.
         const w = load({ pushedAt: ago(50 * DAY) });
+        w.run();
+        assert.deepEqual(w.sent, []);
+    });
+
+    test('warns before it happens when switched on', () => {
+        const w = load({ pushedAt: ago(50 * DAY) });
+        w.set('WARN_BEFORE_CUTOFF', true);
         w.run();
         assert.match(w.sent[0].body, /no changes for 50 days/);
         assert.match(w.sent[0].body, /warning, not a fault/);
@@ -112,6 +140,7 @@ describe('drifting towards the cutoff', () => {
 
     test('stays quiet while there is plenty of time', () => {
         const w = load({ pushedAt: ago(30 * DAY) });
+        w.set('WARN_BEFORE_CUTOFF', true);
         w.run();
         assert.deepEqual(w.sent, []);
     });
@@ -120,6 +149,7 @@ describe('drifting towards the cutoff', () => {
         // Two emails about the same underlying situation is how people learn
         // to filter these.
         const w = load({ workflowState: 'disabled_inactivity', pushedAt: ago(90 * DAY) });
+        w.set('WARN_BEFORE_CUTOFF', true);
         w.run();
         assert.equal(w.sent.length, 1);
         assert.doesNotMatch(w.sent[0].body, /no changes for 90 days/);
@@ -170,6 +200,25 @@ describe('nothing has run for days', () => {
 });
 
 describe('not shouting', () => {
+    test('a healthy day sends nothing, however many days pass', () => {
+        // There is no heartbeat and no digest by design. An inbox that gets
+        // routine mail from a robot stops being read.
+        const w = load();
+        for (let i = 0; i < 30; i++) w.run();
+        assert.deepEqual(w.sent, []);
+    });
+
+    test('recovery can be switched off too', () => {
+        const w = load({ workflowState: 'disabled_inactivity' });
+        w.set('ANNOUNCE_RECOVERY', false);
+        w.run();
+        assert.equal(w.sent.length, 1);
+
+        w.context.UrlFetchApp.fetch = healthy;
+        w.run();
+        assert.equal(w.sent.length, 1, 'no second email when recovery is off');
+    });
+
     test('the same problem is not emailed every day', () => {
         const w = load({ workflowState: 'disabled_inactivity' });
         w.run();
@@ -185,16 +234,7 @@ describe('not shouting', () => {
         w.run();
         assert.equal(w.sent.length, 1);
 
-        w.context.UrlFetchApp.fetch = (url) => ({
-            getResponseCode: () => 200,
-            getContentText: () => JSON.stringify(
-                url.includes('/runs?')
-                    ? { workflow_runs: [{ id: 1, status: 'completed', conclusion: 'success', created_at: ago(HOUR), html_url: 'x' }] }
-                    : url.includes('/actions/workflows/')
-                        ? { state: 'active' }
-                        : { pushed_at: ago(DAY) }
-            ),
-        });
+        w.context.UrlFetchApp.fetch = healthy;
         w.run();
         assert.equal(w.sent.length, 2);
         assert.match(w.sent[1].subject, /working again/);

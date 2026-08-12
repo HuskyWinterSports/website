@@ -75,7 +75,14 @@ function readSettings(column, warnings) {
             continue;
         }
 
-        const value = cells.slice(i + 1).find((c) => c !== '');
+        // Skip past other labels when looking for the value. Sorting the sheet
+        // by Date reorders whole rows, which shuffles this column against
+        // itself — and taking the next cell blindly would then record the
+        // lesson director as "Season Year" and publish it.
+        const value = cells
+            .slice(i + 1)
+            .find((c) => c !== '' && !(c.toLowerCase() in SETTINGS));
+
         if (!value) {
             warnings.push(`"${cells[i]}" in the sheet has no value under it. It has been ignored.`);
             continue;

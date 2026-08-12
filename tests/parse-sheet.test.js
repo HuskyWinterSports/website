@@ -71,6 +71,23 @@ describe('the settings column is read by label, not by position', () => {
         assert.equal(sheet.settings.refundDeadline, 'Dec 31');
     });
 
+    test('never records one label as another label\'s value', () => {
+        // Sorting the sheet by Date reorders whole rows, which shuffles this
+        // column against itself. Taking the next cell blindly would record the
+        // lesson director as "Season Year" and publish it on the refund page.
+        const shuffled = [
+            'Lesson Director,Session,Lesson,Date,Lesson Type,3 Week Price,6 Week Price',
+            'Season Year,A,1,Jan 30 - Jan 31,Group,240,360',
+            'Charlotte Smith,A,2,Feb 6 - Feb 7,Single-Student,660,990',
+            '2026/27,A,3,Feb 20 - Feb 21,Friends & Family,325,485',
+        ].join('\n');
+
+        const { settings, warnings } = parseSheet(shuffled);
+        assert.notEqual(settings.lessonDirector, 'Season Year');
+        assert.equal(settings.lessonDirector, 'Charlotte Smith');
+        assert.match(warnings.join('\n'), /registration state/i);
+    });
+
     test('a label with nothing under it warns rather than failing', () => {
         const emptied = FIXTURE.replace(/\nDec 31,/, '\n,');
         const sheet = parseSheet(emptied);

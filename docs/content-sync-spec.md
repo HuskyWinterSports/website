@@ -728,10 +728,13 @@ annoying.
 2. Pick the tab for the page you want to change. Edit the words.
 3. Wait up to an hour. The site updates itself.
 
-**Press Publish when you are finished editing.** Under **File → Share →
-Publish to the web → Published content & settings**, **untick "Automatically
-republish when changes are made"**. See §9.2c for why — this reverses the
-advice given earlier the same day.
+**Leave "Automatically republish when changes are made" ticked** (File → Share
+→ Publish to the web → Published content & settings). It is ticked by default,
+so this means: change nothing.
+
+**You do not have to signal that you have finished.** The site waits until the
+document has said the same thing for an hour before publishing it, so an edit
+interrupted halfway cannot reach visitors. See §9.2c.
 
 **You may keep extra tabs** for drafts, planning or next season. Only the tabs
 the website is built from are read; anything else is ignored completely and
@@ -751,14 +754,13 @@ is the only step in normal operation that touches GitHub at all.
 - Colours, fonts, sizes, images and tables are ignored on purpose. You cannot
   wreck the page design by editing.
 
-### 9.2c ⚠️ Auto-republish OFF — the Publish button is the deploy button
+### 9.2c ⚠️ A change must be seen twice before it is published
 
-**This reverses the advice in the first version of §9.2**, which said to leave
-auto-republish ticked. The club asked the question that changes the answer:
-*what happens if the cron fires while someone is halfway through an edit?*
+**The problem, raised by the club:** what happens if the cron fires while
+someone is halfway through an edit? Google republishes a document roughly as
+it is typed, so a scheduled run really can arrive mid-sentence.
 
-With auto-republish on, it publishes the half-finished state. Two outcomes,
-and the second is the bad one:
+Two outcomes, and the second is the bad one:
 
 - The intermediate state is **structurally broken** — a heading not yet
   retyped. The sync refuses, the site is untouched, an email goes out. Noisy
@@ -766,30 +768,48 @@ and the second is the bad one:
 - The intermediate state is **structurally valid and half-written** — a
   sentence stopping mid-clause, a paragraph deleted but not yet replaced. The
   sync sees nothing wrong, because nothing *is* wrong structurally. **It goes
-  live.** No validation can catch this; "is this prose finished?" is not a
-  property of the text.
+  live.** No validation can ever catch this: "is this prose finished?" is not
+  a property of the text.
 
-Turning auto-republish off makes **Publish an explicit act of intent**. Editing
-freely has no effect on the site. Pressing Publish says "this version is
-ready." That is exactly the button the club asked for, it already exists, and
-it is in the document they are already looking at — no new mechanism, no
-credential, nothing to maintain.
+#### Two answers were tried and rejected
 
-**The trade-off, stated honestly.** Auto-republish on risks publishing
-half-edits; off risks someone forgetting to press Publish and wondering why
-nothing happened. Publishing half-edits is public and cannot be un-seen.
-Forgetting to publish is invisible, harmless, and self-correcting the moment
-someone looks at the site. Take the second risk.
+**Unticking "Automatically republish"**, so that Publish becomes an explicit
+"this version is ready" button. Attractive — the button already exists, needs
+no credential and nothing to maintain. **It does not work.** There is no
+manual publish control in the dialog once the box is unticked, and Google's
+own documentation describes the checkbox without ever describing how to
+publish by hand afterwards. Unpublish-then-republish is the only route, and
+that risks changing the published ID, which would break the sync until someone
+edited a layout file. Rejected on evidence, not taste.
 
-This also disposes of the cron-versus-button question. **The cron is not the
-trigger; it is the delivery.** The trigger is Publish. The cron is how a
-published change reaches the site without anyone touching GitHub, and it can
-fire at any moment safely, because what it fetches is always a snapshot
-somebody deliberately released.
+**A trigger button on the Google side**, via Apps Script and
+`repository_dispatch`. That needs a personal access token on the critical
+path, which violates principle 1 outright.
 
-If an hour is too long a wait, that is what the optional Apps Script
-accelerator is for (§3) — and note it stays *optional*, because the
-credential it needs is not on the critical path.
+#### What is implemented instead
+
+**The same text must be seen twice, an hour apart, before it is published.**
+
+The identity of the content is its own cache key. Saving that key records
+"seen"; finding it on a later run means the document is *still saying the same
+thing an hour later*, so whoever was typing has stopped. Nothing is stored
+between runs except that fact.
+
+This is better than either rejected option for the reason that governs this
+whole project: **it asks nothing of the editor.** No button to remember, no
+setting to preserve, nothing that a future officer can fail to be told about.
+An edit session simply has to end.
+
+**Running the workflow by hand skips the wait**, because pressing that button
+is itself the statement that the text is ready.
+
+**Cost:** an edit reaches the site in one to two hours rather than up to one.
+The club has said the site changes rarely, and the manual run covers urgency.
+
+**Leave "Automatically republish when changes are made" ticked** — which is
+where §9.2 started, before this section briefly said otherwise. With the
+two-sightings rule the setting no longer carries any safety weight, and ticked
+is the option that requires nothing of anybody.
 
 Checked 2026-08-12, because "get the assistant to edit the doc directly" is an
 obvious thing to reach for. The connector exposes `search_files`,

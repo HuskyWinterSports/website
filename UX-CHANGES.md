@@ -219,24 +219,23 @@ The update now runs by itself, **every hour**. The whole procedure for changing
 words on the Diversity and Inclusion page is:
 
 1. Open the club's Google Doc, go to the **Diversity and Inclusion** tab, edit.
-2. When you're happy with it, **File → Share → Publish to the web → Publish**.
-3. Wait up to an hour.
+2. Wait an hour or two.
 
-That's it. Nobody touches GitHub.
+That's genuinely it. Nobody touches GitHub, and there's nothing to press.
 
-**Why step 2 exists — it's the safety catch.** Google can be set to republish
-automatically every time you type, and at first we had it that way. But the
-site checks the document on a schedule, so it could look *while you were still
-mid-sentence* and publish a half-written paragraph. Nothing can detect that
-automatically: a half-finished sentence is perfectly valid text.
+**You can't accidentally publish a half-finished edit.** The site checks the
+document regularly, so in principle it could look while you were still
+mid-sentence. It doesn't, because **a change has to still be there an hour
+later before it goes live.** Type, delete, rewrite, walk away and come back
+tomorrow — none of that reaches visitors. Only text you've left alone does.
 
-So **Publish is the "this version is ready" button.** Edit as much as you like,
-save, come back tomorrow, leave a paragraph half-rewritten overnight — none of
-it reaches the site. Only pressing Publish does.
+This is why an edit takes an hour or two to appear rather than being instant.
+If you need it sooner, there's a manual "update now" button on GitHub
+(Actions → Sync content from Google → Run workflow), which skips the wait —
+pressing it *is* you saying the text is ready.
 
-The cost of this is that if you forget to press Publish, your change won't
-appear. That's the safer mistake of the two: nothing bad is public, and you'll
-spot it the moment you look at the site.
+**Don't change the "Automatically republish when changes are made" setting**
+in the Publish dialog. It's on by default, and on is correct.
 
 **You can keep extra tabs in the document** — drafts, planning, next season.
 Only the tabs the website is built from are read. Anything else is ignored

@@ -115,7 +115,18 @@ export default function LessonInfo() {
                 <p>From the parking lot, walk up the switchback path towards the lodges. Looking towards the hill from the bonfire area, <a href="https://www.google.com/maps/@47.4097062,-121.413549,3a,90y,240.34h,86.53t/data=!3m6!1e1!3m4!1sEbLzd5xQma3umW7j-uG5TQ!2e0!7i13312!8i6656!6m1!1e1we" target="_blank">are located outside the orange “Ullr” building south of the base of the Triple 60 Lift*</a>.</p>
                 <p>*This can be a bit of a long walk for the young ones, so please make sure to arrive early enough to find parking in the Central lot (if full, you will be directed to an auxiliary lot and may need to take a shuttle back) and arrive at Ullr with plenty of time to get stoked and ready to go.</p>
 
-                {/* insert map here */}
+                {/* The previous author left "insert map here" and a box shaped
+                    to hold one. `loading='lazy'` matters: this is a Google
+                    Maps embed, and without it every visitor to this page
+                    downloads it whether or not they scroll this far. */}
+                <iframe
+                    className='embedded-map'
+                    title='Map showing the Ullr Snow Sports Meeting Area at Summit Central'
+                    src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2700.133805568329!2d-121.41651012339734!3d47.409331201578766!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x549a79a7190fe42d%3A0xf0e443698bbac23c!2sHusky%20Winter%20Sports!5e0!3m2!1sen!2sus!4v1786558788128!5m2!1sen!2sus'
+                    loading='lazy'
+                    allowFullScreen
+                    referrerPolicy='strict-origin-when-cross-origin'
+                >Loading…</iframe>
 
             </section>
         </>

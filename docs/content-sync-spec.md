@@ -728,13 +728,10 @@ annoying.
 2. Pick the tab for the page you want to change. Edit the words.
 3. Wait up to an hour. The site updates itself.
 
-**Do you have to press Publish again after every edit?** Probably not. Under
-**File → Share → Publish to the web → Published content & settings** there is a
-checkbox, **"Automatically republish when changes are made"**, which is ticked
-by default. While it is ticked, editing is enough and Publish is never pressed
-again. If someone unticks it, edits stop reaching the site with no error
-anywhere — the sync keeps succeeding and keeps seeing the last published
-version. **Leave it ticked.**
+**Press Publish when you are finished editing.** Under **File → Share →
+Publish to the web → Published content & settings**, **untick "Automatically
+republish when changes are made"**. See §9.2c for why — this reverses the
+advice given earlier the same day.
 
 **You may keep extra tabs** for drafts, planning or next season. Only the tabs
 the website is built from are read; anything else is ignored completely and
@@ -754,7 +751,45 @@ is the only step in normal operation that touches GitHub at all.
 - Colours, fonts, sizes, images and tables are ignored on purpose. You cannot
   wreck the page design by editing.
 
-### 9.2b The Claude Google Drive connector is read-only
+### 9.2c ⚠️ Auto-republish OFF — the Publish button is the deploy button
+
+**This reverses the advice in the first version of §9.2**, which said to leave
+auto-republish ticked. The club asked the question that changes the answer:
+*what happens if the cron fires while someone is halfway through an edit?*
+
+With auto-republish on, it publishes the half-finished state. Two outcomes,
+and the second is the bad one:
+
+- The intermediate state is **structurally broken** — a heading not yet
+  retyped. The sync refuses, the site is untouched, an email goes out. Noisy
+  but safe.
+- The intermediate state is **structurally valid and half-written** — a
+  sentence stopping mid-clause, a paragraph deleted but not yet replaced. The
+  sync sees nothing wrong, because nothing *is* wrong structurally. **It goes
+  live.** No validation can catch this; "is this prose finished?" is not a
+  property of the text.
+
+Turning auto-republish off makes **Publish an explicit act of intent**. Editing
+freely has no effect on the site. Pressing Publish says "this version is
+ready." That is exactly the button the club asked for, it already exists, and
+it is in the document they are already looking at — no new mechanism, no
+credential, nothing to maintain.
+
+**The trade-off, stated honestly.** Auto-republish on risks publishing
+half-edits; off risks someone forgetting to press Publish and wondering why
+nothing happened. Publishing half-edits is public and cannot be un-seen.
+Forgetting to publish is invisible, harmless, and self-correcting the moment
+someone looks at the site. Take the second risk.
+
+This also disposes of the cron-versus-button question. **The cron is not the
+trigger; it is the delivery.** The trigger is Publish. The cron is how a
+published change reaches the site without anyone touching GitHub, and it can
+fire at any moment safely, because what it fetches is always a snapshot
+somebody deliberately released.
+
+If an hour is too long a wait, that is what the optional Apps Script
+accelerator is for (§3) — and note it stays *optional*, because the
+credential it needs is not on the critical path.
 
 Checked 2026-08-12, because "get the assistant to edit the doc directly" is an
 obvious thing to reach for. The connector exposes `search_files`,

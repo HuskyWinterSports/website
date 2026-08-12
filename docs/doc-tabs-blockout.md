@@ -5,6 +5,27 @@ page. The wording is **taken verbatim from the live site** — this is a
 structural move, not a rewrite. Fixing the wording is the content pass, and it
 gets much easier once the words live here.
 
+## One file per tab, containing nothing but the text to paste
+
+Each tab's content also lives on its own in [`doc-tabs/`](doc-tabs/), so a tab
+can be replaced with select-all-copy rather than by finding where the content
+starts and stops on this page. **Open the raw view**, or GitHub renders the
+headings instead of showing them:
+
+| Tab | Raw file to copy |
+|---|---|
+| Contact Us | [`doc-tabs/contact-us.md`](doc-tabs/contact-us.md) |
+| Email List | [`doc-tabs/email-list.md`](doc-tabs/email-list.md) |
+| Become an Instructor | [`doc-tabs/become-an-instructor.md`](doc-tabs/become-an-instructor.md) |
+| FAQ | [`doc-tabs/faq.md`](doc-tabs/faq.md) |
+| Lesson Registration | [`doc-tabs/lesson-registration.md`](doc-tabs/lesson-registration.md) |
+| Lesson Info | [`doc-tabs/lesson-info.md`](doc-tabs/lesson-info.md) |
+| Home | [`doc-tabs/home.md`](doc-tabs/home.md) |
+
+Those files are generated from the sections below and contain **only** content.
+No notes, no `[CONFIRM:` markers, no placeholders — anything pasted into a tab
+can end up on the public site, so the notes live here instead.
+
 ## How to paste this
 
 1. **Turn on Markdown in Docs first:** Tools → Preferences → tick
@@ -173,7 +194,7 @@ Please allow 5-7 business days for a confirmation email. This email will be sent
 
 ### Why aren't lift tickets included in lesson fees?
 
-The Summit at Snoqualmie offers passes for a variety of skill levels for different age groups, and Husky Winter Sports cannot purchase and sell these to our students. Unless you already have a Season Pass, please check with your instructor before purchasing daily passes, as special cases exist. For example, never-ever lessons will most likely not ride the lift on their first weekend of instruction and will not need a pass; beginner lessons may wish to purchase a cheaper Beginner pass which allows them to ride on the Holiday and Gallery lifts only. Child tickets (0-6 years) are available for only $15 a day. [CONFIRM: is the child ticket still $15?]
+The Summit at Snoqualmie offers passes for a variety of skill levels for different age groups, and Husky Winter Sports cannot purchase and sell these to our students. Unless you already have a Season Pass, please check with your instructor before purchasing daily passes, as special cases exist. For example, never-ever lessons will most likely not ride the lift on their first weekend of instruction and will not need a pass; beginner lessons may wish to purchase a cheaper Beginner pass which allows them to ride on the Holiday and Gallery lifts only. Child tickets (0-6 years) are available for only $15 a day.
 
 Daily lift tickets: http://www.summitatsnoqualmie.com/tickets-and-passes/daily-lift-tickets
 
@@ -213,6 +234,10 @@ All of our instructors are unpaid volunteers who spend hours training to teach t
 Get in touch with us! We will do our best to reschedule. But the earlier we know the easier it will be to find an alternative spot.
 ```
 
+> **Check before wiring:** the **$15 child ticket** is a third party's price
+> that we quote. Summit sets it, we don't, and a wrong number here is one a
+> parent turns up and discovers.
+
 **Two changes from the live page, both deliberate:**
 
 - **"Season's Pass" → "Season Pass"**, matching the Lesson Info page. The two
@@ -244,18 +269,9 @@ During the Spring and Summer months (March - August), email and voice messages a
 
 ## Cancellation and Refund Eligibility
 
-### Cancellation Deadline - No Questions Asked
+### Cancellation by December 31st - No Questions Asked
 
-Customers can request a full cancellation of their lessons by {REFUND_DEADLINE}, one month before the lessons' scheduled start date, without any questions asked. Full refunds will be provided for cancellations made within this period.
-
-> ⚠️ **`{REFUND_DEADLINE}` is a placeholder and does not work yet.** Type the
-> literal date — **December 31st** — when you paste. It becomes a slot once the
-> Sheet exists.
->
-> Settled 2026-08-11: lessons start the **last** weekend in January, so Jan 31
-> was right and Dec 31 really is "one month before". For 2026/27 that weekend
-> is Jan 30–31, 2027, making the arithmetic answer Dec 30 — publish Dec 31
-> anyway, because that is the date a family remembers.
+Customers can request a full cancellation of their lessons by December 31st, one month before the lessons' scheduled start date, without any questions asked. Full refunds will be provided for cancellations made within this period.
 
 ### Injuries
 
@@ -290,8 +306,12 @@ Reach out to our lesson director at huskywslessons@gmail.com.
 
 ### Policy Updates
 
-Effective from August 2023, this policy supersedes all previous versions and governs all refund requests and related matters. Should the policy change, you will be notified via our mailing list. [CONFIRM: August 2023 is three seasons ago. If the deadline really did move from the 27th to the 31st, this date needs to move with it.]
+Effective from August 2023, this policy supersedes all previous versions and governs all refund requests and related matters. Should the policy change, you will be notified via our mailing list.
 ```
+
+> **Check before wiring:** *"Effective from August 2023"* is three seasons old.
+> It should move whenever the policy is next actually revised — but only then,
+> since the date is a claim about when the current text took effect.
 
 ---
 
@@ -394,7 +414,7 @@ here so the tab can exist for planning.
 
 Ski and Snowboard School
 
-"Helping students ski for free since 1937!" [CONFIRM: 1937 appears only here. Worth checking against the club's own history before it goes on more materials.]
+"Helping students ski for free since 1937!"
 
 ## Why Us
 
@@ -416,6 +436,10 @@ Instructors are PSIA/AASI trained or are working towards it.
 ```
 
 Note **"Instrutors" → "Instructors"** — a typo currently live on the home page.
+
+> **Check before wiring:** *"since 1937"* appears nowhere else, on the site or
+> off it. Worth checking against the club's own history before it spreads to
+> more materials.
 
 To render "Why Us" as the four-card grid it is today, the renderer needs a
 card block type. That is a small, self-contained piece of work and it would

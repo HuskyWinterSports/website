@@ -754,6 +754,23 @@ is the only step in normal operation that touches GitHub at all.
 - Colours, fonts, sizes, images and tables are ignored on purpose. You cannot
   wreck the page design by editing.
 
+### 9.2b The Claude Google Drive connector is read-only
+
+Checked 2026-08-12, because "get the assistant to edit the doc directly" is an
+obvious thing to reach for. The connector exposes `search_files`,
+`read_file_content`, `download_file_content`, `get_file_metadata`,
+`get_file_permissions`, `list_recent_files`, `create_file` and `copy_file`.
+
+**There is no update or edit tool.** Existing documents cannot be modified.
+`create_file` makes a new file, which cannot carry tabs and would mean a new
+published URL — trading a chore for a worse architecture. Pasting into tabs is
+a human job.
+
+Worth knowing what it *is* good for: reading the document as the club account
+sees it, including **unpublished** edits. That is the one thing the public
+`/pub` URL cannot show, so it can answer "did the publish actually go
+through?" — a question that otherwise looks identical to "nothing changed".
+
 ### 9.3 When it breaks
 
 0. **If the site is stale but nothing looks wrong**, press **Actions → Sync

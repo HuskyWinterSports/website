@@ -1,12 +1,17 @@
 # Content Sync Spec — editing the website from Google Workspace
 
-**Status:** draft, 2026-08-10. §4 Transport is **fully verified**:
-published-to-web only, Docs via HTML, Sheets via CSV, with the markup contract
-recorded in §4.1–4.3. **Nothing blocks implementation.** The next step is
-writing the parser.
+**Status: phase 1 is built and running**, as of 2026-08-11. Transport verified
+(§4), tabs verified (§4.2b), parser and validation written, the hourly sync
+running (§6), and `/diversity-and-inclusion` served from a document tab. Proven
+end to end: an edit to the document reached the live site with nobody touching
+GitHub.
 
-**Goal of this document:** be concrete enough that the next step is writing
-code, not more design.
+**Waiting on the club, not on a developer:** install the watcher (§7.2), and
+paste the remaining tabs from
+[`doc-tabs-blockout.md`](doc-tabs-blockout.md).
+
+**Next for a developer:** phase 2 — the Sheet (§5.4), then a page at a time as
+its tab is filled in.
 
 ---
 
@@ -344,6 +349,41 @@ Three tabs, one concern each. Column headers are the contract.
 | `registration_state` | `open` \| `waitlist` \| `full` \| `not_yet_open` |
 | `ski_state` | `full` |
 | `snowboard_state` | `open` |
+| `lesson_start_date` | `2027-01-16` — the first teaching day |
+| `refund_deadline` | `2026-12-16` — see below |
+| `lesson_director` | the role holder's first name, or blank |
+
+**`lesson_director` exists because a name in body text is a fact with an expiry
+date.** The previous director's name was still published in three places after
+they left the role, alongside a sentence saying they were studying abroad.
+Nobody's job included noticing. Officers turn over every year, so any personal
+name on the site has to be a value someone updates in one place — or absent.
+Blank must be legal, and the page must read correctly without it: "contact our
+lesson director" is a complete sentence.
+
+**`refund_deadline` is derived, then overridable.** The published policy defines
+it as *one month before the lessons' scheduled start date*, so the sync computes
+`lesson_start_date` minus one month and uses that unless `refund_deadline` is
+filled in. Two reasons not to make it purely computed:
+
+- A policy deadline is a commitment to parents. An officer must be able to state
+  it outright rather than trust arithmetic they cannot see.
+- Clubs round. "December 31st" is a deadline a family remembers; "December 16th"
+  is what the arithmetic gives for a mid-January start.
+
+⚠️ **These three values currently contradict each other on the live site**, which
+is the strongest argument for deriving them from one place:
+
+| Source | Says |
+|---|---|
+| Lesson Info page | Session A starts **Jan 31** — the *last* weekend of January |
+| The club (2026-08-11) | Lessons start the **third weekend in January** |
+| Refund policy | Deadline **Dec 31**, described as "one month before" the start |
+
+No two of those agree. One month before Jan 31 is Dec 31 ✓, but Jan 31 is not
+the third weekend; one month before a third-weekend start is mid-December, not
+Dec 31. **Settle `lesson_start_date` first and the rest follows** — that is the
+point of putting it in one cell.
 
 **`dates`**:
 
@@ -469,7 +509,7 @@ is exactly the population we are designing *around*.
 emails the club.** Because the repository is public, `api.github.com/repos/
 HuskyWinterSports/website/actions/runs` is readable **with no credential at
 all**. A time-driven trigger checks for a failed run and emails
-`huskywslessons@gmail.com` with the message from §7.1.
+`huskyws@gmail.com` with the message from §7.1.
 
 This satisfies principle 1: no token anywhere, and it works even if the sync
 itself is completely broken, because it is an independent watcher.
@@ -486,9 +526,20 @@ It reports four things, and stays quiet otherwise:
 | Condition | Why it is not obvious | What the email says |
 |---|---|---|
 | Workflow `state` is not `active` | §7.3 route 3 — no error exists anywhere | Nothing is broken; here are the three clicks to switch it back on |
-| No push for 45+ days | The cutoff arrives silently | A warning, not a fault; make any real edit to reset the clock |
 | Last completed run failed | Officers do not watch the repo | The site still shows the previous version; here is the run to read |
 | Nothing succeeded in 48h | A dead cron looks like a quiet week | Edits are probably not reaching the site |
+| Cannot reach GitHub for 5 days | Being blind is itself a fault | The site is probably fine; the check is not |
+
+**There is no heartbeat, no digest, and nothing on a healthy day.** At the
+club's request (2026-08-11), it sends mail only when a person is needed. An
+inbox that receives routine mail from a robot stops being read, and then the one
+message that mattered is invisible too.
+
+A 45-day "GitHub is about to switch this off" pre-warning is implemented but
+**off by default** (`WARN_BEFORE_CUTOFF`), because it fires while everything is
+working. The cost of leaving it off is small: if the schedule is switched off,
+the first check above catches it, and in the quiet months when that can happen
+nobody is editing anyway.
 
 Three properties that matter more than the checks themselves:
 

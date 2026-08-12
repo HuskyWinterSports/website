@@ -290,15 +290,19 @@ response.
 
 ## Cancellation and Refund Eligibility
 
-### Cancellation by December 31st - No Questions Asked
+### Cancellation Deadline - No Questions Asked
 
-Customers can request a full cancellation of their lessons by December 31st,
-one month before the lessons' scheduled start date, without any questions
-asked. Full refunds will be provided for cancellations made within this period.
-[CONFIRM: the club policy document says December 27th. The site says the 31st
-deliberately, because publishing a stricter deadline than the real one would
-deter a parent from asking for a refund they are entitled to. Settle which is
-correct and delete this note.]
+Customers can request a full cancellation of their lessons by
+{REFUND_DEADLINE}, one month before the lessons' scheduled start date, without
+any questions asked. Full refunds will be provided for cancellations made
+within this period.
+
+> ⚠️ **`{REFUND_DEADLINE}` is a placeholder and does not work yet.** Leave the
+> literal date in when you paste, and it will be swapped for the slot once the
+> Sheet exists. Three sources currently disagree — the Lesson Info page says
+> Session A starts Jan 31, the club says the third weekend of January, and the
+> policy says Dec 31 "one month before the start". No two of those agree. Set
+> `lesson_start_date` in the Sheet and the deadline follows from it.
 
 ### Injuries
 
@@ -323,17 +327,12 @@ missed lesson.
 We strive to provide flexibility and fairness in our refund policies, but it's
 essential to adhere to the specific guidelines mentioned above for refund
 eligibility and exceptions. For any further clarification or assistance, please
-feel free to contact our lesson director, Daphanie.
-[CONFIRM: is Daphanie still the lesson director? This name is on the public
-site in three places and goes stale the moment the role changes.]
+feel free to contact our lesson director.
 
 ### Refund Process and Time Frame
 
 Contact huskywslessons@gmail.com and expect an email back within 5 business
-days. Please note that our lesson director is a student and currently studying
-abroad.
-[CONFIRM: still true? This is the kind of sentence that quietly stops being
-accurate.]
+days.
 
 ### Inclement Weather
 
@@ -357,12 +356,14 @@ in certain circumstances. While we strive to maintain consistency in our
 policies for all customers, we understand that unique situations may arise. If
 you believe you have valid grounds for a refund or require special
 consideration due to extenuating circumstances, we encourage you to reach out
-to our lesson director, Daphanie (huskywslessons@gmail.com). Our team will
+to our lesson director at huskywslessons@gmail.com. Our team will
 carefully review your request and, where appropriate, exercise our discretion
 to assess the situation on a case-by-case basis. Please understand that
 granting an exception is not guaranteed and will be subject to our sole
 judgment. We are committed to ensuring customer satisfaction and will make
 every effort to address your concerns in a fair and equitable manner.
+
+Reach out to our lesson director at huskywslessons@gmail.com.
 
 ### Policy Updates
 

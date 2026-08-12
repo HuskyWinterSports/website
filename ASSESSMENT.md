@@ -332,11 +332,10 @@ You mentioned wanting a content pass — here's what I found while reading:
   one-month window is a full refund under the December 27th clause; an
   **injury inside** that window is 80%.
 
-  Standing recommendation (not yet applied, needs a club decision): the policy
-  names an individual and states that person is "currently studying abroad".
-  Both go stale with turnover. Prefer the role plus the shared inbox.
-- **`LessonRegistration.jsx:34,42`** and the site generally name a specific lesson
-  director. Given annual turnover, use the role and the shared inbox, not a name.
+  ✅ **FIXED 2026-08-11.** The policy named an individual who had already left
+  the role, and said they were "currently studying abroad" — both were still
+  public. Replaced with the role and the shared inbox. The name becomes a Sheet
+  value in phase 2 so a future director appears in one place or not at all.
 - **`LessonRegistration.jsx:10` vs `:18`** contradict each other: "lessons are now
   full, join the waitlist" vs "Ski lessons are currently full, but we are continuing
   to accept snowboard lessons."
@@ -456,13 +455,19 @@ GitHub.
    then Lesson Info and Lesson Registration. **One page at a time** — a layout
    file naming a tab that does not exist yet fails the sync every hour.
 
-The blockout also carries four `[CONFIRM]` flags that only the club can settle:
-the refund deadline (27th vs 31st), whether Daphanie is still lesson director,
-whether the "studying abroad" line is still true, and the August 2023 policy
-date. All four are the kind that go stale silently.
+**✅ Settled 2026-08-11:** the named lesson director had already left the role,
+and the "currently studying abroad" line was no longer relevant. Both are gone
+from the live page — the role and the shared inbox are named instead, and the
+name becomes a Sheet value in phase 2 so it lives in exactly one place.
 
-Still open: **the cron has not yet been observed firing on its own** — every
-run so far was started by hand. And Phase 1's own success criterion says to
+**Still `[CONFIRM]`, and only the club can settle it:** the refund deadline.
+Three sources disagree — Lesson Info says Session A starts Jan 31, the club says
+the third weekend of January, and the policy says Dec 31 "one month before the
+start". No two agree. Setting `lesson_start_date` in the Sheet resolves all
+three at once. The August 2023 policy date needs to move with whatever is
+decided.
+
+Phase 1's own success criterion says to
 test with an officer who has never seen the repo (spec §9.2 is the runbook),
 which is not the same as it having worked for the person who built it.
 

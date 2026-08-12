@@ -130,13 +130,18 @@ For clarity, since these two can look contradictory: cancelling *before* that
 one-month window is a **full** refund under the December 27th clause. An injury
 *inside* the window is **80%**. Different situations, different figures.
 
-**3. The named lesson director was out of date**, and has been updated along
-with the note that the director is currently studying abroad.
+**3. The refund policy named a lesson director who had already left the role**,
+and told parents that person was "currently studying abroad".
 
-**Worth a club discussion:** the policy names a specific person and mentions
-that person is studying abroad. Both facts expire with turnover, and this is a
-document that ought to stay accurate for years. Using the role and the shared
-inbox instead would mean one less thing for next year's officers to remember.
+**Fixed 11 August.** The page now says *"contact our lesson director"* and gives
+the shared inbox. No name.
+
+This is worth explaining, because it will come up again: a person's name in
+body text is a fact with an expiry date, and nobody's job includes noticing when
+it expires. Officers turn over every year. So any name on the site should either
+be somewhere it can be updated in one place — which is where the next stage of
+this work puts it — or not be there at all. *"Contact our lesson director"* is a
+complete sentence and never goes stale.
 
 ### 8. Page links are now normal web addresses
 
@@ -253,19 +258,23 @@ the updates off, and in September someone edits the document and nothing
 happens, forever, with no error anywhere.
 
 **What's been written:** a small script that runs on the club's Google account,
-once a day, and emails `huskywslessons@gmail.com` if:
+once a day, and emails `huskyws@gmail.com` if:
 
 - the automatic updates have been switched off — with the three clicks to turn
   them back on;
-- nothing has changed for 45 days, so we can act *before* the 60-day cutoff;
 - an update failed — with a link to the plain-English explanation;
-- nothing has run at all for two days.
+- nothing has run at all for two days;
+- it has been unable to check for five days running.
 
-It also emails when things go back to normal, because silence after a problem
-email is indistinguishable from the watcher itself having died. And it won't
-send the same complaint more than once a week — an inbox that gets a daily
-email about a known problem stops being read, and then the next real one is
-invisible too.
+**On a normal day it sends nothing at all.** No weekly summary, no "everything
+is fine" — an inbox that gets routine mail from a robot stops being read, and
+then the one message that mattered is invisible too. It won't repeat the same
+complaint more than once a week either.
+
+The one exception is that it says so when a problem clears, because silence
+after a problem email is indistinguishable from the watcher itself having died.
+That's the closing half of a message you already got, not a new one, and it can
+be switched off.
 
 **It needs about two minutes of setup on the club Google account** and is not
 installed yet. Instructions are in `docs/content-sync-spec.md` §7.2. Nothing

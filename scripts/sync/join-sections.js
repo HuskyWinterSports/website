@@ -94,6 +94,10 @@ export function joinSections(layout, parsed, layoutName) {
     };
 
     const blocks = layout.blocks.map((entry) => {
+        // Sheet-driven blocks were resolved before this ran and carry their
+        // own content; they never look anything up in the document.
+        if (entry.boxes) return { ...entry };
+
         // Checked before `lead`, because a block can carry both: a page whose
         // whole body sits under the title uses one block for the h1 and the
         // text. Checking after the lead branch would skip this for exactly

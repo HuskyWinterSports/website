@@ -128,7 +128,7 @@
               "bold": false,
               "italic": false,
               "href": "http://www.summitatsnoqualmie.com/tickets-and-passes/daily-lift-tickets",
-              "text": "http://www.summitatsnoqualmie.com/tickets-and-passes/daily-lift-tickets"
+              "text": "summitatsnoqualmie.com/tickets-and-passes/daily-lift-tickets"
             }
           ]
         },
@@ -151,7 +151,19 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "See the Lesson Registration page for details."
+              "text": "See the "
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": "https://www.huskywintersports.org/lesson-registration",
+              "text": "Lesson Registration page"
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": " for details."
             }
           ]
         }
@@ -175,25 +187,25 @@
           ]
         },
         {
-          "type": "paragraph",
-          "spans": [
-            {
-              "bold": false,
-              "italic": false,
-              "href": null,
-              "text": "Our instructors are trained to make sure that your child possesses the necessary skills before they are moved onto more challenging terrain. Younger children may need some time to get used to the snow before they can safely navigate the more advanced terrain served by the lifts."
-            }
-          ]
-        },
-        {
-          "type": "paragraph",
-          "spans": [
-            {
-              "bold": false,
-              "italic": false,
-              "href": null,
-              "text": "Snowboarding is trickier to start than skiing so your child may require some extra time to get used to sliding sideways."
-            }
+          "type": "list",
+          "ordered": false,
+          "items": [
+            [
+              {
+                "bold": false,
+                "italic": false,
+                "href": null,
+                "text": "Our instructors are trained to make sure that your child possesses the necessary skills before they are moved onto more challenging terrain. Younger children may need some time to get used to the snow before they can safely navigate the more advanced terrain served by the lifts."
+              }
+            ],
+            [
+              {
+                "bold": false,
+                "italic": false,
+                "href": null,
+                "text": "Snowboarding is trickier to start than skiing so your child may require some extra time to get used to sliding sideways."
+              }
+            ]
           ]
         },
         {

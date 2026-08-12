@@ -18,13 +18,16 @@ export default function Footer() {
                         </ul>
                     </div>
                     <div className='copyright'>  
-                        <p>HWS operates under Ullr Inc. as a concessionaire under US Forest Service Permits issued to Ski Lifts Inc. partially operating within the Mt. Baker, Snoqualmie, and Wenatchee National Forests. Partners in Winter RecreationThis program provides employment, services, and privileges regardless of race, color, creed, sex, religion, age, or national origin.</p>
-                        <p>© 2025 HWS. All rights reserved.</p>
+                        <p>HWS operates under Ullr Inc. as a concessionaire under US Forest Service Permits issued to Ski Lifts Inc. partially operating within the Mt. Baker, Snoqualmie, and Wenatchee National Forests. Partners in Winter Recreation. This program provides employment, services, and privileges regardless of race, color, creed, sex, religion, age, or national origin.</p>
+                        {/* Computed, not typed. It read "© 2025" in August 2026,
+                            because a hardcoded year is a fact with an expiry
+                            date and nobody whose job it is to notice. */}
+                        <p>© {new Date().getFullYear()} HWS. All rights reserved.</p>
                     </div>
                 </div>
                 <ul>
                     <li><img src='/images/summit.avif' alt="The Summit at Snoqualmie"/></li>
-                    <li><img src='/images/forrest_service.avif' alt="United States Forest Service"/></li>
+                    <li><img src='/images/forest_service.avif' alt="United States Forest Service"/></li>
                     <li><img src='/images/PSIA.avif' alt="Professional Ski Instructors of America"/></li>
                     <li><img src='/images/AASI.gif' alt="American Association of Snowboard Instructors"/></li>
                 </ul>

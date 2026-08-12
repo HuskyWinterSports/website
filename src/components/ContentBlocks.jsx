@@ -85,6 +85,17 @@ function Section({ block, title }) {
             {block.showTitle && title && <h1>{title}</h1>}
             {block.heading && <h2>{block.heading}</h2>}
             {block.content?.map((child, index) => <Block key={index} block={child} />)}
+
+            {/* Several of the document's headings gathered into one panel —
+                Contact Us and FAQ are each a single box holding two headed
+                groups. Rendering them as separate blocks would add boxes the
+                page never had. */}
+            {block.groups?.map((group, index) => (
+                <Fragment key={index}>
+                    <h2>{group.heading}</h2>
+                    {group.content.map((child, i) => <Block key={i} block={child} />)}
+                </Fragment>
+            ))}
         </section>
     );
 }

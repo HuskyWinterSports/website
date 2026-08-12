@@ -68,6 +68,31 @@ export function joinSections(layout, parsed, layoutName) {
             .map((s) => `  • ${s.heading}`)
             .join('\n') || '  (the document has no Heading 2 sections at all)';
 
+    /** Find a section by heading, or fail with the message an editor needs. */
+    const requireSection = (name) => {
+        const match = bySection.get(name.trim());
+        if (!match) {
+            throw new ContentError(
+                `The section "${name}" was not found in the ${layoutName} document.\n\n` +
+                `The document currently contains these sections:\n${listSections()}\n\n` +
+                `This usually means a heading was renamed, or its style was ` +
+                `changed away from "Heading 2". Either:\n` +
+                `  1. Rename the heading in the document back to "${name}", or\n` +
+                `  2. Ask a developer to update content/${layoutName}.layout.json\n\n` +
+                `The website has not been changed. It is still showing the previous version.`
+            );
+        }
+        if (match.blocks.length === 0) {
+            throw new ContentError(
+                `The section "${name}" in the ${layoutName} document is empty.\n\n` +
+                `Add some text underneath that heading, or ask a developer to ` +
+                `remove the section from content/${layoutName}.layout.json\n\n` +
+                `The website has not been changed. It is still showing the previous version.`
+            );
+        }
+        return match;
+    };
+
     const blocks = layout.blocks.map((entry) => {
         // `lead: true` takes the text under the document's Heading 1 but
         // before its first Heading 2. Pages often open with an introduction
@@ -101,43 +126,39 @@ export function joinSections(layout, parsed, layoutName) {
             );
         }
 
+        // `sections` gathers several of the document's headings into ONE box
+        // on the page. Contact Us and FAQ are both a single panel containing
+        // two headed groups; without this, each heading would become its own
+        // panel and the page would gain boxes it never had.
+        if (entry.sections) {
+            return {
+                ...entry,
+                groups: entry.sections.map((name) => {
+                    const found = requireSection(name);
+                    return { heading: found.heading, content: found.blocks };
+                }),
+            };
+        }
+
         // Blocks with no `section` carry their own content (a button, or a
         // block that only renders the page title), so they never need to
         // exist in the document.
         if (!entry.section) return { ...entry };
 
-        const match = bySection.get(entry.section.trim());
-        if (!match) {
-            throw new ContentError(
-                `The section "${entry.section}" was not found in the ${layoutName} document.\n\n` +
-                `The document currently contains these sections:\n${listSections()}\n\n` +
-                `This usually means a heading was renamed, or its style was ` +
-                `changed away from "Heading 2". Either:\n` +
-                `  1. Rename the heading in the document back to "${entry.section}", or\n` +
-                `  2. Ask a developer to update content/${layoutName}.layout.json\n\n` +
-                `The website has not been changed. It is still showing the previous version.`
-            );
-        }
-
-        if (match.blocks.length === 0) {
-            throw new ContentError(
-                `The section "${entry.section}" in the ${layoutName} document is empty.\n\n` +
-                `Add some text underneath that heading, or ask a developer to ` +
-                `remove the section from content/${layoutName}.layout.json\n\n` +
-                `The website has not been changed. It is still showing the previous version.`
-            );
-        }
-
+        const match = requireSection(entry.section);
         return { ...entry, heading: match.heading, content: match.blocks };
     });
 
     // A section the document has but the layout does not is a warning, never
     // an error: an officer drafting ahead of a developer must not be able to
     // take the site down.
+    const used = new Set(
+        layout.blocks.flatMap((b) => [b.section, ...(b.sections ?? [])])
+            .filter(Boolean)
+            .map((name) => name.trim())
+    );
     const orphans = parsed.sections
-        .filter(
-            (s) => s.heading && !layout.blocks.some((b) => b.section?.trim() === s.heading.trim())
-        )
+        .filter((s) => s.heading && !used.has(s.heading.trim()))
         .map((s) => s.heading);
 
     return { blocks, orphans };

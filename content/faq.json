@@ -1,0 +1,340 @@
+{
+  "route": "/faq",
+  "title": "FAQ",
+  "blocks": [
+    {
+      "type": "big-white-box",
+      "showTitle": true
+    },
+    {
+      "section": "Registration",
+      "type": "white-stripe qa",
+      "heading": "Registration",
+      "content": [
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Is there an age limit for lessons?"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "We accept students as young as 5 years old."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "I filled out the registration form, but can't figure out where to pay."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "We will send you a confirmation email once we have processed your request. This confirmation will contain a Paypal link and instructions for making payments. Please allow a few days for us to process requests."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "When will I receive confirmation of lesson registration?"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Please allow 5-7 business days for a confirmation email. This email will be sent to the e-mail address listed on your registration, so please check all relevant accounts and spam folders or add "
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": "mailto:huskywslessons@gmail.com",
+              "text": "huskywslessons@gmail.com"
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": " to your contacts for best results."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Why aren't lift tickets included in lesson fees?"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "The Summit at Snoqualmie offers passes for a variety of skill levels for different age groups, and Husky Winter Sports cannot purchase and sell these to our students. Unless you already have a Season Pass, please check with your instructor before purchasing daily passes, as special cases exist. For example, never-ever lessons will most likely not ride the lift on their first weekend of instruction and will not need a pass; beginner lessons may wish to purchase a cheaper Beginner pass which allows them to ride on the Holiday and Gallery lifts only. Child tickets (0-6 years) are available for only $15 a day."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Daily lift tickets: "
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": "http://www.summitatsnoqualmie.com/tickets-and-passes/daily-lift-tickets",
+              "text": "http://www.summitatsnoqualmie.com/tickets-and-passes/daily-lift-tickets"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "How do refunds work?"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "See the Lesson Registration page for details."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "section": "Lessons",
+      "type": "purple-stripe qa",
+      "heading": "Lessons",
+      "content": [
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Why isn't my child on the lift yet?"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Our instructors are trained to make sure that your child possesses the necessary skills before they are moved onto more challenging terrain. Younger children may need some time to get used to the snow before they can safely navigate the more advanced terrain served by the lifts."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Snowboarding is trickier to start than skiing so your child may require some extra time to get used to sliding sideways."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "What should I do while my child is in lessons?"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Enjoy the 1,994 acres and lifts that Snoqualmie has to offer, grab a coffee or snack in the lodge, or take an adult lesson with us! While we know you want to see your children's progress first hand, it is easier for the instructors to teach when they have their students' full attention."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "What can I work on with my child outside of lessons?"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "If you ski or snowboard with your student outside of lessons, you can always ask their instructor for games that you could play to help the students improve. You can also always ask your child to show you the fun skills that they’ve learned in lessons. Overall, the key is to keep them stoked to come up to the mountains!"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Why does my student keep switching lessons? I thought they would be with the same instructor?"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "After the first week, we occasionally have to tweak lesson groups based on what we see on the hill. While we try to keep groups as consistent as possible, we think that it will help students get the most out of their lessons when they are learning with students at their same ability level."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Why isn't my child in the same lesson as their friends?"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "We will do our best to group students with their friends if you request it when you sign them up. If we see that certain students have different needs in their lessons, we may separate them so that they can each get the most out of their lessons."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Do I tip my instructor?"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "All of our instructors are unpaid volunteers who spend hours training to teach the sports that they love; tips are not required, but greatly appreciated."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Can I reschedule a lesson?"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Get in touch with us! We will do our best to reschedule. But the earlier we know the easier it will be to find an alternative spot."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

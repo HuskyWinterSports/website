@@ -183,6 +183,13 @@ h2 {
     margin-right: auto;
 }
 
+/* The reading measure is for prose. A row of cards is not prose, and capping
+   it at 800px forces four cards to wrap 3 + 1, leaving the last one stranded
+   and centred under the others. */
+.qa > .cards {
+    max-width: 1120px;
+}
+
 .qa h2 {
     margin: 0 auto 8px;
 }

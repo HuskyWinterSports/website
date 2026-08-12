@@ -193,6 +193,8 @@
     {
       "type": "white-stripe qa",
       "section": "Levels",
+      "cards": true,
+      "_note": "The four levels are a comparison, not a sequence of prose: cards let a parent scan them side by side and pick one.",
       "heading": "Levels",
       "content": [
         {

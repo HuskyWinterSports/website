@@ -1,0 +1,18 @@
+{
+  "route": "/become-an-instructor",
+  "source": {
+    "kind": "google-doc",
+    "publishedId": "2PACX-1vQ53bIBpIbYs7rqDxydTDD9aO20F7JeeqxmLwaH33FMV2dZ0MyEy9Pf8N6BRZgsdbtRGtdwS226v7Eh",
+    "tab": "Become an Instructor"
+  },
+  "blocks": [
+    { "type": "white-stripe centered-text", "showTitle": true, "section": "Who We Are and What We Do" },
+    { "type": "big-white-box", "section": "Opportunity" },
+    {
+      "_note": "A rounded box rather than the full-width stripe it used to be. It sat between two rounded boxes, so a band across the page broke the rhythm of the sequence for no reason.",
+      "type": "big-purple-box",
+      "section": "The Process"
+    },
+    { "type": "big-white-box", "section": "The Perks" }
+  ]
+}

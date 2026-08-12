@@ -151,6 +151,21 @@ export function joinSections(layout, parsed, layoutName) {
         if (!entry.section) return { ...entry };
 
         const match = requireSection(entry.section);
+
+        // A cards block draws one card per Heading 3. With none it would
+        // render an empty grid — visibly broken, but only to whoever looked.
+        if (entry.cards && !match.blocks.some((b) => b.type === 'heading' && b.level === 3)) {
+            throw new ContentError(
+                `The website shows "${entry.section}" as a row of cards, one per ` +
+                `"Heading 3", but that section of the ${layoutName} document has ` +
+                `no Heading 3 in it.\n\n` +
+                `Give each card a short "Heading 3" title with its text ` +
+                `underneath, or ask a developer to change how that section is ` +
+                `laid out in content/${layoutName}.layout.json\n\n` +
+                `The website has not been changed. It is still showing the previous version.`
+            );
+        }
+
         return { ...entry, heading: match.heading, content: match.blocks };
     });
 

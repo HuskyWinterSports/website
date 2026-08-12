@@ -162,6 +162,68 @@ h2 {
     border-radius: 12px;
 }
 
+/* A run of questions and answers.
+ *
+ * Deliberately placed after the .white-stripe / .purple-stripe rules: it has
+ * the same specificity and relies on source order to win.
+ *
+ * Long prose reads badly centred — the eye has to find the start of every
+ * line — so these are left-aligned whichever stripe they sit on, and capped
+ * at a comfortable measure rather than running the full width of a monitor.
+ * Applied to the section itself rather than an inner wrapper, so the same
+ * layout is reachable from a content block as "white-stripe qa".
+ */
+.qa {
+    text-align: left;
+}
+
+.qa > * {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.qa h2 {
+    margin: 0 auto 8px;
+}
+
+/* The questions carry the scanning, so they get the weight and the space.
+   Someone looking for one answer should be able to skim only these. */
+.qa h3 {
+    margin: 32px auto 10px;
+    line-height: 1.4;
+}
+
+.qa h3:first-of-type {
+    margin-top: 24px;
+}
+
+.qa p,
+.qa ul {
+    margin: 0 auto 12px;
+    line-height: 1.65;
+}
+
+.qa ul {
+    padding-left: 24px;
+}
+
+.qa li {
+    margin-bottom: 8px;
+}
+
+/* The site link colour is a mid purple, which all but disappears on the
+   purple stripe. */
+.purple-stripe.qa a {
+    color: #d9c2f2;
+    text-decoration: underline;
+}
+
+.qa .intro {
+    margin-bottom: 4px;
+    opacity: 0.85;
+}
+
 .gray-stripe {
   background-color: lightgray;
 }

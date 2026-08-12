@@ -94,6 +94,21 @@ export function joinSections(layout, parsed, layoutName) {
     };
 
     const blocks = layout.blocks.map((entry) => {
+        // Checked before `lead`, because a block can carry both: a page whose
+        // whole body sits under the title uses one block for the h1 and the
+        // text. Checking after the lead branch would skip this for exactly
+        // those pages.
+        if (entry.showTitle && !parsed.title) {
+            throw new ContentError(
+                `The ${layoutName} document has no page title.\n\n` +
+                `The website takes it from the first line styled "Heading 1". ` +
+                `That line seems to have been deleted, or restyled to something else.\n\n` +
+                `Set the page's title line back to "Heading 1", or ask a developer ` +
+                `to remove "showTitle" from content/${layoutName}.layout.json\n\n` +
+                `The website has not been changed. It is still showing the previous version.`
+            );
+        }
+
         // `lead: true` takes the text under the document's Heading 1 but
         // before its first Heading 2. Pages often open with an introduction
         // that has no heading of its own.
@@ -110,20 +125,6 @@ export function joinSections(layout, parsed, layoutName) {
                 );
             }
             return { ...entry, content: leading.blocks };
-        }
-
-        // A block that renders the page title needs a Heading 1 to render.
-        // Without this the page would ship with no <h1> at all — invisible in
-        // a diff, and costly for search.
-        if (entry.showTitle && !parsed.title) {
-            throw new ContentError(
-                `The ${layoutName} document has no page title.\n\n` +
-                `The website takes it from the first line styled "Heading 1". ` +
-                `That line seems to have been deleted, or restyled to something else.\n\n` +
-                `Set the page's title line back to "Heading 1", or ask a developer ` +
-                `to remove "showTitle" from content/${layoutName}.layout.json\n\n` +
-                `The website has not been changed. It is still showing the previous version.`
-            );
         }
 
         // `sections` gathers several of the document's headings into ONE box

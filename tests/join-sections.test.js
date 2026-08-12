@@ -49,6 +49,37 @@ describe('joinSections', () => {
         assert.equal(blocks[0].content[0].spans[0].text, 'intro text');
     });
 
+    test('one block can carry both the title and the opening text', () => {
+        // Contact Us and Email List are a title and some paragraphs, with no
+        // headings at all. Inventing a heading just to have something to hang
+        // content on would put a join key in the club's document that nobody
+        // asked for and everybody then has to preserve.
+        const { blocks } = joinSections(
+            layout([{ type: 'big-white-box centered-text', showTitle: true, lead: true }]),
+            parsed,
+            'contact-us'
+        );
+        assert.equal(blocks.length, 1);
+        assert.equal(blocks[0].showTitle, true);
+        assert.equal(blocks[0].content[0].spans[0].text, 'intro text');
+    });
+
+    test('a title-and-lead block still checks the title exists', () => {
+        // The lead branch used to return before this check ran, so exactly the
+        // pages that need it were the ones skipping it.
+        assert.throws(
+            () => joinSections(
+                layout([{ type: 'big-white-box', showTitle: true, lead: true }]),
+                { ...parsed, title: null },
+                'contact-us'
+            ),
+            (error) => {
+                assert.match(error.message, /no page title/);
+                return true;
+            }
+        );
+    });
+
     test('layout-only blocks need nothing from the document', () => {
         const { blocks } = joinSections(
             layout([{ type: 'button', label: 'Donate', href: 'https://example.org' }]),

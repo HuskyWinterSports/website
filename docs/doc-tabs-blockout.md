@@ -87,25 +87,32 @@ Route `/contact-us`. Paste everything below.
 ```markdown
 # Contact Us
 
-## Address
-
 Husky Winter Sports
 
 207 HUB SAO 130 Box 352238
 
 Seattle, WA 98195
 
-## Getting in Touch
-
 For questions about lessons, the best way to contact us is via email at huskywslessons@gmail.com. Expect a response within three to five business days.
 
 During the Spring and Summer months (March - August), email and voice messages are checked less frequently, and it may take up to one week to receive a response.
 ```
 
-**Note:** the live page has no headings — it is a title and two paragraphs. The
-two Heading 2s above are added because a page needs at least one section for
-the sync to attach content to. If you would rather the headings not appear on
-the page, say so and the layout can hide them.
+**No Heading 2s, on purpose.** The live page is a title and some paragraphs,
+with no headings at all. An earlier draft invented `Address` and
+`Getting in Touch` so there would be a section for the content to attach to —
+but a heading exists to be read, and inventing one puts a join key in the
+club's document that nobody asked for and everybody afterwards has to preserve.
+
+The layout uses `lead: true` instead, which takes the text sitting under the
+title before any Heading 2:
+
+```json
+[{ "type": "big-white-box centered-text", "showTitle": true, "lead": true }]
+```
+
+**Make `huskywslessons@gmail.com` a link** in the document (select it, Ctrl+K).
+The live page has it as a mailto link; pasted plain text stays plain text.
 
 ---
 
@@ -117,10 +124,11 @@ appears below this text.
 ```markdown
 # Email List
 
-## Why Join
-
 There's snow on the ground and it's snowing in the mountains! We hope you're just as excited about skiing as we are. Join our emailing list to be notified of lesson registration openings and updates.
 ```
+
+**No Heading 2, same reasoning as Contact Us.** One paragraph under the title;
+the layout uses `lead: true`.
 
 **Dropped on purpose:** *"Click here to open the form in a new window."* That
 sentence describes the form, so it belongs with the form in the layout file,

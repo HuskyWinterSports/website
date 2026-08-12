@@ -196,6 +196,25 @@ describe('failure messages', () => {
         );
     });
 
+    test('a cards section with no Heading 3 says what a card is made of', () => {
+        // Otherwise the page renders an empty grid: visibly broken, but only
+        // to whoever happened to look at it.
+        assert.throws(
+            () => joinSections(
+                layout([{ section: 'Support Our Instructors', type: 'white-stripe', cards: true }]),
+                parsed,
+                'lesson-info'
+            ),
+            (error) => {
+                assert.ok(error instanceof ContentError);
+                assert.match(error.message, /row of cards, one per "Heading 3"/);
+                assert.match(error.message, /has no Heading 3 in it/);
+                assert.match(error.message, /website has not been changed/i);
+                return true;
+            }
+        );
+    });
+
     test('a missing opening paragraph is explained in plain language', () => {
         const noLead = { title: 'x', sections: [{ heading: 'A', blocks: [paragraph('t')] }] };
         assert.throws(

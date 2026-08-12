@@ -89,6 +89,49 @@ function EmbeddedForm({ form }) {
     );
 }
 
+/**
+ * Splits a section's content into whatever comes before the first Heading 3,
+ * and then one card per Heading 3.
+ *
+ * Done here rather than in the sync so that content/<page>.json stays a
+ * faithful record of what the document says. Whether a run of headings is a
+ * list down the page or a row of cards is a layout decision, and layout lives
+ * in the layout file.
+ */
+function groupIntoCards(content) {
+    const lead = [];
+    const cards = [];
+
+    for (const block of content) {
+        if (block.type === 'heading' && block.level === 3) {
+            cards.push({ heading: block, body: [] });
+        } else if (cards.length) {
+            cards[cards.length - 1].body.push(block);
+        } else {
+            lead.push(block);
+        }
+    }
+
+    return { lead, cards };
+}
+
+function Cards({ content }) {
+    const { lead, cards } = groupIntoCards(content);
+    return (
+        <>
+            {lead.map((child, index) => <Block key={index} block={child} />)}
+            <section className="cards">
+                {cards.map((card, index) => (
+                    <div className="card" key={index}>
+                        <h3><Spans spans={card.heading.spans} /></h3>
+                        {card.body.map((child, i) => <Block key={i} block={child} />)}
+                    </div>
+                ))}
+            </section>
+        </>
+    );
+}
+
 function BoxItems({ items }) {
     return <ul>{items.map((item, index) => <li key={index}>{item}</li>)}</ul>;
 }
@@ -121,7 +164,9 @@ function Section({ block, title }) {
                 whichever block opts in. Every page needs exactly one. */}
             {block.showTitle && title && <h1>{title}</h1>}
             {block.heading && <h2>{block.heading}</h2>}
-            {block.content?.map((child, index) => <Block key={index} block={child} />)}
+            {block.cards
+                ? <Cards content={block.content ?? []} />
+                : block.content?.map((child, index) => <Block key={index} block={child} />)}
 
             {/* Several of the document's headings gathered into one panel —
                 Contact Us and FAQ are each a single box holding two headed

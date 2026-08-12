@@ -1,0 +1,28 @@
+{
+  "route": "/lesson-info",
+  "source": {
+    "kind": "google-doc",
+    "publishedId": "2PACX-1vQ53bIBpIbYs7rqDxydTDD9aO20F7JeeqxmLwaH33FMV2dZ0MyEy9Pf8N6BRZgsdbtRGtdwS226v7Eh",
+    "tab": "Lesson Info"
+  },
+  "sheet": {
+    "_note": "Dates and prices change every season and are the single most important thing on the site to get right, so they come from the sheet rather than from prose anyone has to remember to edit.",
+    "publishedId": "2PACX-1vTns_bwHBtn4tye1uqtNc9keCq37ke-DhG1jM906eXTkYqHKlPOhtXFo-dBwKYVpsYbpGwsD_5VwskJ"
+  },
+  "blocks": [
+    { "type": "big-white-box", "showTitle": true, "section": "Come Shred With Us" },
+    { "type": "white-stripe qa", "section": "Logistics" },
+    { "type": "purple-stripe", "heading": "{season_year} Dates", "sheet": "dates" },
+    { "type": "white-stripe qa", "section": "Levels" },
+    { "type": "purple-stripe", "heading": "Prices", "sheet": "prices" },
+    { "type": "white-stripe qa", "section": "Equipment and Lift Tickets" },
+    {
+      "type": "big-purple-box",
+      "section": "Location",
+      "map": {
+        "src": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2700.133805568329!2d-121.41651012339734!3d47.409331201578766!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x549a79a7190fe42d%3A0xf0e443698bbac23c!2sHusky%20Winter%20Sports!5e0!3m2!1sen!2sus!4v1786558788128!5m2!1sen!2sus",
+        "title": "Map showing the Ullr Snow Sports Meeting Area at Summit Central"
+      }
+    }
+  ]
+}

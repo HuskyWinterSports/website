@@ -2,7 +2,9 @@ import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseGoogleDoc } from './parse-google-doc.js';
+import { parseSheet } from './parse-sheet.js';
 import { joinSections, selectTab, ContentError } from './join-sections.js';
+import { sheetBlock, fillLayoutTokens } from './apply-sheet.js';
 
 /**
  * Fetches published Google content, validates it against the repo's layout
@@ -23,6 +25,35 @@ const CONTENT_DIR = join(ROOT, 'content');
 
 const docUrl = (publishedId) =>
     `https://docs.google.com/document/d/e/${publishedId}/pub`;
+
+const sheetUrl = (publishedId) =>
+    `https://docs.google.com/spreadsheets/d/e/${publishedId}/pub?output=csv`;
+
+async function fetchPublished(url, layoutName, what) {
+    let response;
+    try {
+        response = await fetch(url, { redirect: 'follow' });
+    } catch (cause) {
+        throw new ContentError(
+            `Could not reach Google to read the ${what} for ${layoutName}.\n\n` +
+            `  ${url}\n\n` +
+            `This is usually a temporary network problem. The website has not ` +
+            `been changed; it is still showing the previous version.\n` +
+            `Cause: ${cause.message}`
+        );
+    }
+
+    if (!response.ok) {
+        throw new ContentError(
+            `Google returned an error (HTTP ${response.status}) for the ${what} ` +
+            `used by ${layoutName}.\n\n  ${url}\n\n` +
+            `This usually means it is no longer published to the web. Open it and ` +
+            `choose File > Share > Publish to the web, then press Publish.\n\n` +
+            `The website has not been changed. It is still showing the previous version.`
+        );
+    }
+    return response.text();
+}
 
 async function fetchDoc(publishedId, layoutName) {
     const url = docUrl(publishedId);
@@ -66,7 +97,29 @@ async function syncLayout(layoutPath) {
     const html = await fetchDoc(layout.source.publishedId, layoutName);
     const document = parseGoogleDoc(html);
     const parsed = selectTab(document, layout.source.tab, layoutName);
-    const { blocks, orphans } = joinSections(layout, parsed, layoutName);
+
+    // The sheet is resolved first: its values can appear inside strings the
+    // layout sets, so the layout has to be filled in before it is joined
+    // against the document.
+    let resolved = layout;
+    const sheetWarnings = [];
+    if (layout.sheet) {
+        const csv = await fetchPublished(
+            sheetUrl(layout.sheet.publishedId), layoutName, 'signup sheet'
+        );
+        const sheet = parseSheet(csv);
+        sheetWarnings.push(...sheet.warnings);
+
+        resolved = fillLayoutTokens(layout, sheet.settings, layoutName);
+        resolved = {
+            ...resolved,
+            blocks: resolved.blocks.map(
+                (entry) => (entry.sheet ? sheetBlock(entry, sheet, layoutName) : entry)
+            ),
+        };
+    }
+
+    const { blocks, orphans } = joinSections(resolved, parsed, layoutName);
 
     const output = { route: layout.route, title: parsed.title, blocks };
     const outputPath = join(CONTENT_DIR, `${layoutName}.json`);
@@ -78,11 +131,11 @@ async function syncLayout(layoutPath) {
     const tabs = document.tabs.map((t) => t.name);
 
     if (previous === serialised) {
-        return { layoutName, changed: false, orphans, tabs };
+        return { layoutName, changed: false, orphans, tabs, sheetWarnings };
     }
 
     writeFileSync(outputPath, serialised);
-    return { layoutName, changed: true, orphans, tabs };
+    return { layoutName, changed: true, orphans, tabs, sheetWarnings };
 }
 
 async function main() {
@@ -104,6 +157,12 @@ async function main() {
         // tab's body would split it in two and silently strip the remainder.
         if (result.tabs.length) {
             console.log(`tabs in the ${result.layoutName} document: ${result.tabs.join(', ')}`);
+        }
+
+        // Anything odd about the sheet is reported but never fatal: an
+        // officer adding a note to a spreadsheet must not take the site down.
+        for (const warning of result.sheetWarnings ?? []) {
+            console.log(`NOTE: ${warning}`);
         }
 
         // Orphans are a warning, not a failure: an editor adding a section

@@ -1,0 +1,443 @@
+{
+  "route": "/lesson-info",
+  "title": "Lesson Information",
+  "blocks": [
+    {
+      "type": "big-white-box",
+      "showTitle": true,
+      "section": "Come Shred With Us",
+      "heading": "Come Shred With Us",
+      "content": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Husky Winter Sports offers both ski and snowboarding lessons for kids and adults alike!"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "white-stripe qa",
+      "section": "Logistics",
+      "heading": "Logistics",
+      "content": [
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Scheduling"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Our lessons run for six total weekends during winter quarter. We offer 3-week ("
+            },
+            {
+              "bold": true,
+              "italic": false,
+              "href": null,
+              "text": "A or B"
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": ") or 6-week lesson packages. Students may choose between our Saturday ("
+            },
+            {
+              "bold": true,
+              "italic": false,
+              "href": null,
+              "text": "1:30 - 4pm"
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": ") or Sunday ("
+            },
+            {
+              "bold": true,
+              "italic": false,
+              "href": null,
+              "text": "11:30 - 2pm"
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": ") session."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Group Lessons"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Ages 7+, suitable for all skill levels! Group size is anywhere between 3-5 students per instructor, arranged based on sport type, age, and ability level."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Single-Student Lessons"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Ages 5+. Privates are 1-on-1 student to instructor for a more personalized experience."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Friends and Family Lessons"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Ages 7+. Semi-privates are group lessons where you pick your group of 2-5 kids. Please email "
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": "mailto:huskywslessons@gmail.com",
+              "text": "huskywslessons@gmail.com"
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": " if interested in registering students ages 5 and 6 for semi-private lessons."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "purple-stripe",
+      "heading": "2026/27 Dates",
+      "boxes": [
+        {
+          "heading": "Session A",
+          "items": [
+            "Lesson 1: Jan 30 - Jan 31",
+            "Lesson 2: Feb 6 - Feb 7",
+            "Lesson 3: Feb 20 - Feb 21"
+          ]
+        },
+        {
+          "heading": "Session B",
+          "items": [
+            "Lesson 1: Feb 27 - Feb 28",
+            "Lesson 2: Mar 6 - Mar 7",
+            "Lesson 3: Mar 13 - Mar 14"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "white-stripe qa",
+      "section": "Levels",
+      "heading": "Levels",
+      "content": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "We offer lessons for four levels: Never-ever, Beginner, Intermediate, and Advanced. When registering, please make your best guess as to the most appropriate lesson level and answer every experience question to the best of your ability. The Lesson Director may contact you with more questions while assigning lessons and instructors."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Never-Ever"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "The student is brand new to their snowsport or is returning after a hiatus of a year or more."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Beginner"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "The student can make turns on green terrain and is comfortable riding the Magic Carpet. Lift experience may be limited or nonexistent."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Intermediate"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "The student is making linked turns on green terrain and starting to explore blue runs."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Advanced"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "The student can make controlled, linked turns on most runs."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "purple-stripe",
+      "heading": "Prices",
+      "boxes": [
+        {
+          "heading": "Group",
+          "inset": true,
+          "items": [
+            "3 weeks - $240",
+            "6 weeks - $360"
+          ]
+        },
+        {
+          "heading": "Single-Student",
+          "inset": true,
+          "items": [
+            "3 weeks - $660",
+            "6 weeks - $990"
+          ]
+        },
+        {
+          "heading": "Friends & Family",
+          "inset": true,
+          "items": [
+            "3 weeks - $325",
+            "6 weeks - $485"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "white-stripe qa",
+      "section": "Equipment and Lift Tickets",
+      "heading": "Equipment and Lift Tickets",
+      "content": [
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Equipment"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Before you head up to the mountain, please make sure you have all of the proper gear. This includes boots, bindings, skis or a snowboard, goggles or sunglasses, waterproof jacket, snow pants, and gloves. Be prepared for varying weather conditions and bring plenty of warm layers and a helmet. If you need to buy or rent equipment or clothing, check out some local shops or ski swaps!"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Lift Tickets"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "The Summit at Snoqualmie offers passes for a variety of skill levels and for different age groups, and Husky Winter Sports cannot purchase and sell these to our students. Unless you already have a Season Pass, please check with your instructor before purchasing daily passes, as special cases exist. For example, never-ever lessons will most likely not ride the lift on their first weekend of instruction and will not need a pass; beginner lessons may wish to purchase a cheaper Beginner pass which allows them to ride on the Holiday and Gallery lifts only."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "big-purple-box",
+      "section": "Location",
+      "map": {
+        "src": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2700.133805568329!2d-121.41651012339734!3d47.409331201578766!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x549a79a7190fe42d%3A0xf0e443698bbac23c!2sHusky%20Winter%20Sports!5e0!3m2!1sen!2sus!4v1786558788128!5m2!1sen!2sus",
+        "title": "Map showing the Ullr Snow Sports Meeting Area at Summit Central"
+      },
+      "heading": "Location",
+      "content": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Lessons begin from the Ullr Snow Sports Meeting Area at Snoqualmie's \"Summit Central.\" To reach us, take Exit 53 from I-90 East and turn right at the stop sign. At the T-intersection, turn left, drive past the fire station, and turn into the large gravel parking lot on your left."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "From the parking lot, walk up the switchback path towards the lodges. Looking towards the hill from the bonfire area, "
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": "https://maps.app.goo.gl/RD9yjpSS8J3VNz6m9",
+              "text": "we are located outside the orange \"Ullr\" building south of the base of the Triple 60 Lift"
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "This can be a bit of a long walk for the young ones, so please make sure to arrive early enough to find parking in the Central lot (if full, you will be directed to an auxiliary lot and may need to take a shuttle back) and arrive at Ullr with plenty of time to get stoked and ready to go."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

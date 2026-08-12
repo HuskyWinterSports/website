@@ -89,6 +89,10 @@ function EmbeddedForm({ form }) {
     );
 }
 
+function BoxItems({ items }) {
+    return <ul>{items.map((item, index) => <li key={index}>{item}</li>)}</ul>;
+}
+
 function Section({ block, title }) {
     // Layout-only blocks carry their own content and never touch the document.
     if (block.type === 'button') {
@@ -129,6 +133,34 @@ function Section({ block, title }) {
                     {group.content.map((child, i) => <Block key={i} block={child} />)}
                 </Fragment>
             ))}
+
+            {/* Dates and prices, straight from the signup sheet. One shape
+                serves both: a row of boxes, each a heading over a list. */}
+            {block.boxes && (
+                <section className="boxes">
+                    {block.boxes.map((box, index) => (
+                        <div className="box" key={index}>
+                            <h3>{box.heading}</h3>
+                            {box.inset
+                                ? <div className="little-white-box"><BoxItems items={box.items} /></div>
+                                : <BoxItems items={box.items} />}
+                        </div>
+                    ))}
+                </section>
+            )}
+
+            {/* Lazy: visitors who never scroll to Location should not pay to
+                download a map they will not see. */}
+            {block.map && (
+                <iframe
+                    className="embedded-map"
+                    title={block.map.title}
+                    src={block.map.src}
+                    loading="lazy"
+                    allowFullScreen
+                    referrerPolicy="strict-origin-when-cross-origin"
+                >Loading…</iframe>
+            )}
 
             {block.form && <EmbeddedForm form={block.form} />}
         </section>

@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { parseGoogleDoc } from './parse-google-doc.js';
 import { parseSheet } from './parse-sheet.js';
 import { joinSections, selectTab, ContentError } from './join-sections.js';
-import { sheetBlock, fillLayoutTokens } from './apply-sheet.js';
+import { sheetBlock, fillLayoutTokens, applyStatus } from './apply-sheet.js';
 
 /**
  * Fetches published Google content, validates it against the repo's layout
@@ -113,9 +113,11 @@ async function syncLayout(layoutPath) {
         resolved = fillLayoutTokens(layout, sheet.settings, layoutName);
         resolved = {
             ...resolved,
-            blocks: resolved.blocks.map(
-                (entry) => (entry.sheet ? sheetBlock(entry, sheet, layoutName) : entry)
-            ),
+            blocks: resolved.blocks.map((entry) => {
+                if (entry.sheet) return sheetBlock(entry, sheet, layoutName);
+                if (entry.status) return applyStatus(entry, sheet.settings, layoutName);
+                return entry;
+            }),
         };
     }
 

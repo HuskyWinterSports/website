@@ -119,6 +119,42 @@ describe('spacing in the document never reaches the website', () => {
     });
 });
 
+describe('lists split across several <ul> elements', () => {
+    // Observed for real: the club's "The Perks" list arrived as six separate
+    // one-item lists after somebody re-typed a bullet. To a reader that is one
+    // list, and rendering it as six adds a paragraph gap between every bullet
+    // for a reason nobody can see in the document.
+    const doc = (body) => parseGoogleDoc(
+        `<html><body><div id="contents"><h2>S</h2>${body}</div></body></html>`
+    );
+    const items = (parsed) =>
+        parsed.sections[0].blocks.filter((b) => b.type === 'list');
+
+    test('become one list', () => {
+        const split = doc('<ul><li>a</li></ul><ul><li>b</li></ul><ul><li>c</li></ul>');
+        assert.equal(items(split).length, 1);
+        assert.deepEqual(items(split)[0].items.map((i) => i[0].text), ['a', 'b', 'c']);
+    });
+
+    test('and match a document that was never split', () => {
+        assert.deepEqual(
+            doc('<ul><li>a</li></ul><ul><li>b</li></ul>'),
+            doc('<ul><li>a</li><li>b</li></ul>')
+        );
+    });
+
+    test('but a numbered list does not absorb a bulleted one', () => {
+        const mixed = doc('<ul><li>a</li></ul><ol><li>1</li></ol>');
+        assert.equal(items(mixed).length, 2);
+        assert.deepEqual(items(mixed).map((l) => l.ordered), [false, true]);
+    });
+
+    test('and a paragraph between them keeps them apart', () => {
+        const parted = doc('<ul><li>a</li></ul><p>then</p><ul><li>b</li></ul>');
+        assert.equal(items(parted).length, 2);
+    });
+});
+
 describe('resilience to Google regenerating its markup', () => {
     // THE test. Google renumbers its CSS classes on every republish: `c7` was
     // observed meaning bold in one publish and being the link class in the

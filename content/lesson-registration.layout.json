@@ -1,0 +1,48 @@
+{
+  "route": "/lesson-registration",
+  "source": {
+    "kind": "google-doc",
+    "publishedId": "2PACX-1vQ53bIBpIbYs7rqDxydTDD9aO20F7JeeqxmLwaH33FMV2dZ0MyEy9Pf8N6BRZgsdbtRGtdwS226v7Eh",
+    "tab": "Lesson Registration"
+  },
+  "sheet": {
+    "publishedId": "2PACX-1vTns_bwHBtn4tye1uqtNc9keCq37ke-DhG1jM906eXTkYqHKlPOhtXFo-dBwKYVpsYbpGwsD_5VwskJ"
+  },
+  "blocks": [
+    {
+      "_note": "The sheet picks the state, this picks the words. Officers should not have to keep 'we are full' consistent with whether a signup form is on screen underneath it \u2014 the hand-written page got exactly that wrong, saying lessons were full in one paragraph and open for snowboarders two paragraphs later.",
+      "type": "big-white-box centered-text",
+      "showTitle": true,
+      "status": {
+        "not_yet_open": {
+          "text": "Registration for the {season_year} season is not open yet. [Join our mailing list](/join-our-mailing-list) and we will email you when it does.",
+          "form": false
+        },
+        "open": {
+          "text": "Registration for the {season_year} season is open. Fill out the form below to sign up.",
+          "form": true
+        },
+        "waitlist": {
+          "text": "Ski and snowboard lessons for the {season_year} season are full. Please fill out the form below to join the waitlist.",
+          "form": true
+        },
+        "full": {
+          "text": "Ski and snowboard lessons for the {season_year} season are full, and the waitlist is closed. [Join our mailing list](/join-our-mailing-list) to hear about next season.",
+          "form": false
+        }
+      },
+      "form": {
+        "src": "https://docs.google.com/forms/d/e/1FAIpQLSfjLegq7v2dtmjG_YTOisGHB9gBcoSKPdTvs9VDIEcfnHs-0Q/viewform?embedded=true",
+        "title": "Lesson registration and waitlist form"
+      }
+    },
+    {
+      "type": "white-stripe qa",
+      "section": "Questions"
+    },
+    {
+      "type": "white-stripe qa",
+      "section": "Cancellation and Refund Eligibility"
+    }
+  ]
+}

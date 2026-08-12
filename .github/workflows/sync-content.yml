@@ -76,15 +76,68 @@ jobs:
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Commit the change, if there is one
-        id: commit
+      # ------------------------------------------------------------------
+      # Nothing below publishes a change the first time it is seen.
+      #
+      # Google republishes a document as it is typed, so a scheduled run can
+      # arrive mid-edit. A half-finished sentence is structurally perfect —
+      # no validation can ever reject it — so it would go live and sit there.
+      #
+      # So a change must be seen TWICE, an hour apart, before it is published.
+      # The identity of the content is its own cache key: saving that key says
+      # "seen", and finding it on a later run says "still saying the same
+      # thing an hour later, so whoever was typing has stopped."
+      #
+      # Manually running the workflow skips the wait, because pressing the
+      # button is itself the statement that the text is ready.
+      # ------------------------------------------------------------------
+      - name: Identify what the document is currently saying
+        id: candidate
         run: |
           if git diff --quiet -- content/; then
             echo 'Nothing changed. Not committing, not deploying.'
-            echo 'changed=false' >> "$GITHUB_OUTPUT"
-            exit 0
+            echo 'state=unchanged' >> "$GITHUB_OUTPUT"
+          else
+            echo "hash=$(cat content/*.json | sha256sum | cut -c1-32)" >> "$GITHUB_OUTPUT"
+            echo 'state=new' >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Have we seen this exact text before?
+        id: seen
+        if: steps.candidate.outputs.state == 'new'
+        uses: actions/cache/restore@v4
+        with:
+          path: .content-candidate
+          key: content-candidate-${{ steps.candidate.outputs.hash }}
+
+      - name: Remember it, and wait for it to settle
+        if: steps.candidate.outputs.state == 'new' && steps.seen.outputs.cache-hit != 'true' && github.event_name != 'workflow_dispatch'
+        run: |
+          date -u > .content-candidate
+          {
+            echo '## Change seen — waiting to confirm it is finished'
+            echo
+            echo 'The document has changed. The website has NOT been updated yet.'
+            echo
+            echo 'It updates once the same text is still there an hour from now,'
+            echo 'so that an edit caught halfway through does not go public.'
+            echo
+            echo 'To publish immediately instead, run this workflow by hand.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Save the candidate
+        if: steps.candidate.outputs.state == 'new' && steps.seen.outputs.cache-hit != 'true' && github.event_name != 'workflow_dispatch'
+        uses: actions/cache/save@v4
+        with:
+          path: .content-candidate
+          key: content-candidate-${{ steps.candidate.outputs.hash }}
+
+      - name: Commit the change, if there is one
+        id: commit
+        if: |
+          steps.candidate.outputs.state == 'new' &&
+          (steps.seen.outputs.cache-hit == 'true' || github.event_name == 'workflow_dispatch')
+        run: |
           # `paste -d` takes a cyclic list of single characters, so ', ' would
           # alternate the two and produce "a,b c". Join, then space out.
           PAGES=$(git diff --name-only -- content/ \
@@ -117,6 +170,8 @@ jobs:
             echo 'The site is rebuilding now and will be live in a few minutes.' >> "$GITHUB_STEP_SUMMARY"
           elif [ '${{ job.status }}' != 'success' ]; then
             : # the failure step above has already written the explanation
+          elif [ '${{ steps.candidate.outputs.state }}' = 'new' ]; then
+            : # the waiting-to-settle step has already written the explanation
           elif [ '${{ github.event_name }}' = 'workflow_dispatch' ]; then
             echo '## No changes to the document' >> "$GITHUB_STEP_SUMMARY"
             echo 'It already matches the website. Rebuilding and republishing anyway, since this run was started by hand.' >> "$GITHUB_STEP_SUMMARY"

@@ -60,7 +60,7 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": ". Expect a response within three to five business days."
+              "text": ". Expect a response within three to five business days.*"
             }
           ]
         },
@@ -71,7 +71,7 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "During the Spring and Summer months (March - August), email and voice messages are checked less frequently, and it may take up to one week to receive a response."
+              "text": "*During the Spring and Summer months (March - August), email and voice messages are checked less frequently, and it may take up to one week to receive a response."
             }
           ]
         }

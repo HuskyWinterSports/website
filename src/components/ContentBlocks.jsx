@@ -1,4 +1,6 @@
 import { Fragment } from 'react';
+import { Link } from 'react-router-dom';
+import { internalPath } from '../links.js';
 
 /**
  * Renders the content tree produced by scripts/sync/sync-content.js.
@@ -9,19 +11,21 @@ import { Fragment } from 'react';
  * README — this introduces no new styling.
  */
 
-function isExternal(href) {
-    return /^https?:/i.test(href);
-}
-
 function Spans({ spans }) {
     return spans.map((span, index) => {
         let node = span.text;
         if (span.bold) node = <strong>{node}</strong>;
         if (span.italic) node = <em>{node}</em>;
         if (span.href) {
-            node = isExternal(span.href)
-                ? <a href={span.href} target="_blank" rel="noopener noreferrer">{node}</a>
-                : <a href={span.href}>{node}</a>;
+            const path = internalPath(span.href);
+            if (path) {
+                node = <Link to={path}>{node}</Link>;
+            } else if (/^https?:/i.test(span.href)) {
+                node = <a href={span.href} target="_blank" rel="noopener noreferrer">{node}</a>;
+            } else {
+                // mailto:, tel: — same tab, no opener to worry about.
+                node = <a href={span.href}>{node}</a>;
+            }
         }
         return <Fragment key={index}>{node}</Fragment>;
     });

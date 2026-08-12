@@ -74,7 +74,7 @@ export default function Home() {
                     </div>
                     <div className='card'>
                         <h3>PSIA/AASI Certified</h3>
-                        <p>Instrutors are PSIA/AASI trained or are working towards it.</p>
+                        <p>Instructors are PSIA/AASI trained or are working towards it.</p>
                     </div>
                 </section>
             </section>

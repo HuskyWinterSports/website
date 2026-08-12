@@ -1,0 +1,29 @@
+{
+  "route": "/join-our-mailing-list",
+  "title": "Email List",
+  "blocks": [
+    {
+      "_note": "The form is layout, not words. Swapping to a new form is a one-line change here; the signup URL is not something an editor should have to paste into prose correctly.",
+      "type": "big-white-box centered-text",
+      "showTitle": true,
+      "lead": true,
+      "form": {
+        "src": "https://docs.google.com/forms/d/e/1FAIpQLSc1_veiFKbR2i3uqTdNQiR-5MZxLvLj_nbssYcrqqwfMsR0PA/viewform?embedded=true",
+        "title": "Mailing list signup form"
+      },
+      "content": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "There's snow on the ground and it's snowing in the mountains! We hope you're just as excited about skiing as we are. Join our emailing list to be notified of lesson registration openings and updates."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

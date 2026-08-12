@@ -1,0 +1,20 @@
+{
+  "route": "/join-our-mailing-list",
+  "source": {
+    "kind": "google-doc",
+    "publishedId": "2PACX-1vQ53bIBpIbYs7rqDxydTDD9aO20F7JeeqxmLwaH33FMV2dZ0MyEy9Pf8N6BRZgsdbtRGtdwS226v7Eh",
+    "tab": "Email List"
+  },
+  "blocks": [
+    {
+      "_note": "The form is layout, not words. Swapping to a new form is a one-line change here; the signup URL is not something an editor should have to paste into prose correctly.",
+      "type": "big-white-box centered-text",
+      "showTitle": true,
+      "lead": true,
+      "form": {
+        "src": "https://docs.google.com/forms/d/e/1FAIpQLSc1_veiFKbR2i3uqTdNQiR-5MZxLvLj_nbssYcrqqwfMsR0PA/viewform?embedded=true",
+        "title": "Mailing list signup form"
+      }
+    }
+  ]
+}

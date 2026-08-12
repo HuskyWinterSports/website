@@ -1,0 +1,81 @@
+{
+  "route": "/contact-us",
+  "title": "Contact Us",
+  "blocks": [
+    {
+      "_note": "No Heading 2s: this page is a title and some paragraphs. `lead` takes everything under the title, so no heading has to be invented to hang content on.",
+      "type": "big-white-box centered-text",
+      "showTitle": true,
+      "lead": true,
+      "content": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Husky Winter Sports"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "207 HUB SAO 130 Box 352238"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Seattle, WA 98195"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "For questions about lessons, the best way to contact us is via email at "
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": "mailto:huskywslessons@gmail.com",
+              "text": "huskywslessons@gmail.com"
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": ". Expect a response within three to five business days."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "During the Spring and Summer months (March - August), email and voice messages are checked less frequently, and it may take up to one week to receive a response."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

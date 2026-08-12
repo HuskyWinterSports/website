@@ -56,6 +56,35 @@ function Block({ block }) {
     }
 }
 
+/**
+ * A Google Form, embedded inside its block rather than after it — the pages
+ * that have one show it inside the same white panel as the text.
+ *
+ * The "open in a new window" link is derived from the embed URL rather than
+ * configured separately, so the form can be swapped by changing one string.
+ * Its wording lives here, not in the layout file and not in the document,
+ * because it describes the embed rather than saying anything the club would
+ * ever want to change: both pages that have a form say exactly this.
+ */
+function EmbeddedForm({ form }) {
+    const openUrl = form.src.replace(/[?&]embedded=true/, '');
+    return (
+        <>
+            <p>
+                Click{' '}
+                <a href={openUrl} target="_blank" rel="noopener noreferrer">here</a>
+                {' '}to open the form in a new window.
+            </p>
+            <iframe
+                className="embedded-form"
+                title={form.title}
+                src={form.src}
+                loading="lazy"
+            >Loading…</iframe>
+        </>
+    );
+}
+
 function Section({ block, title }) {
     // Layout-only blocks carry their own content and never touch the document.
     if (block.type === 'button') {
@@ -96,6 +125,8 @@ function Section({ block, title }) {
                     {group.content.map((child, i) => <Block key={i} block={child} />)}
                 </Fragment>
             ))}
+
+            {block.form && <EmbeddedForm form={block.form} />}
         </section>
     );
 }

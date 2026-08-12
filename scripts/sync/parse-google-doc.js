@@ -217,7 +217,20 @@ export function parseGoogleDoc(html) {
 
             if (tag === 'UL' || tag === 'OL') {
                 const list = readList(child, styleMap);
-                if (list.items.length) current.blocks.push(list);
+                if (!list.items.length) continue;
+
+                // Google splits one bulleted list into several <ul> elements
+                // depending on how it was typed — re-indenting a single bullet
+                // is enough. Back-to-back lists of the same kind are one list
+                // to a reader, so they are one list here; otherwise the page
+                // gains a paragraph gap between bullets for a reason nobody
+                // can see in the document.
+                const previous = current.blocks[current.blocks.length - 1];
+                if (previous?.type === 'list' && previous.ordered === list.ordered) {
+                    previous.items.push(...list.items);
+                } else {
+                    current.blocks.push(list);
+                }
                 continue;
             }
 

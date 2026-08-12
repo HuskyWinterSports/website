@@ -107,6 +107,67 @@ export function sheetBlock(entry, sheet, layoutName) {
     return { ...rest, boxes };
 }
 
+/**
+ * Turns `[label](/path)` in a layout's own sentence into a link.
+ *
+ * A registration message that says "join our mailing list" without linking to
+ * it asks a parent to go and find the page themselves, at the exact moment
+ * they were told they cannot do the thing they came for.
+ */
+export function linkedSpans(text) {
+    const spans = [];
+    const pattern = /\[([^\]]+)\]\(([^)]+)\)/g;
+    let at = 0;
+
+    for (const match of text.matchAll(pattern)) {
+        if (match.index > at) {
+            spans.push({ text: text.slice(at, match.index), bold: false, italic: false, href: null });
+        }
+        spans.push({ text: match[1], bold: false, italic: false, href: match[2] });
+        at = match.index + match[0].length;
+    }
+
+    if (at < text.length) {
+        spans.push({ text: text.slice(at), bold: false, italic: false, href: null });
+    }
+    return spans;
+}
+
+/**
+ * Chooses the sentence that matches the sheet's registration state.
+ *
+ * The sheet picks the state; the site picks the words. Officers should not
+ * have to phrase "we are full" consistently with whether a signup form is on
+ * screen below it — that pairing is the thing the hand-written page got wrong,
+ * saying lessons were full in one paragraph and open for snowboarders two
+ * paragraphs later.
+ */
+export function applyStatus(entry, settings, layoutName) {
+    const state = settings.registrationState;
+    const chosen = entry.status[state];
+
+    if (!chosen) {
+        throw new ContentError(
+            `The sheet says registration is "${state?.replace(/_/g, ' ')}", but ` +
+            `content/${layoutName}.layout.json has no wording for that.\n\n` +
+            `It has wording for: ${Object.keys(entry.status).filter((k) => !k.startsWith('_')).join(', ')}\n\n` +
+            `Ask a developer to add it.\n\n` +
+            `The website has not been changed. It is still showing the previous version.`
+        );
+    }
+
+    const { status: _states, form, ...rest } = entry;
+    return {
+        ...rest,
+        // Prose the site owns, shaped like the document's own paragraphs so the
+        // renderer needs no special case.
+        content: [{ type: 'paragraph', spans: linkedSpans(chosen.text) }],
+        // A signup form under "registration is not open yet" invites a parent
+        // to do something that will not work.
+        ...(chosen.form && form ? { form } : {}),
+    };
+}
+
 /** Fill every {token} in the layout's own strings, leaving document prose alone. */
 export function fillLayoutTokens(layout, settings, layoutName) {
     const walk = (value) => {

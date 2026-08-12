@@ -1,0 +1,348 @@
+{
+  "route": "/lesson-registration",
+  "title": "Lesson Registration",
+  "blocks": [
+    {
+      "_note": "The sheet picks the state, this picks the words. Officers should not have to keep 'we are full' consistent with whether a signup form is on screen underneath it — the hand-written page got exactly that wrong, saying lessons were full in one paragraph and open for snowboarders two paragraphs later.",
+      "type": "big-white-box centered-text",
+      "showTitle": true,
+      "content": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Registration for the 2026/27 season is not open yet. ",
+              "bold": false,
+              "italic": false,
+              "href": null
+            },
+            {
+              "text": "Join our mailing list",
+              "bold": false,
+              "italic": false,
+              "href": "/join-our-mailing-list"
+            },
+            {
+              "text": " and we will email you when it does.",
+              "bold": false,
+              "italic": false,
+              "href": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "white-stripe qa",
+      "section": "Questions",
+      "heading": "Questions",
+      "content": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "If you have questions, please email "
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": "mailto:huskywslessons@gmail.com",
+              "text": "huskywslessons@gmail.com"
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": ". We will get back to you in 1 to 2 business days."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "During the Spring and Summer months (March - August), email and voice messages are checked less frequently, and it may take up to one week to receive a response."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "white-stripe qa",
+      "section": "Cancellation and Refund Eligibility",
+      "heading": "Cancellation and Refund Eligibility",
+      "content": [
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Cancellation by December 31st - No Questions Asked"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Customers can request a full cancellation of their lessons by December 31st, one month before the lessons' scheduled start date, without any questions asked. Full refunds will be provided for cancellations made within this period."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Injuries"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "In the unfortunate event of a student sustaining an injury that prevents their continued participation in lessons, our refund procedure is as follows:"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "ordered": false,
+          "items": [
+            [
+              {
+                "bold": false,
+                "italic": false,
+                "href": null,
+                "text": "Injury Before Lessons Start (within one month): If the injury occurs within one month before the lessons begin, we will issue an 80% refund. This refund will require valid documentation."
+              }
+            ],
+            [
+              {
+                "bold": false,
+                "italic": false,
+                "href": null,
+                "text": "Injury After Lessons Start: If the injury occurs after the lessons have started, we will provide a refund for the missed classes later in the season, subtracting 20% from the total lesson price. This refund will require valid documentation as confirmation."
+              }
+            ]
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Absence from Lessons"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Please note that partial refunds may not be granted on a per-lesson basis for missed sessions. If a child is absent from a scheduled lesson without prior communication or cancellation, partial refunds will not be provided for the missed lesson."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "We strive to provide flexibility and fairness in our refund policies, but it is essential to adhere to the specific guidelines mentioned above for refund eligibility and exceptions. For any further clarification or assistance, please feel free to contact our lesson director."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Refund Process and Time Frame"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Contact "
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": "mailto:huskywslessons@gmail.com",
+              "text": "huskywslessons@gmail.com"
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": " and expect an email back within 5 business days for refund inquiries."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Inclement Weather"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Inclement weather is an inherent risk we all accept when engaging in mountain activities. As such, we understand that adverse weather conditions may impact our operations, and everyone involved will be equally affected. Therefore, refunds or compensation for changes in scheduling due to inclement weather are not guaranteed."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "No-Show Policy"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "To ensure the smooth operation of our skiing lessons and fairness to all participants, customers who fail to show up for their scheduled lesson dates without prior communication or cancellation will be considered absent, and will not be given a partial refund."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Exceptions and Discretion"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "At our discretion, we may consider exceptions to our standard refund policies in certain circumstances. While we strive to maintain consistency in our policies for all customers, we understand that unique situations may arise. If you believe you have valid grounds for a refund or require special consideration due to extenuating circumstances, we encourage you to reach out to our lesson director at "
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": "mailto:huskywslessons@gmail.com",
+              "text": "huskywslessons@gmail.com"
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": ". Our team will carefully review your request and, where appropriate, exercise our discretion to assess the situation on a case-by-case basis. Please understand that granting an exception is not guaranteed and will be subject to our sole judgment. We are committed to ensuring customer satisfaction and will make every effort to address your concerns in a fair and equitable manner."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Reach out to our lesson director at "
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": "mailto:huskywslessons@gmail.com",
+              "text": "huskywslessons@gmail.com"
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Policy Updates"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Effective from August 2023, this policy supersedes all previous versions and governs all refund requests and related matters. Should the policy change, you will be notified via our mailing list."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

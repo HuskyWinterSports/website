@@ -59,6 +59,55 @@ describe('joinSections', () => {
         assert.equal(blocks[0].content, undefined);
     });
 
+    test('gathers several sections into one block', () => {
+        // Contact Us and FAQ are each a single panel holding two headed
+        // groups. One block per heading would give the page boxes it never
+        // had, so this is parity machinery, not a convenience.
+        const { blocks } = joinSections(
+            layout([{ type: 'big-white-box', sections: ['Support Our Instructors', 'Second'] }]),
+            {
+                ...parsed,
+                sections: [...parsed.sections, { heading: 'Second', blocks: [paragraph('more')] }],
+            },
+            'x'
+        );
+        assert.equal(blocks.length, 1, 'must stay a single block');
+        assert.deepEqual(blocks[0].groups.map((g) => g.heading), ['Support Our Instructors', 'Second']);
+        assert.equal(blocks[0].groups[1].content[0].spans[0].text, 'more');
+    });
+
+    test('gathered sections are not reported as orphans', () => {
+        const { orphans } = joinSections(
+            layout([{ type: 'big-white-box', sections: ['Support Our Instructors', 'Empty Section'] }]),
+            {
+                ...parsed,
+                sections: parsed.sections.map((s) =>
+                    s.heading === 'Empty Section' ? { ...s, blocks: [paragraph('filled')] } : s
+                ),
+            },
+            'x'
+        );
+        assert.deepEqual(orphans, []);
+    });
+
+    test('a gathered section that is missing fails like any other', () => {
+        // Same message, so an editor cannot tell which layout shape was used —
+        // and should not have to.
+        assert.throws(
+            () => joinSections(
+                layout([{ type: 'big-white-box', sections: ['Support Our Instructors', 'Gone'] }]),
+                parsed,
+                'contact-us'
+            ),
+            (error) => {
+                assert.match(error.message, /"Gone" was not found/);
+                assert.match(error.message, /contact-us\.layout\.json/);
+                assert.match(error.message, /website has not been changed/i);
+                return true;
+            }
+        );
+    });
+
     test('a title-only block is allowed to carry no section', () => {
         const { blocks } = joinSections(
             layout([{ type: 'big-white-box', showTitle: true }]),

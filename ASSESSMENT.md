@@ -460,12 +460,11 @@ and the "currently studying abroad" line was no longer relevant. Both are gone
 from the live page — the role and the shared inbox are named instead, and the
 name becomes a Sheet value in phase 2 so it lives in exactly one place.
 
-**Still `[CONFIRM]`, and only the club can settle it:** the refund deadline.
-Three sources disagree — Lesson Info says Session A starts Jan 31, the club says
-the third weekend of January, and the policy says Dec 31 "one month before the
-start". No two agree. Setting `lesson_start_date` in the Sheet resolves all
-three at once. The August 2023 policy date needs to move with whatever is
-decided.
+**✅ Settled 2026-08-11:** lessons start the **last** weekend in January, so the
+Lesson Info page's Jan 31 was correct and Dec 31 really is "one month before".
+`lesson_start_date` goes in the Sheet and the deadline derives from it. The only
+remaining `[CONFIRM]` is the **August 2023** date on the refund policy, which
+should move whenever the policy is next actually revised.
 
 Phase 1's own success criterion says to
 test with an officer who has never seen the repo (spec §9.2 is the runbook),

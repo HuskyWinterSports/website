@@ -371,19 +371,18 @@ filled in. Two reasons not to make it purely computed:
 - Clubs round. "December 31st" is a deadline a family remembers; "December 16th"
   is what the arithmetic gives for a mid-January start.
 
-⚠️ **These three values currently contradict each other on the live site**, which
-is the strongest argument for deriving them from one place:
+✅ **Settled 2026-08-11: lessons start the LAST weekend in January.** An earlier
+"third weekend" was a slip. That reconciles everything — the Lesson Info page's
+Jan 31 start was right, and Dec 31 really is one month before it.
 
-| Source | Says |
-|---|---|
-| Lesson Info page | Session A starts **Jan 31** — the *last* weekend of January |
-| The club (2026-08-11) | Lessons start the **third weekend in January** |
-| Refund policy | Deadline **Dec 31**, described as "one month before" the start |
+It also demonstrates why the deadline is derived rather than typed. For 2026/27
+the last weekend of January is **Jan 30–31, 2027**, so one month before is
+Dec 30 — and the club will want to publish **Dec 31**, because that is the date
+a family remembers. Arithmetic gets it within a day; a human picks the day.
+Hence: compute from `lesson_start_date`, let `refund_deadline` override.
 
-No two of those agree. One month before Jan 31 is Dec 31 ✓, but Jan 31 is not
-the third weekend; one month before a third-weekend start is mid-December, not
-Dec 31. **Settle `lesson_start_date` first and the rest follows** — that is the
-point of putting it in one cell.
+This is exactly the class of error one cell fixes. Three places stated this
+date, two of them implicitly, and nobody could see they disagreed.
 
 **`dates`**:
 

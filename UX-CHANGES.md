@@ -219,15 +219,24 @@ The update now runs by itself, **every hour**. The whole procedure for changing
 words on the Diversity and Inclusion page is:
 
 1. Open the club's Google Doc, go to the **Diversity and Inclusion** tab, edit.
-2. Wait up to an hour.
+2. When you're happy with it, **File → Share → Publish to the web → Publish**.
+3. Wait up to an hour.
 
 That's it. Nobody touches GitHub.
 
-**About that Publish button.** Under **File → Share → Publish to the web** there
-is a setting, *"Automatically republish when changes are made"*, which is on by
-default. While it's on, editing is genuinely all you do. **Don't turn it off** —
-if it's off, your edits stop reaching the website and nothing reports an error,
-because as far as the site is concerned the document simply hasn't changed.
+**Why step 2 exists — it's the safety catch.** Google can be set to republish
+automatically every time you type, and at first we had it that way. But the
+site checks the document on a schedule, so it could look *while you were still
+mid-sentence* and publish a half-written paragraph. Nothing can detect that
+automatically: a half-finished sentence is perfectly valid text.
+
+So **Publish is the "this version is ready" button.** Edit as much as you like,
+save, come back tomorrow, leave a paragraph half-rewritten overnight — none of
+it reaches the site. Only pressing Publish does.
+
+The cost of this is that if you forget to press Publish, your change won't
+appear. That's the safer mistake of the two: nothing bad is public, and you'll
+spot it the moment you look at the site.
 
 **You can keep extra tabs in the document** — drafts, planning, next season.
 Only the tabs the website is built from are read. Anything else is ignored

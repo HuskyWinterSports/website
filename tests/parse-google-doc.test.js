@@ -91,6 +91,34 @@ describe('parseGoogleDoc', () => {
     });
 });
 
+describe('spacing in the document never reaches the website', () => {
+    // Editors ask whether the blank line between a heading and its text
+    // matters. It must not: they are laying out a document to read, and the
+    // answer has to be "arrange it however looks right to you". Google emits
+    // those blank lines as real <p> elements, so this is a decision the parser
+    // makes, not something that is true by accident.
+    test('blank paragraphs are dropped', () => {
+        const doc = parseGoogleDoc(FIXTURE);
+        const empties = doc.sections.flatMap((s) => s.blocks)
+            .filter((b) => b.type === 'paragraph' && flatten(b.spans).trim() === '');
+        assert.deepEqual(empties, []);
+    });
+
+    test('adding blank lines changes nothing at all', () => {
+        // Not just "no empty blocks" — byte-identical output. An editor
+        // pressing Enter must not produce a commit.
+        // Deliberately class-agnostic: an earlier version of this test keyed
+        // on `<p class="c1">`, which does not occur in this fixture, so the
+        // "padding" was a no-op and the test proved nothing.
+        const paragraphs = (FIXTURE.match(/<p /g) ?? []).length;
+        assert.ok(paragraphs >= 10, `fixture should have paragraphs to pad, found ${paragraphs}`);
+
+        const spaced = FIXTURE.replace(/<p /g, '<p><span></span></p><p ');
+        assert.notEqual(spaced, FIXTURE, 'fixture should actually have been padded');
+        assert.deepEqual(parseGoogleDoc(spaced), parseGoogleDoc(FIXTURE));
+    });
+});
+
 describe('resilience to Google regenerating its markup', () => {
     // THE test. Google renumbers its CSS classes on every republish: `c7` was
     // observed meaning bold in one publish and being the link class in the

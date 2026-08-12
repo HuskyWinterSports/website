@@ -339,6 +339,10 @@ We solve it by failing loudly with an actionable message. See §7.
 
 ### 5.4 Sheets schema
 
+> **⚠️ Superseded by §5.4a.** The club built the sheet before this was
+> implemented, and built it differently. The shape below is the design; the
+> shape in §5.4a is the one that exists and the one to write code against.
+
 Three tabs, one concern each. Column headers are the contract.
 
 **`status`** — key/value, the things that change most often:
@@ -399,6 +403,57 @@ date, two of them implicitly, and nobody could see they disagreed.
 `registration_state` is the single source of truth for the "lessons are full /
 join the waitlist" copy that currently contradicts itself between two paragraphs
 of the same page. The site picks the sentence; the sheet picks the state.
+
+### 5.4a The sheet as it actually exists — read 2026-08-12
+
+Published and fetching cleanly as CSV, no credential:
+
+```csv
+Lesson Director,Session,Lesson,Date,Lesson Type,3 Week Price,6 Week Price
+Charlotte Smith,A,1,Jan 30 - Jan 31,Group,240,360
+Season Year,A,2,Feb 6 - Feb 7,Single-Student,660,990
+2026/27,A,3,Feb 20 - Feb 21,Friends & Family,325,485
+Registration State,B,1,Feb 27 - Feb 28,,,
+Not yet open,B,2,Mar 6 - Mar 7,,,
+Refund Deadline,B,3,Mar 13 - Mar 14,,,
+Dec 31,,,,,,
+```
+
+**One sheet, three independent tables sharing a grid.** Column A is a
+label-then-value stack; columns B–D are the calendar; columns E–G are the
+price list. The three have different lengths and no row-to-row relationship —
+row 3 means "session A lesson 2" *and* "Single-Student prices" *and* "the
+season is 2026/27", which are three unrelated facts.
+
+**Read each column group independently.** Do not iterate rows.
+
+**Column A is read by label, never by position.** Find a known label, take the
+next non-empty cell below it. Alternating pairs are position-dependent, and
+one inserted row would silently shift every value onto the wrong key — the
+kind of failure that produces a plausible wrong answer rather than an error.
+An unrecognised label is a warning, not a failure: an officer adding a note to
+the sheet must not be able to take the site down.
+
+| Label | Value seen | Use |
+|---|---|---|
+| `Lesson Director` | Charlotte Smith | Refund contact. **Blank must stay legal** — see §5.4 |
+| `Season Year` | 2026/27 | The heading that still says 2025/2026 |
+| `Registration State` | Not yet open | Normalise to the enum; the site picks the sentence |
+| `Refund Deadline` | Dec 31 | Display text, not a date to compute with |
+
+`Registration State` arrives as human text (`Not yet open`), so normalise —
+lowercase, spaces to underscores — and validate against the permitted set,
+failing with those values listed. Never guess at an unrecognised state: that
+is the value that tells a parent whether they can book.
+
+`Refund Deadline` being written by hand settles §5.4's derive-or-type
+question in practice. Jan 30 minus one month is Dec 30; the club wrote Dec 31.
+Take what is written. **Cross-check it against `lesson_start_date` and warn on
+a gap of more than a few days** — that catches the case where the season moves
+and the deadline is forgotten, which is the failure this data actually has.
+
+**The dates confirm the last weekend of January** (Jan 30–31), so the Lesson
+Info page, the club's answer and the refund policy now all agree.
 
 ### 5.5 Explicitly out of scope for now
 

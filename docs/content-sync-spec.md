@@ -467,19 +467,34 @@ Two sports across four states is sixteen combinations, so the sentence is
 clause; when both agree they are said once, because *"Ski lessons are full.
 Snowboard lessons are full."* reads like a mistake.
 
-| Sheet value | Sentence fragment | Form? |
+| Sheet value | Sentence fragment | The form |
 |---|---|---|
-| `not yet open` | …are not open for registration yet | no |
-| `open` | …are open for registration | **yes** |
-| `waitlist` | …are full, but you can join the waitlist | **yes** |
-| `full` | …are full for this season | no |
+| `not yet open` | …are not open for registration yet | **linked** |
+| `open` | …are open for registration | **embedded** |
+| `waitlist` | …are full, but you can join the waitlist | **embedded** |
+| `full` | …are full for this season | not offered |
 
-Then one closing line, chosen by whether **any** sport can still take a signup:
+**The form has three treatments, not two.** Embedding it under "registration
+is not open yet" invites a parent to do something that will not work; hiding it
+entirely gives them nowhere to go. A link is the honest middle — they can see
+what it asks for and keep the tab for when it opens.
 
-| Any sport bookable? | Closing line |
+Then one closing line, chosen by the **strongest** treatment across the two
+sports, so snowboard being open still puts the form on the page while ski
+lessons are full:
+
+| Strongest treatment | Closing line |
 |---|---|
-| yes | Fill out the form below to sign up. |
-| no | [Join our mailing list](…) and we will email you when registration opens. |
+| embedded | Fill out the form below to sign up. |
+| linked | You can [open the registration form]({form_url}) to see what it asks for, though it will not accept answers until registration opens. [Join our mailing list](…) and we will email you when it does. |
+| none | [Join our mailing list](…) and we will email you when registration opens. |
+
+`{form_url}` is the block's own embed address with `embedded=true` stripped, so
+the linked and embedded addresses cannot drift apart. It is the one token
+resolved per block rather than from the sheet. **Anything still looking like a
+placeholder once filling in is done is refused rather than printed** — the club
+published a literal `{}` that way once, and it sat on the live site until
+somebody happened to read it.
 
 Worked examples, all produced by the real code:
 
@@ -490,6 +505,7 @@ Worked examples, all produced by the real code:
 | **full** | **open** | Ski lessons are full for this season. Snowboard lessons are open for registration. Fill out the form below to sign up. |
 | waitlist | open | Ski lessons are full, but you can join the waitlist. Snowboard lessons are open for registration. Fill out the form below to sign up. |
 | full | full | Ski and snowboard lessons are full for this season. Join our mailing list… |
+| full | not yet open | Ski lessons are full for this season. Snowboard lessons are not open for registration yet. You can open the registration form… |
 
 **The form appears only when some sport can actually take a signup.** A signup
 form underneath "registration is not open yet" invites a parent to do

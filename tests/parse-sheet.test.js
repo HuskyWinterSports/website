@@ -31,8 +31,9 @@ describe('reading the real sheet', () => {
         assert.deepEqual(sheet.settings, {
             lessonDirector: 'Charlotte Smith',
             seasonYear: '2026/27',
-            registrationState: 'not_yet_open',
             refundDeadline: 'Dec 31',
+            skiState: 'not_yet_open',
+            snowboardState: 'not_yet_open',
         });
     });
 
@@ -83,16 +84,25 @@ describe('the settings column is read by label, not by position', () => {
         ].join('\n');
 
         const { settings, warnings } = parseSheet(shuffled);
+        // It refuses rather than guessing: the search stops at the next label
+        // instead of hunting past it for something that looks like a value.
         assert.notEqual(settings.lessonDirector, 'Season Year');
-        assert.equal(settings.lessonDirector, 'Charlotte Smith');
-        assert.match(warnings.join('\n'), /registration state/i);
+        assert.equal(settings.lessonDirector, undefined);
+        assert.match(warnings.join('\n'), /Lesson Director/i);
     });
 
     test('a label with nothing under it warns rather than failing', () => {
-        const emptied = FIXTURE.replace(/\nDec 31,/, '\n,');
+        const emptied = FIXTURE.replace('\nDec 31,', '\n,');
         const sheet = parseSheet(emptied);
         assert.match(sheet.warnings.join('\n'), /Refund Deadline/i);
         assert.equal(sheet.settings.refundDeadline, undefined);
+    });
+
+    test('an emptied value does not adopt the next label\'s value', () => {
+        // Refund Deadline emptied must NOT quietly become "Not yet open",
+        // which is what the ski state row says further down the column.
+        const emptied = FIXTURE.replace('\nDec 31,', '\n,');
+        assert.equal(parseSheet(emptied).settings.refundDeadline, undefined);
     });
 
     test('a missing label says where to put it back', () => {
@@ -112,10 +122,19 @@ describe('registration state', () => {
             ['full', 'full'],
         ]) {
             assert.equal(
-                parseSheet(FIXTURE.replace('Not yet open,', `${written},`)).settings.registrationState,
+                parseSheet(FIXTURE.replace('Not yet open,', `${written},`)).settings.skiState,
                 expected
             );
         }
+    });
+
+    test('the two sports are read independently', () => {
+        // The reason they were separated: ski lessons fill first, and one
+        // combined state turned away snowboarders the club had room for.
+        // Only the first "Not yet open" — ski's — is replaced here.
+        const { settings } = parseSheet(FIXTURE.replace('Not yet open,', 'Full,'));
+        assert.equal(settings.skiState, 'full');
+        assert.equal(settings.snowboardState, 'not_yet_open');
     });
 
     test('never guesses at an unrecognised value', () => {
@@ -126,7 +145,8 @@ describe('registration state', () => {
             () => parseSheet(FIXTURE.replace('Not yet open,', 'closed,')),
             (error) => {
                 assert.ok(error instanceof ContentError);
-                assert.match(error.message, /"closed", which is not one of the values/);
+                assert.match(error.message, /"closed", which is not one/);
+                assert.match(error.message, /Ski Registration State/);
                 assert.match(error.message, /waitlist/);
                 assert.match(error.message, /website has not been changed/i);
                 return true;

@@ -143,28 +143,62 @@ export function linkedSpans(text) {
  * paragraphs later.
  */
 export function applyStatus(entry, settings, layoutName) {
-    const state = settings.registrationState;
-    const chosen = entry.status[state];
+    const { status, form, ...rest } = entry;
 
-    if (!chosen) {
-        throw new ContentError(
-            `The sheet says registration is "${state?.replace(/_/g, ' ')}", but ` +
-            `content/${layoutName}.layout.json has no wording for that.\n\n` +
-            `It has wording for: ${Object.keys(entry.status).filter((k) => !k.startsWith('_')).join(', ')}\n\n` +
-            `Ask a developer to add it.\n\n` +
-            `The website has not been changed. It is still showing the previous version.`
-        );
-    }
+    const sports = status.sports.map((sport) => {
+        const state = settings[sport.state];
 
-    const { status: _states, form, ...rest } = entry;
+        // The common case by far, and the one an officer can fix alone: the
+        // row was renamed, moved or never added. Say that, rather than
+        // reporting the absence as an unknown value.
+        if (!state) {
+            throw new ContentError(
+                `The website needs to know whether ${sport.label.toLowerCase()} are open, ` +
+                `but the sheet does not say.\n\n` +
+                `Add a "${sport.sheetLabel}" row to the first column of the sheet, ` +
+                `with one of these in the cell underneath:\n` +
+                `  • not yet open\n  • open\n  • waitlist\n  • full\n\n` +
+                `The website has not been changed. It is still showing the previous version.`
+            );
+        }
+
+        const wording = status.states[state];
+        if (!wording) {
+            throw new ContentError(
+                `The sheet says ${sport.label.toLowerCase()} are "${state.replace(/_/g, ' ')}", ` +
+                `but content/${layoutName}.layout.json has no wording for that.\n\n` +
+                `It has wording for: ${Object.keys(status.states).join(', ')}\n\n` +
+                `Ask a developer to add it.\n\n` +
+                `The website has not been changed. It is still showing the previous version.`
+            );
+        }
+        return { ...sport, state, wording };
+    });
+
+    // Two sports across four states is sixteen combinations, so the sentence is
+    // composed rather than enumerated. When both agree they are said once:
+    // "Ski lessons are full. Snowboard lessons are full." reads like a mistake.
+    const allSame = sports.every((s) => s.state === sports[0].state);
+    const sentence = allSame
+        ? `${status.bothLabel} ${sports[0].wording.says}.`
+        : sports.map((s) => `${s.label} ${s.wording.says}.`).join(' ');
+
+    // The form is offered when ANY sport can still take a signup — the point of
+    // separating the two states is that ski filling up must not turn away
+    // snowboarders.
+    const anyForm = sports.some((s) => s.wording.form);
+
     return {
         ...rest,
         // Prose the site owns, shaped like the document's own paragraphs so the
         // renderer needs no special case.
-        content: [{ type: 'paragraph', spans: linkedSpans(chosen.text) }],
+        content: [
+            { type: 'paragraph', spans: linkedSpans(sentence) },
+            { type: 'paragraph', spans: linkedSpans(anyForm ? status.then.form : status.then.none) },
+        ],
         // A signup form under "registration is not open yet" invites a parent
         // to do something that will not work.
-        ...(chosen.form && form ? { form } : {}),
+        ...(anyForm && form ? { form } : {}),
     };
 }
 

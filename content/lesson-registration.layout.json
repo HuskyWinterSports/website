@@ -10,25 +10,44 @@
   },
   "blocks": [
     {
-      "_note": "The sheet picks the state, this picks the words. Officers should not have to keep 'we are full' consistent with whether a signup form is on screen underneath it \u2014 the hand-written page got exactly that wrong, saying lessons were full in one paragraph and open for snowboarders two paragraphs later.",
+      "_note": "The sheet says WHICH state each sport is in; this says what that state SOUNDS like. Two sports across four states is sixteen combinations, so the sentence is composed from fragments rather than written out. The full mapping is documented in docs/content-sync-spec.md \u00a75.6.",
       "type": "big-white-box centered-text",
       "showTitle": true,
       "status": {
-        "not_yet_open": {
-          "text": "Registration for the {season_year} season is not open yet. [Join our mailing list](/join-our-mailing-list) and we will email you when it does.",
-          "form": false
+        "sports": [
+          {
+            "state": "skiState",
+            "label": "Ski lessons",
+            "sheetLabel": "Ski Registration State"
+          },
+          {
+            "state": "snowboardState",
+            "label": "Snowboard lessons",
+            "sheetLabel": "Snowboard Registration State"
+          }
+        ],
+        "bothLabel": "Ski and snowboard lessons",
+        "states": {
+          "not_yet_open": {
+            "says": "are not open for registration yet",
+            "form": false
+          },
+          "open": {
+            "says": "are open for registration",
+            "form": true
+          },
+          "waitlist": {
+            "says": "are full, but you can join the waitlist",
+            "form": true
+          },
+          "full": {
+            "says": "are full for this season",
+            "form": false
+          }
         },
-        "open": {
-          "text": "Registration for the {season_year} season is open. Fill out the form below to sign up.",
-          "form": true
-        },
-        "waitlist": {
-          "text": "Ski and snowboard lessons for the {season_year} season are full. Please fill out the form below to join the waitlist.",
-          "form": true
-        },
-        "full": {
-          "text": "Ski and snowboard lessons for the {season_year} season are full, and the waitlist is closed. [Join our mailing list](/join-our-mailing-list) to hear about next season.",
-          "form": false
+        "then": {
+          "form": "Fill out the form below to sign up.",
+          "none": "[Join our mailing list](/join-our-mailing-list) and we will email you when registration opens."
         }
       },
       "form": {

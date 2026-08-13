@@ -3,7 +3,7 @@
   "title": "Lesson Registration",
   "blocks": [
     {
-      "_note": "The sheet picks the state, this picks the words. Officers should not have to keep 'we are full' consistent with whether a signup form is on screen underneath it — the hand-written page got exactly that wrong, saying lessons were full in one paragraph and open for snowboarders two paragraphs later.",
+      "_note": "The sheet says WHICH state each sport is in; this says what that state SOUNDS like. Two sports across four states is sixteen combinations, so the sentence is composed from fragments rather than written out. The full mapping is documented in docs/content-sync-spec.md §5.6.",
       "type": "big-white-box centered-text",
       "showTitle": true,
       "content": [
@@ -11,11 +11,16 @@
           "type": "paragraph",
           "spans": [
             {
-              "text": "Registration for the 2026/27 season is not open yet. ",
+              "text": "Ski and snowboard lessons are not open for registration yet.",
               "bold": false,
               "italic": false,
               "href": null
-            },
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
             {
               "text": "Join our mailing list",
               "bold": false,
@@ -23,7 +28,7 @@
               "href": "/join-our-mailing-list"
             },
             {
-              "text": " and we will email you when it does.",
+              "text": " and we will email you when registration opens.",
               "bold": false,
               "italic": false,
               "href": null

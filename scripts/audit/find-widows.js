@@ -61,8 +61,13 @@ const all = [];
 for (const width of WIDTHS) {
     const page = await browser.newPage({ viewport: { width, height: 900 } });
     for (const route of ROUTES) {
-        await page.goto(base + route, { waitUntil: 'domcontentloaded' });
-        await page.waitForTimeout(350);
+        // Wait for fonts before measuring. Line breaking depends on the font
+        // actually in use, so measuring mid-load reports widows that a reader
+        // never sees — over a network the first run said 45 where a settled
+        // page said 17.
+        await page.goto(base + route, { waitUntil: 'networkidle' });
+        await page.evaluate(() => document.fonts.ready);
+        await page.waitForTimeout(250);
         for (const w of await page.evaluate(DETECT)) all.push({ width, route, ...w });
     }
     await page.close();

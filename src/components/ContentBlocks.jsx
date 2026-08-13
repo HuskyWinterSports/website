@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { internalPath } from '../links.js';
+import Slider from './Slider.jsx';
 
 /**
  * Renders the content tree produced by scripts/sync/sync-content.js.
@@ -136,20 +137,50 @@ function BoxItems({ items }) {
     return <ul>{items.map((item, index) => <li key={index}>{item}</li>)}</ul>;
 }
 
+/**
+ * Buttons named by the layout, not the document. A link to one of our own
+ * pages routes internally; anything else opens in a new tab.
+ */
+function Buttons({ buttons }) {
+    return (
+        <div className="banner-buttons">
+            {buttons.map((button) => {
+                const path = internalPath(button.href);
+                return path
+                    ? <Link className="button" key={button.href} to={path}>{button.label}</Link>
+                    : (
+                        <a
+                            className="button"
+                            key={button.href}
+                            href={button.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >{button.label}</a>
+                    );
+            })}
+        </div>
+    );
+}
+
 function Section({ block, title }) {
-    // Layout-only blocks carry their own content and never touch the document.
-    if (block.type === 'button') {
+    // The carousel is the one block that is purely layout: no words at all.
+    if (block.slider) {
+        return <Slider slides={block.slider.slides} caption={block.slider.caption} />;
+    }
+
+    // The home banner styles its lines rather than stacking paragraphs, so it
+    // renders its own way instead of going through Block.
+    if (block.banner) {
         return (
-            <section className="white-stripe centered-text">
-                <div className="banner-buttons">
-                    <a
-                        className="button"
-                        href={block.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        {block.label}
-                    </a>
+            <section className={block.type}>
+                <div className="banner-overlay">
+                    {title && <h1 className="home-title">{title}</h1>}
+                    {block.content?.map((child, index) => (
+                        <p className="home-subtitle" key={index}>
+                            <Spans spans={child.spans} />
+                        </p>
+                    ))}
+                    {block.buttons && <Buttons buttons={block.buttons} />}
                 </div>
             </section>
         );
@@ -206,6 +237,8 @@ function Section({ block, title }) {
                     referrerPolicy="strict-origin-when-cross-origin"
                 >Loading…</iframe>
             )}
+
+            {block.buttons && <Buttons buttons={block.buttons} />}
 
             {block.form && <EmbeddedForm form={block.form} />}
         </section>

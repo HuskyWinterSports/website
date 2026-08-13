@@ -90,12 +90,16 @@ describe('registration status', () => {
             ],
             bothLabel: 'Ski and snowboard lessons',
             states: {
-                not_yet_open: { says: 'are not open yet', form: false },
-                open: { says: 'are open', form: true },
-                waitlist: { says: 'are full, but you can join the waitlist', form: true },
+                not_yet_open: { says: 'are not open yet', form: 'link' },
+                open: { says: 'are open', form: 'embed' },
+                waitlist: { says: 'are full, but you can join the waitlist', form: 'embed' },
                 full: { says: 'are full', form: false },
             },
-            then: { form: 'Fill out the form below.', none: '[Join our mailing list](/join-our-mailing-list) later.' },
+            then: {
+                embed: 'Fill out the form below.',
+                link: 'You can [open the form]({form_url}) and wait for it.',
+                none: '[Join our mailing list](/join-our-mailing-list) later.',
+            },
         },
         form: { src: 'https://example/form?embedded=true', title: 'Form' },
     };
@@ -105,6 +109,7 @@ describe('registration status', () => {
         return {
             text: block.content.map((c) => c.spans.map((s) => s.text).join('')).join(' '),
             form: !!block.form,
+            links: block.content.flatMap((c) => c.spans.filter((s) => s.href).map((s) => s.href)),
         };
     };
 
@@ -122,22 +127,52 @@ describe('registration status', () => {
         assert.ok(form, 'snowboard is open, so the form must be offered');
     });
 
-    test('offers the form when ANY sport can take a signup', () => {
+    test('embeds the form when ANY sport can take a signup', () => {
         assert.ok(render('full', 'waitlist').form);
         assert.ok(render('waitlist', 'full').form);
         assert.ok(!render('full', 'not_yet_open').form);
         assert.ok(!render('not_yet_open', 'not_yet_open').form);
     });
 
-    test('never shows a form under wording that says you cannot sign up', () => {
+    test('links to the form, without embedding it, before registration opens', () => {
+        // Embedding invites somebody to fill in a form that will not accept
+        // them; hiding it gives them nowhere to go. A link lets a parent look
+        // at what it asks and keep the tab.
+        const { text, form, links } = render('not_yet_open', 'not_yet_open');
+        assert.ok(!form, 'must not embed');
+        assert.match(text, /open the form/);
+        assert.ok(links.some((h) => h.includes('example/form')), 'the link must point at the form');
+        assert.ok(!links.some((h) => h.includes('embedded=true')), 'the embed URL is not the link URL');
+    });
+
+    test('the strongest treatment across the two sports wins', () => {
+        assert.ok(render('open', 'not_yet_open').form, 'embed beats link');
+        assert.match(render('full', 'not_yet_open').text, /open the form/, 'link beats none');
+    });
+
+    test('never embeds a form under wording that says you cannot sign up', () => {
         // The pairing the hand-written page got wrong for months.
         for (const ski of ['not_yet_open', 'open', 'waitlist', 'full']) {
             for (const snowboard of ['not_yet_open', 'open', 'waitlist', 'full']) {
                 const { text, form } = render(ski, snowboard);
                 if (form) assert.match(text, /Fill out the form below/);
-                else assert.match(text, /mailing list/);
+                else assert.doesNotMatch(text, /Fill out the form below/);
             }
         }
+    });
+
+    test('a placeholder that survived filling in is caught, not printed', () => {
+        // The club once published a literal "{}" this way and it sat live.
+        const broken = { ...STATUS, status: { ...STATUS.status,
+            then: { ...STATUS.status.then, none: 'Opens {some_day}.' } } };
+        assert.throws(
+            () => applyStatus(broken, { skiState: 'full', snowboardState: 'full' }, 'lesson-registration'),
+            (error) => {
+                assert.match(error.message, /still contains \{some_day\}/);
+                assert.match(error.message, /printed on the page exactly as written/);
+                return true;
+            }
+        );
     });
 
     test('a missing state names the sheet row to add', () => {

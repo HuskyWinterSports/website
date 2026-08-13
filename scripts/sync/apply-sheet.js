@@ -16,8 +16,16 @@ const TOKENS = {
     refund_deadline: 'refundDeadline',
 };
 
+/**
+ * `{form_url}` is resolved per block by applyStatus, not from the sheet, so
+ * the site-wide pass leaves it alone rather than rejecting it as unknown.
+ */
+const DEFERRED = ['form_url'];
+
 export function fillTokens(value, settings, layoutName) {
     return value.replace(/\{([a-z_]+)\}/g, (whole, token) => {
+        if (DEFERRED.includes(token)) return whole;
+
         const key = TOKENS[token];
         if (!key) {
             throw new ContentError(
@@ -183,10 +191,40 @@ export function applyStatus(entry, settings, layoutName) {
         ? `${status.bothLabel} ${sports[0].wording.says}.`
         : sports.map((s) => `${s.label} ${s.wording.says}.`).join(' ');
 
-    // The form is offered when ANY sport can still take a signup — the point of
-    // separating the two states is that ski filling up must not turn away
-    // snowboarders.
-    const anyForm = sports.some((s) => s.wording.form);
+    // Three ways to treat the form, strongest wins across the two sports —
+    // the point of separating the states is that ski filling up must not turn
+    // away snowboarders.
+    //
+    //   embed  the form is the thing to do, so it is on the page
+    //   link   nothing to fill in yet, but a parent can open it and look, or
+    //          keep the tab for when it opens
+    //   false  not offered at all
+    //
+    // Embedding under "registration is not open yet" invites somebody to do
+    // something that will not work; hiding it entirely gives them nowhere to
+    // go. A link is the honest middle.
+    const modes = sports.map((s) => s.wording.form);
+    const mode = modes.includes('embed') ? 'embed'
+        : modes.includes('link') ? 'link'
+            : 'none';
+
+    // Written once in the layout, reused in the sentence, so the address of the
+    // form cannot drift between the link and the embed.
+    const openUrl = form ? form.src.replace(/[?&]embedded=true/, '') : '';
+    const then = status.then[mode].replaceAll('{form_url}', openUrl);
+
+    // Nothing may reach a reader still looking like a placeholder. The club
+    // once published a literal "{}" this way, and it sat on the live site.
+    const unresolved = `${sentence} ${then}`.match(/\{[a-z_]+\}/);
+    if (unresolved) {
+        throw new ContentError(
+            `content/${layoutName}.layout.json still contains ${unresolved[0]} ` +
+            `after filling in the sheet's values, so it would have been printed ` +
+            `on the page exactly as written.\n\n` +
+            `Ask a developer to look at the "status" block.\n\n` +
+            `The website has not been changed. It is still showing the previous version.`
+        );
+    }
 
     return {
         ...rest,
@@ -194,11 +232,9 @@ export function applyStatus(entry, settings, layoutName) {
         // renderer needs no special case.
         content: [
             { type: 'paragraph', spans: linkedSpans(sentence) },
-            { type: 'paragraph', spans: linkedSpans(anyForm ? status.then.form : status.then.none) },
+            { type: 'paragraph', spans: linkedSpans(then) },
         ],
-        // A signup form under "registration is not open yet" invites a parent
-        // to do something that will not work.
-        ...(anyForm && form ? { form } : {}),
+        ...(mode === 'embed' && form ? { form } : {}),
     };
 }
 

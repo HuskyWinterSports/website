@@ -30,15 +30,15 @@
         "states": {
           "not_yet_open": {
             "says": "are not open for registration yet",
-            "form": false
+            "form": "link"
           },
           "open": {
             "says": "are open for registration",
-            "form": true
+            "form": "embed"
           },
           "waitlist": {
             "says": "are full, but you can join the waitlist",
-            "form": true
+            "form": "embed"
           },
           "full": {
             "says": "are full for this season",
@@ -46,7 +46,8 @@
           }
         },
         "then": {
-          "form": "Fill out the form below to sign up.",
+          "embed": "Fill out the form below to sign up.",
+          "link": "You can [open the registration form]({form_url}) to see what it asks for, though it will not accept answers until registration opens. [Join our mailing list](/join-our-mailing-list) and we will email you when it does.",
           "none": "[Join our mailing list](/join-our-mailing-list) and we will email you when registration opens."
         }
       },

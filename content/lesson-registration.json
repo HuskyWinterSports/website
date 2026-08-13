@@ -22,13 +22,31 @@
           "type": "paragraph",
           "spans": [
             {
+              "text": "You can ",
+              "bold": false,
+              "italic": false,
+              "href": null
+            },
+            {
+              "text": "open the registration form",
+              "bold": false,
+              "italic": false,
+              "href": "https://docs.google.com/forms/d/e/1FAIpQLSfjLegq7v2dtmjG_YTOisGHB9gBcoSKPdTvs9VDIEcfnHs-0Q/viewform"
+            },
+            {
+              "text": " to see what it asks for, though it will not accept answers until registration opens. ",
+              "bold": false,
+              "italic": false,
+              "href": null
+            },
+            {
               "text": "Join our mailing list",
               "bold": false,
               "italic": false,
               "href": "/join-our-mailing-list"
             },
             {
-              "text": " and we will email you when registration opens.",
+              "text": " and we will email you when it does.",
               "bold": false,
               "italic": false,
               "href": null

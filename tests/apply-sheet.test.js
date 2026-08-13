@@ -2,7 +2,7 @@ import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { parseSheet } from '../scripts/sync/parse-sheet.js';
-import { sheetBlock, fillTokens, fillLayoutTokens } from '../scripts/sync/apply-sheet.js';
+import { sheetBlock, fillTokens, fillLayoutTokens, applyStatus } from '../scripts/sync/apply-sheet.js';
 import { ContentError } from '../scripts/sync/join-sections.js';
 
 const SHEET = parseSheet(readFileSync(
@@ -74,6 +74,80 @@ describe('an empty table stops the build rather than publishing a blank panel', 
             () => sheetBlock({ sheet: 'prices' }, { ...SHEET, prices: [] }, 'lesson-info'),
             (error) => {
                 assert.match(error.message, /no prices/);
+                return true;
+            }
+        );
+    });
+});
+
+describe('registration status', () => {
+    const STATUS = {
+        type: 'big-white-box',
+        status: {
+            sports: [
+                { state: 'skiState', label: 'Ski lessons', sheetLabel: 'Ski Registration State' },
+                { state: 'snowboardState', label: 'Snowboard lessons', sheetLabel: 'Snowboard Registration State' },
+            ],
+            bothLabel: 'Ski and snowboard lessons',
+            states: {
+                not_yet_open: { says: 'are not open yet', form: false },
+                open: { says: 'are open', form: true },
+                waitlist: { says: 'are full, but you can join the waitlist', form: true },
+                full: { says: 'are full', form: false },
+            },
+            then: { form: 'Fill out the form below.', none: '[Join our mailing list](/join-our-mailing-list) later.' },
+        },
+        form: { src: 'https://example/form?embedded=true', title: 'Form' },
+    };
+
+    const render = (skiState, snowboardState) => {
+        const block = applyStatus(STATUS, { skiState, snowboardState }, 'lesson-registration');
+        return {
+            text: block.content.map((c) => c.spans.map((s) => s.text).join('')).join(' '),
+            form: !!block.form,
+        };
+    };
+
+    test('says it once when both sports agree', () => {
+        // "Ski lessons are full. Snowboard lessons are full." reads like a
+        // mistake, so the two collapse into one subject.
+        const { text } = render('full', 'full');
+        assert.match(text, /^Ski and snowboard lessons are full\./);
+        assert.doesNotMatch(text, /Snowboard lessons are full/);
+    });
+
+    test('says both when they differ — the reason they were separated', () => {
+        const { text, form } = render('full', 'open');
+        assert.match(text, /Ski lessons are full\. Snowboard lessons are open\./);
+        assert.ok(form, 'snowboard is open, so the form must be offered');
+    });
+
+    test('offers the form when ANY sport can take a signup', () => {
+        assert.ok(render('full', 'waitlist').form);
+        assert.ok(render('waitlist', 'full').form);
+        assert.ok(!render('full', 'not_yet_open').form);
+        assert.ok(!render('not_yet_open', 'not_yet_open').form);
+    });
+
+    test('never shows a form under wording that says you cannot sign up', () => {
+        // The pairing the hand-written page got wrong for months.
+        for (const ski of ['not_yet_open', 'open', 'waitlist', 'full']) {
+            for (const snowboard of ['not_yet_open', 'open', 'waitlist', 'full']) {
+                const { text, form } = render(ski, snowboard);
+                if (form) assert.match(text, /Fill out the form below/);
+                else assert.match(text, /mailing list/);
+            }
+        }
+    });
+
+    test('a missing state names the sheet row to add', () => {
+        assert.throws(
+            () => applyStatus(STATUS, { snowboardState: 'open' }, 'lesson-registration'),
+            (error) => {
+                assert.ok(error instanceof ContentError);
+                assert.match(error.message, /whether ski lessons are open/);
+                assert.match(error.message, /"Ski Registration State" row/);
+                assert.match(error.message, /waitlist/);
                 return true;
             }
         );

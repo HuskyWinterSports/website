@@ -12,13 +12,33 @@ import { ContentError } from './join-sections.js';
 
 const REGISTRATION_STATES = ['open', 'waitlist', 'full', 'not_yet_open'];
 
-/** Labels understood in the first column. Anything else is a warning. */
+/**
+ * Labels understood in the first column. Anything else is a warning.
+ *
+ * Ski and snowboard have separate states because they fill at different
+ * rates — ski lessons usually go first while snowboard places remain. One
+ * combined state made the page claim both were full, which cost the club
+ * snowboard signups it could have taken.
+ */
 const SETTINGS = {
-    'lesson director': 'lessonDirector',
-    'season year': 'seasonYear',
-    'registration state': 'registrationState',
-    'refund deadline': 'refundDeadline',
+    'Lesson Director': 'lessonDirector',
+    'Season Year': 'seasonYear',
+    'Refund Deadline': 'refundDeadline',
+    'Ski Registration State': 'skiState',
+    'Snowboard Registration State': 'snowboardState',
 };
+
+// Matching is case-insensitive; messages quote the label as the sheet writes
+// it, so an officer reading an error can find the row by eye.
+const KEY_BY_LABEL = new Map(
+    Object.entries(SETTINGS).map(([label, key]) => [label.toLowerCase(), key])
+);
+const LABEL_BY_KEY = new Map(
+    Object.entries(SETTINGS).map(([label, key]) => [key, label])
+);
+
+/** Settings whose value must be one of the registration states. */
+const STATE_KEYS = ['skiState', 'snowboardState'];
 
 /**
  * Minimal RFC-4180 reader. Google quotes any field containing a comma, so a
@@ -68,20 +88,21 @@ function readSettings(column, warnings) {
         const label = cells[i].toLowerCase();
         if (!label) continue;
 
-        const key = SETTINGS[label];
+        const key = KEY_BY_LABEL.get(label);
         if (!key) {
             // Could be a value belonging to the label above it, or a note an
             // officer added. Either way, never fatal.
             continue;
         }
 
-        // Skip past other labels when looking for the value. Sorting the sheet
-        // by Date reorders whole rows, which shuffles this column against
-        // itself — and taking the next cell blindly would then record the
-        // lesson director as "Season Year" and publish it.
-        const value = cells
-            .slice(i + 1)
-            .find((c) => c !== '' && !(c.toLowerCase() in SETTINGS));
+        // The value is the next non-blank cell — and the search STOPS at the
+        // next label rather than skipping past it. Two ways that matters:
+        // sorting the sheet by Date shuffles this column against itself, and a
+        // label whose own cell was emptied would otherwise adopt the value
+        // belonging to the label below it. Both would publish a confident
+        // wrong answer instead of asking someone to look.
+        const next = cells.slice(i + 1).find((c) => c !== '');
+        const value = next && !KEY_BY_LABEL.has(next.toLowerCase()) ? next : null;
 
         if (!value) {
             warnings.push(`"${cells[i]}" in the sheet has no value under it. It has been ignored.`);
@@ -102,18 +123,18 @@ function readSettings(column, warnings) {
     return settings;
 }
 
-function normaliseState(value) {
+function normaliseState(value, label) {
     if (!value) return null;
     const state = value.toLowerCase().replace(/[\s-]+/g, '_');
     if (REGISTRATION_STATES.includes(state)) return state;
 
     // Never guess. This is the value that tells a parent whether they can book.
     throw new ContentError(
-        `The sheet says the registration state is "${value}", which is not one ` +
+        `The sheet says "${label}" is "${value}", which is not one ` +
         `of the values the website knows.\n\n` +
         `It must be one of:\n` +
         REGISTRATION_STATES.map((s) => `  • ${s.replace(/_/g, ' ')}`).join('\n') + `\n\n` +
-        `Correct the "Registration State" cell in the sheet.\n\n` +
+        `Correct the "${label}" cell in the sheet.\n\n` +
         `The website has not been changed. It is still showing the previous version.`
     );
 }
@@ -155,7 +176,9 @@ export function parseSheet(csv) {
 
     // Column A is settings; its header cell is itself the first label.
     const settings = readSettings(columnOf(rows, 0), warnings);
-    settings.registrationState = normaliseState(settings.registrationState);
+    for (const key of STATE_KEYS) {
+        settings[key] = normaliseState(settings[key], LABEL_BY_KEY.get(key));
+    }
 
     const session = at('session');
     const lesson = at('lesson');

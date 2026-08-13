@@ -455,6 +455,70 @@ and the deadline is forgotten, which is the failure this data actually has.
 **The dates confirm the last weekend of January** (Jan 30–31), so the Lesson
 Info page, the club's answer and the refund policy now all agree.
 
+### 5.6 What each registration state puts on the page
+
+**Ski and snowboard have separate states**, because they fill at different
+rates — ski places usually go first while snowboard places remain. A single
+combined state made the page announce both were full, which turned away
+snowboard signups the club had room for.
+
+Two sports across four states is sixteen combinations, so the sentence is
+**composed from fragments** rather than written out. Each sport contributes a
+clause; when both agree they are said once, because *"Ski lessons are full.
+Snowboard lessons are full."* reads like a mistake.
+
+| Sheet value | Sentence fragment | Form? |
+|---|---|---|
+| `not yet open` | …are not open for registration yet | no |
+| `open` | …are open for registration | **yes** |
+| `waitlist` | …are full, but you can join the waitlist | **yes** |
+| `full` | …are full for this season | no |
+
+Then one closing line, chosen by whether **any** sport can still take a signup:
+
+| Any sport bookable? | Closing line |
+|---|---|
+| yes | Fill out the form below to sign up. |
+| no | [Join our mailing list](…) and we will email you when registration opens. |
+
+Worked examples, all produced by the real code:
+
+| Ski | Snowboard | Page reads |
+|---|---|---|
+| not yet open | not yet open | Ski and snowboard lessons are not open for registration yet. Join our mailing list… |
+| open | open | Ski and snowboard lessons are open for registration. Fill out the form below to sign up. |
+| **full** | **open** | Ski lessons are full for this season. Snowboard lessons are open for registration. Fill out the form below to sign up. |
+| waitlist | open | Ski lessons are full, but you can join the waitlist. Snowboard lessons are open for registration. Fill out the form below to sign up. |
+| full | full | Ski and snowboard lessons are full for this season. Join our mailing list… |
+
+**The form appears only when some sport can actually take a signup.** A signup
+form underneath "registration is not open yet" invites a parent to do
+something that will not work. That pairing is the reason the wording lives in
+the layout file rather than the sheet: an officer changing one cell must not be
+able to leave the words and the form contradicting each other, which is exactly
+what the hand-written page did for months.
+
+#### Why this wording is not in the sheet, and how to change it
+
+The club asked whether the sentences could be sheet-editable. They deliberately
+are not, for two reasons:
+
+1. **Grammar.** The fragments are clauses that must agree with a subject the
+   code supplies — *"Ski lessons"* + *"are full"*. Exposing half a sentence for
+   editing invites *"Ski lessons is full"*, or a fragment that reads fine alone
+   and wrong once composed.
+2. **The form pairing above.** Words and form must stay consistent, and only
+   one of the two is being edited.
+
+**To change the wording, edit `content/lesson-registration.layout.json`** — the
+whole mapping is in one `status` block, readable without knowing any code. It
+is a one-line change and a pull request, not a rewrite.
+
+If the club would rather own these words directly, the clean version is a
+`Registration Messages` section in the document with a Heading 3 per state, and
+the form rule staying in the layout. That is a small change and worth making if
+the wording turns out to need tuning during a season.
+
 ### 5.5 Explicitly out of scope for now
 
 Template slots — `"Registration opens on {LESSON_START_DATE}"` — are

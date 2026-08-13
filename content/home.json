@@ -1,0 +1,167 @@
+{
+  "route": "/",
+  "title": "Husky Winter Sports",
+  "blocks": [
+    {
+      "_note": "Lessons first: most visitors are parents and adults looking to book, not students looking to join. When registration opens, point the first button at /lesson-registration.",
+      "type": "home-banner",
+      "banner": true,
+      "showTitle": true,
+      "section": "Tagline",
+      "buttons": [
+        {
+          "label": "LESSON INFO",
+          "href": "/lesson-info"
+        },
+        {
+          "label": "BECOME AN INSTRUCTOR",
+          "href": "/become-an-instructor"
+        }
+      ],
+      "heading": "Tagline",
+      "content": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Ski and Snowboard School"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "\"Helping students ski for free since 1937!\""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_note": "Photos are layout, not words. Swapping in this season's group shot is a one-line change here rather than an officer pasting an image into a document.",
+      "slider": {
+        "slides": [
+          {
+            "url": "/images/2025group.jpeg",
+            "alt": "Husky Winter Sports instructors and students, 2025"
+          },
+          {
+            "url": "/images/2025-2026.jpg",
+            "alt": "The club on the mountain, 2025/2026 season"
+          },
+          {
+            "url": "/images/2022-2023.jpg",
+            "alt": "The club on the mountain, 2022/2023 season"
+          }
+        ]
+      }
+    },
+    {
+      "type": "purple-stripe",
+      "section": "Why Us",
+      "cards": true,
+      "heading": "Why Us",
+      "content": [
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "UW Students"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Unpaid, we're here because we want to spread the love of our favorite sport! This also means money saved on your end!"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Our Members are the Best"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "We do have a hiring process to make sure we only provide the best instruction."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Enthusiastic and Safe"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "We all love to have fun on the mountain but we know safety comes first."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "PSIA/AASI Certified"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Instructors are PSIA/AASI trained or are working towards it."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

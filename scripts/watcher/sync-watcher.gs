@@ -126,7 +126,12 @@ function checkWebsiteUpdates() {
 
     if (finished.length && finished[0].conclusion !== 'success') {
         problems.push({
-            key: 'failed-' + finished[0].id,
+            // Keyed on "it is failing", NOT on which run failed. Keying on the
+            // run id made every hourly attempt a brand new problem, so the
+            // weekly re-nag limit never applied and one broken thing sent one
+            // email an hour — the exact behaviour this limit exists to stop.
+            // Recovery clears the key, so a fresh failure still alerts at once.
+            key: 'failed',
             text: 'The website could not be updated from the Google Doc.\n\n' +
                 'The website itself is fine. It is still showing the previous ' +
                 'version, and visitors see nothing wrong.\n\n' +

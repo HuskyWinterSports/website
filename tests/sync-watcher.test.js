@@ -219,6 +219,57 @@ describe('not shouting', () => {
         assert.equal(w.sent.length, 1, 'no second email when recovery is off');
     });
 
+    test('a sync that keeps failing sends ONE email, not one per attempt', () => {
+        // This is what actually happened: the sheet and the site disagreed for
+        // six hours, and because each hourly run had a new id, each one looked
+        // like a brand new problem and sent its own email. One broken thing,
+        // six emails, and a club learning to ignore the address.
+        const failing = (id) => ({
+            id, status: 'completed', conclusion: 'failure',
+            created_at: ago(HOUR), html_url: 'https://example/' + id,
+        });
+
+        const w = load({ runs: [failing(1)] });
+        w.run();
+        assert.equal(w.sent.length, 1);
+
+        for (let id = 2; id <= 6; id++) {
+            w.context.UrlFetchApp.fetch = (url) => ({
+                getResponseCode: () => 200,
+                getContentText: () => JSON.stringify(
+                    url.includes('/runs?') ? { workflow_runs: [failing(id)] }
+                        : url.includes('/actions/workflows/') ? { state: 'active' }
+                            : { pushed_at: ago(DAY) }
+                ),
+            });
+            w.run();
+        }
+        assert.equal(w.sent.length, 1, 'a new run id must not read as a new problem');
+    });
+
+    test('but a failure after a recovery alerts immediately', () => {
+        const fail = (url) => ({
+            getResponseCode: () => 200,
+            getContentText: () => JSON.stringify(
+                url.includes('/runs?')
+                    ? { workflow_runs: [{ id: 1, status: 'completed', conclusion: 'failure', created_at: ago(HOUR), html_url: 'x' }] }
+                    : url.includes('/actions/workflows/') ? { state: 'active' } : { pushed_at: ago(DAY) }
+            ),
+        });
+
+        const w = load({ runs: [{ id: 1, status: 'completed', conclusion: 'failure', created_at: ago(HOUR), html_url: 'x' }] });
+        w.run();
+        assert.equal(w.sent.length, 1);
+
+        w.context.UrlFetchApp.fetch = healthy;
+        w.run();
+        assert.equal(w.sent.length, 2, 'recovery');
+
+        w.context.UrlFetchApp.fetch = fail;
+        w.run();
+        assert.equal(w.sent.length, 3, 'a fresh break must not be muted by the earlier one');
+    });
+
     test('the same problem is not emailed every day', () => {
         const w = load({ workflowState: 'disabled_inactivity' });
         w.run();

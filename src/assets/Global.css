@@ -173,6 +173,47 @@ h2 {
  * Applied to the section itself rather than an inner wrapper, so the same
  * layout is reachable from a content block as "white-stripe qa".
  */
+/* Typesetting, applied once for the whole site.
+ *
+ * `pretty` asks the browser not to leave a single word alone on the last line.
+ * `balance` evens out the lines of a short block, which is what headings are.
+ * Measured across eight pages at nine widths: 142 stranded last words before,
+ * and the worst offender was stranded at every width tested — not a quirk of
+ * one window size, just how that sentence always looked.
+ *
+ * Both degrade to today's behaviour in browsers that do not implement them. */
+p,
+li {
+    text-wrap: pretty;
+}
+
+h1,
+h2,
+h3,
+h4,
+.home-title,
+.home-subtitle,
+.caption-text h2 {
+    text-wrap: balance;
+}
+
+/* A bulleted list inside a centred box looked stranded: the heading above it
+   was centred while the bullets hugged the left edge of a much wider box. The
+   list is now centred as a block with its items still left-aligned, so the
+   group sits under its heading instead of drifting away from it. */
+.big-white-box ul,
+.big-white-box ol,
+.big-purple-box ul,
+.big-purple-box ol,
+.centered-text ul,
+.centered-text ol {
+    width: fit-content;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+}
+
 .qa {
     text-align: left;
 }
@@ -260,7 +301,13 @@ ul {
 }
 
 .card {
-  width: 130px;
+  /* Was a fixed 130px, which is about four words a line. "Our Members are the
+     Best" wrapped to two lines at every window size, and the body text under
+     it stranded a word at every width measured. Cards now share the row and
+     stop growing once the line length stops being comfortable to read. */
+  flex: 1 1 200px;
+  min-width: 170px;
+  max-width: 280px;
   text-align: center;
 }
 

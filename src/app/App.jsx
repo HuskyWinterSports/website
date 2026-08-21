@@ -9,6 +9,8 @@ import LessonRegistration from './routes/LessonRegistration.jsx';
 import JoinMailingList from './routes/JoinMailingList.jsx';
 import BecomeAnInstructor from './routes/BecomeAnInstructor.jsx';
 import DiversityAndInclusion from './routes/DiversityAndInclusion.jsx';
+import OurHistory from './routes/OurHistory.jsx';
+import SupportUs from './routes/SupportUs.jsx';
 import FAQ from './routes/FAQ.jsx';
 import ContactUs from './routes/ContactUs.jsx';
 import NotFound from './routes/NotFound.jsx';
@@ -55,6 +57,8 @@ function App() {
             <Route path="join-our-mailing-list" element={<JoinMailingList />} />
             <Route path="become-an-instructor" element={<BecomeAnInstructor />} />
             <Route path="diversity-and-inclusion" element={<DiversityAndInclusion />} />
+            <Route path="our-history" element={<OurHistory />} />
+            <Route path="support-us" element={<SupportUs />} />
             <Route path="faq" element={<FAQ />} />
             <Route path="contact-us" element={<ContactUs />} />
             <Route path="*" element={<NotFound />} />

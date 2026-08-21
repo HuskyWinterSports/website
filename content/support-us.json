@@ -1,0 +1,48 @@
+{
+  "route": "/support-us",
+  "title": "Support Us",
+  "blocks": [
+    {
+      "_note": "One panel. The tab is three short paragraphs — what the club believes, where the money goes, and how to send it — which is a single argument rather than three sections.",
+      "type": "big-white-box",
+      "showTitle": true,
+      "section": "Support our Stoked Volunteer Instructors!",
+      "heading": "Support our Stoked Volunteer Instructors!",
+      "content": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Husky Winter Sports believes the mountain should be for everyone. Help us keep the slopes alive! Our dedicated instructors volunteer their time to teach skiing and snowboarding to enthusiasts of all ages. With your donation, we can provide them with the resources they need to continue sharing their passion for the sport."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Your donation will go to support our DEI programs, such as Zero to Triple 60 and Spread the Shred, by providing equipment and passes."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Help us make the mountain accessible to everyone! Please Zelle huskyws@gmail.com or send a check to our address to donate."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

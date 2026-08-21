@@ -191,3 +191,60 @@ describe('failure messages', () => {
         );
     });
 });
+
+describe('editor notes', () => {
+    // Lines addressed to whoever builds the page, not to whoever reads it.
+    // Three were sitting in the club's document in August 2026, two of them
+    // in a tab that was about to be wired up.
+    const doc = (body) => parseGoogleDoc(
+        `<html><body><div id="contents">${body}</div></body></html>`
+    );
+
+    test('a line starting with -- is stripped from the page', () => {
+        const parsed = doc('<h2>Perks</h2><p>A free season pass.</p><p>--insert the pass photo</p>');
+        assert.deepEqual(
+            parsed.sections[0].blocks.map((b) => flatten(b.spans)),
+            ['A free season pass.']
+        );
+    });
+
+    test('the note is reported rather than silently dropped', () => {
+        // Dropping it silently leaves an officer wondering where their note
+        // went; publishing it puts "insert the pass photo" on the live site.
+        const parsed = doc('<h2>Perks</h2><p>--insert the pass photo</p>');
+        assert.deepEqual(parsed.notes, [
+            { section: 'Perks', text: '--insert the pass photo' },
+        ]);
+    });
+
+    test('*** is still treated as a note, so nothing leaks mid-migration', () => {
+        // The document used *** before -- was agreed. Wiring a tab that still
+        // had one would have published it.
+        const parsed = doc('<h2>T60</h2><p>***insert flowchart</p>');
+        assert.equal(parsed.sections[0].blocks.length, 0);
+        assert.equal(parsed.notes.length, 1);
+    });
+
+    test('ordinary prose containing a dash is untouched', () => {
+        // The guard that stops this eating content: only a line that STARTS
+        // with the marker is a note.
+        const parsed = doc('<h2>Dates</h2><p>Lessons run Jan 30 -- Mar 14.</p>');
+        assert.equal(parsed.sections[0].blocks.length, 1);
+        assert.equal(parsed.notes.length, 0);
+    });
+
+    test('a heading is never treated as a note', () => {
+        // Skipping -- headings is a separate rule that arrives with
+        // auto-sectioning. Stripping one here would delete a whole section's
+        // heading and leave its text orphaned under the section above.
+        const parsed = doc('<h2>-- Draft</h2><p>text</p>');
+        assert.equal(parsed.sections[0].heading, '-- Draft');
+        assert.equal(parsed.notes.length, 0);
+    });
+
+    test('notes are attached to the tab they were written in', () => {
+        const parsed = doc('<p class="c1 title">Lessons</p><h1>Lessons</h1><p>--todo</p>');
+        assert.equal(parsed.tabs[0].notes.length, 1);
+        assert.equal(parsed.tabs[0].notes[0].text, '--todo');
+    });
+});

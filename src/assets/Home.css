@@ -49,32 +49,6 @@
     color: white;
 }
 
-.banner-buttons {
-    display: flex;
-    flex-wrap: wrap; /* two buttons will not fit on one line on a phone */
-    /* row-gap then column-gap. The two buttons address different audiences
-       (parents booking vs students joining), so they get generous horizontal
-       separation, while the stacked phone layout stays tight. */
-    gap: 15px 30px;
-    padding-bottom: 20px;
-}
-
-.button {
-    background-color: rgb(80, 44, 132);
-    color: white;
-    border: 2px solid white;
-    padding: 10px 20px;
-    text-decoration: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.button:hover {
-    background-color: #c39ae4;
-    transition-duration: 300ms;
-}
-
 /* below this is image slider styling */
 .image-slider {
     position: relative;

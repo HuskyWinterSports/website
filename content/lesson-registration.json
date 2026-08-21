@@ -120,7 +120,7 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "Customers can request a full cancellation of their lessons by December 31st, one month before the lessons' scheduled start date, without any questions asked. Full refunds will be provided for cancellations made within this period."
+              "text": "Customers can request a full cancellation of their lessons by December 31st, without any questions asked. Full refunds will be provided for cancellations made within this period."
             }
           ]
         },
@@ -257,7 +257,30 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "Inclement weather is an inherent risk we all accept when engaging in mountain activities. As such, we understand that adverse weather conditions may impact our operations, and everyone involved will be equally affected. Therefore, refunds or compensation for changes in scheduling due to inclement weather are not guaranteed."
+              "text": "Inclement weather is an inherent risk we all accept when engaging in mountain activities. As such, we understand that adverse weather conditions may impact our operations, and everyone involved will be equally affected. Due to the rapidly changing conditions at Snoqualmie pass regarding lesson cancellations, you can expect an update for each weekend’s lessons no later than mid-day Friday before the weekend.. In the event of conditions affecting the entire season, we will compensate to the best of our ability but refunds or compensation for changes in scheduling due to inclement weather are not guaranteed. "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Please reference the Summit at Snoqualmie website ("
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": "https://www.summitatsnoqualmie.com/",
+              "text": "https://www.summitatsnoqualmie.com/"
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": ") for most current weather conditions. "
             }
           ]
         },
@@ -361,7 +384,7 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "Effective from August 2023, this policy supersedes all previous versions and governs all refund requests and related matters. Should the policy change, you will be notified via our mailing list."
+              "text": "Effective from August 2026, this policy supersedes all previous versions and governs all refund requests and related matters. Should the policy change, you will be notified via our mailing list."
             }
           ]
         }

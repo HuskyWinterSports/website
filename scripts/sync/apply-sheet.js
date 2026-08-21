@@ -1,4 +1,5 @@
 import { ContentError } from './join-sections.js';
+import { seasonEndYear, lessonWeekends, refundDeadline, lessonRange } from './lesson-dates.js';
 
 /**
  * Turns the signup sheet into content blocks, and fills the small number of
@@ -14,6 +15,8 @@ const TOKENS = {
     season_year: 'seasonYear',
     lesson_director: 'lessonDirector',
     refund_deadline: 'refundDeadline',
+    lesson_start: 'lessonStart',
+    lesson_end: 'lessonEnd',
 };
 
 /**
@@ -21,6 +24,26 @@ const TOKENS = {
  * the site-wide pass leaves it alone rather than rejecting it as unknown.
  */
 const DEFERRED = ['form_url'];
+
+/**
+ * The sheet's own values, plus everything derivable from them.
+ *
+ * Dates are computed rather than typed so that no date is maintained in two
+ * places. Before this the sheet carried a "Refund Deadline" row that nothing
+ * read, while the document had "December 31st" typed into its prose — the one
+ * date the club is held to, and the two agreed only by luck.
+ */
+export function derive(settings, layoutName) {
+    if (!settings.seasonYear) return settings;
+    const year = seasonEndYear(settings.seasonYear, layoutName);
+    const range = lessonRange(year);
+    return {
+        ...settings,
+        refundDeadline: refundDeadline(year),
+        lessonStart: range.start,
+        lessonEnd: range.end,
+    };
+}
 
 export function fillTokens(value, settings, layoutName) {
     return value.replace(/\{([a-z_]+)\}/g, (whole, token) => {
@@ -50,20 +73,20 @@ export function fillTokens(value, settings, layoutName) {
     });
 }
 
-/** Lesson dates, one box per session, in the order the sheet lists them. */
-function dateBoxes(sessions, layoutName) {
-    if (sessions.length === 0) {
-        throw new ContentError(
-            `The sheet lists no lesson dates, so ${layoutName} cannot be built.\n\n` +
-            `Fill in the Session, Lesson and Date columns.\n\n` +
-            `The website has not been changed. It is still showing the previous version.`
-        );
-    }
+/**
+ * Lesson dates, one box per session, worked out from the season year.
+ *
+ * There is deliberately no "the table is empty" failure here any more: the
+ * dates are computed, so the only way to get them wrong is a Season Year cell
+ * that cannot be read, which seasonEndYear refuses. See lesson-dates.js.
+ */
+function dateBoxes(seasonYear, layoutName) {
+    const year = seasonEndYear(seasonYear, layoutName);
 
     const bySession = new Map();
-    for (const row of sessions) {
-        if (!bySession.has(row.session)) bySession.set(row.session, []);
-        bySession.get(row.session).push(`Lesson ${row.lesson}: ${row.date}`);
+    for (const weekend of lessonWeekends(year)) {
+        if (!bySession.has(weekend.session)) bySession.set(weekend.session, []);
+        bySession.get(weekend.session).push(`Lesson ${weekend.lesson}: ${weekend.label}`);
     }
 
     return [...bySession].map(([name, items]) => ({
@@ -99,7 +122,7 @@ function priceBoxes(prices, layoutName) {
  */
 export function sheetBlock(entry, sheet, layoutName) {
     const boxes = entry.sheet === 'dates'
-        ? dateBoxes(sheet.sessions, layoutName)
+        ? dateBoxes(sheet.settings.seasonYear, layoutName)
         : entry.sheet === 'prices'
             ? priceBoxes(sheet.prices, layoutName)
             : null;
@@ -111,8 +134,16 @@ export function sheetBlock(entry, sheet, layoutName) {
         );
     }
 
-    const { sheet: _table, ...rest } = entry;
-    return { ...rest, boxes };
+    const { sheet: _table, note, ...rest } = entry;
+
+    // An optional sentence introducing the table. It lives in the layout
+    // rather than the document because it describes the shape of the season —
+    // the rule the dates follow — rather than anything an officer would reword.
+    return {
+        ...rest,
+        ...(note ? { content: [{ type: 'paragraph', spans: linkedSpans(note) }] } : {}),
+        boxes,
+    };
 }
 
 /**
@@ -236,6 +267,41 @@ export function applyStatus(entry, settings, layoutName) {
         ],
         ...(mode === 'embed' && form ? { form } : {}),
     };
+}
+
+/**
+ * Fills tokens in text that came from the DOCUMENT, so a date can be written
+ * once and quoted anywhere the club wants to quote it.
+ *
+ * Deliberately more forgiving than fillTokens. A layout file is written by a
+ * developer, so `{seson_year}` there is a typo worth stopping the build for.
+ * The document is written by officers who might reasonably type a brace, and
+ * freezing the whole site over "{warm} jacket" would be the tool getting in
+ * the way of the people it exists for. Unknown tokens, and known tokens the
+ * sheet has no value for, pass through untouched.
+ */
+export function fillContentTokens(blocks, settings) {
+    const fill = (text) => text.replace(/\{([a-z_]+)\}/g, (whole, token) => {
+        const key = TOKENS[token];
+        return key && settings[key] ? settings[key] : whole;
+    });
+
+    // Every string, not just spans. A section heading arrives as a bare string
+    // rather than a span, so a token in an officer's Heading 2 would otherwise
+    // publish as literal braces — the exact failure this function exists to
+    // prevent, one level up. The other strings it now touches (a block's type,
+    // a form's src, a sheet box's items) hold no tokens, and {form_url} is
+    // resolved by applyStatus, so nothing else moves.
+    const walk = (value) => {
+        if (typeof value === 'string') return fill(value);
+        if (Array.isArray(value)) return value.map(walk);
+        if (value && typeof value === 'object') {
+            return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, walk(v)]));
+        }
+        return value;
+    };
+
+    return blocks.map(walk);
 }
 
 /** Fill every {token} in the layout's own strings, leaving document prose alone. */

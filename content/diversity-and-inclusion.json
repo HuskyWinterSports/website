@@ -7,9 +7,9 @@
       "showTitle": true
     },
     {
-      "section": "Support our Stoked Volunteer Instructors!",
-      "type": "white-stripe",
-      "heading": "Support our Stoked Volunteer Instructors!",
+      "type": "white-stripe qa",
+      "section": "Mission Statement",
+      "heading": "Mission Statement",
       "content": [
         {
           "type": "paragraph",
@@ -18,7 +18,26 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "Husky Winter Sports believes the mountain should be for everyone. Help us keep the slopes alive! Our dedicated instructors volunteer their time to teach skiing and snowboarding to enthusiasts of all ages. With your donation, we can provide them with the resources they need to continue sharing their passion for the sport."
+              "text": "The mission of the Zero to Triple-60 program is to empower UW students who have faced socioeconomic barriers to skiing to learn to shred and become part of the greater snowsports community. This program aims to increase accessibility for UW students who face socioeconomic barriers to skiing and snowboarding by starting from zero and gaining skills to become better skiers at as low a cost as possible within the organization's bounds. HWS passionately believes that the high barrier of entry to snow sports leaves many communities out of the snowsports space."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_note": "The purple stripe between two white ones, so the three sections read as three rather than as one long page.",
+      "type": "purple-stripe qa",
+      "section": "What is T60?",
+      "heading": "What is T60?",
+      "content": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "On the slopes, members of the 0-T60 program will gain teaching experience alongside fellow club members as assistant instructors."
             }
           ]
         },
@@ -29,7 +48,25 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "Your donation will go to support our DEI programs, such as Zero to Triple 60 and Spread the Shred, by providing equipment and passes."
+              "text": "Thinking about joining t60? please see flowchart for eligibility? "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "white-stripe qa",
+      "section": "Spread The Shred",
+      "heading": "Spread The Shred",
+      "content": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "HWS believes that enjoying the winter season by skiing and snowboarding is an important opportunity for ALL to access. Life is not complete without SPREADING THE SHRED with all our friends. None of this would be possible without every helping hand and we extend a wholehearted thank you to you all. CAN’T WAIT TO KEEP SHREDDIN’ WITH YOU!!!"
             }
           ]
         },
@@ -40,7 +77,7 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "Help us make the mountain accessible to everyone! Please Zelle huskyws@gmail.com or send a check to our address to donate."
+              "text": "Interested in supporting this program? Support us."
             }
           ]
         }

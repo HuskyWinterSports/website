@@ -1,5 +1,4 @@
 {
-  "_note": "Not yet live. /diversity-and-inclusion is still served by src/app/routes/DiversityAndInclusion.jsx. This reproduces that page minus the 'Under Construction' line, so the switch is a near-invisible deploy and wording changes can be reviewed separately. Section names must match the Heading 2 text in the source document exactly.",
   "route": "/diversity-and-inclusion",
   "source": {
     "kind": "google-doc",
@@ -8,6 +7,12 @@
   },
   "blocks": [
     { "type": "big-white-box", "showTitle": true },
-    { "section": "Support our Stoked Volunteer Instructors!", "type": "white-stripe" }
+    { "type": "white-stripe qa", "section": "Mission Statement" },
+    {
+      "_note": "The purple stripe between two white ones, so the three sections read as three rather than as one long page.",
+      "type": "purple-stripe qa",
+      "section": "What is T60?"
+    },
+    { "type": "white-stripe qa", "section": "Spread The Shred" }
   ]
 }

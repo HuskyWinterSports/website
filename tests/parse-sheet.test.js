@@ -31,21 +31,27 @@ describe('reading the real sheet', () => {
         assert.deepEqual(sheet.settings, {
             lessonDirector: 'Charlotte Smith',
             seasonYear: '2026/27',
-            refundDeadline: 'Dec 31',
             skiState: 'not_yet_open',
             snowboardState: 'not_yet_open',
         });
     });
 
-    test('reads the calendar as its own column group', () => {
-        assert.equal(sheet.sessions.length, 6);
-        assert.deepEqual(sheet.sessions[0], { session: 'A', lesson: '1', date: 'Jan 30 - Jan 31' });
-        assert.deepEqual(sheet.sessions[5], { session: 'B', lesson: '3', date: 'Mar 13 - Mar 14' });
+    test('the sheet no longer carries lesson dates', () => {
+        // The Session/Lesson/Date columns were deleted in August 2026, once
+        // the season became computable from the Season Year cell.
+        assert.ok(!('sessions' in sheet));
+    });
+
+    test('a leftover Refund Deadline row is ignored without complaint', () => {
+        // Officers can delete it whenever. Not deleting it must also be safe,
+        // and must not produce a warning telling them to fix a non-problem.
+        assert.ok(!('refundDeadline' in sheet.settings));
+        assert.deepEqual(sheet.warnings, []);
     });
 
     test('reads prices as their own column group, ignoring the shorter run', () => {
-        // Three prices against six dates in the same grid: the two must not be
-        // zipped together.
+        // The settings column runs ten rows against three prices in the same
+        // grid: the two must not be zipped together.
         assert.equal(sheet.prices.length, 3);
         assert.deepEqual(sheet.prices[1], { type: 'Single-Student', threeWeek: '660', sixWeek: '990' });
     });
@@ -67,20 +73,20 @@ describe('the settings column is read by label, not by position', () => {
     });
 
     test('a note typed into a spare cell is ignored, not fatal', () => {
-        const withNote = FIXTURE.trimEnd() + '\nask Charlotte about B3,,,,,,\n';
+        const withNote = FIXTURE.trimEnd() + '\nask Charlotte about session B,,,\n';
         const sheet = parseSheet(withNote);
-        assert.equal(sheet.settings.refundDeadline, 'Dec 31');
+        assert.equal(sheet.settings.seasonYear, '2026/27');
     });
 
     test('never records one label as another label\'s value', () => {
-        // Sorting the sheet by Date reorders whole rows, which shuffles this
-        // column against itself. Taking the next cell blindly would record the
-        // lesson director as "Season Year" and publish it on the refund page.
+        // Sorting the sheet reorders whole rows, which shuffles this column
+        // against itself. Taking the next cell blindly would record the lesson
+        // director as "Season Year" and publish it as the season.
         const shuffled = [
-            'Lesson Director,Session,Lesson,Date,Lesson Type,3 Week Price,6 Week Price',
-            'Season Year,A,1,Jan 30 - Jan 31,Group,240,360',
-            'Charlotte Smith,A,2,Feb 6 - Feb 7,Single-Student,660,990',
-            '2026/27,A,3,Feb 20 - Feb 21,Friends & Family,325,485',
+            'Lesson Director,Lesson Type,3 Week Price,6 Week Price',
+            'Season Year,Group,240,360',
+            'Charlotte Smith,Single-Student,660,990',
+            '2026/27,Friends & Family,325,485',
         ].join('\n');
 
         const { settings, warnings } = parseSheet(shuffled);
@@ -92,17 +98,20 @@ describe('the settings column is read by label, not by position', () => {
     });
 
     test('a label with nothing under it warns rather than failing', () => {
-        const emptied = FIXTURE.replace('\nDec 31,', '\n,');
+        const emptied = FIXTURE.replace('\n2026/27,', '\n,');
         const sheet = parseSheet(emptied);
-        assert.match(sheet.warnings.join('\n'), /Refund Deadline/i);
-        assert.equal(sheet.settings.refundDeadline, undefined);
+        assert.match(sheet.warnings.join('\n'), /Season Year/i);
+        assert.equal(sheet.settings.seasonYear, undefined);
     });
 
-    test('an emptied value does not adopt the next label\'s value', () => {
-        // Refund Deadline emptied must NOT quietly become "Not yet open",
-        // which is what the ski state row says further down the column.
-        const emptied = FIXTURE.replace('\nDec 31,', '\n,');
-        assert.equal(parseSheet(emptied).settings.refundDeadline, undefined);
+    test('an emptied value does not adopt a RETIRED label as its own', () => {
+        // The trap this closes: "Refund Deadline" is no longer a setting the
+        // website reads, but the row is still in the club's sheet, sitting
+        // directly under Season Year. An emptied Season Year that hunted for
+        // the next non-blank cell would publish "Refund Deadline" as the
+        // season, and every lesson date would be computed from it.
+        const emptied = FIXTURE.replace('\n2026/27,', '\n,');
+        assert.equal(parseSheet(emptied).settings.seasonYear, undefined);
     });
 
     test('a missing label says where to put it back', () => {
@@ -167,10 +176,10 @@ describe('columns are found by name', () => {
 
     test('a renamed column says what the sheet actually contains', () => {
         assert.throws(
-            () => parseSheet(FIXTURE.replace('Date,', 'Dates,')),
+            () => parseSheet(FIXTURE.replace('Lesson Type,', 'Lesson Types,')),
             (error) => {
-                assert.match(error.message, /missing its "date" column/);
-                assert.match(error.message, /dates/);
+                assert.match(error.message, /missing its "lesson type" column/);
+                assert.match(error.message, /lesson types/);
                 return true;
             }
         );

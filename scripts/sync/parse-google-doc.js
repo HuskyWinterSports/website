@@ -31,6 +31,21 @@ import { parse } from 'node-html-parser';
 
 const BLOCK_TAGS = new Set(['H1', 'H2', 'H3', 'H4', 'P', 'UL', 'OL']);
 
+/**
+ * Lines addressed to whoever builds the page rather than to whoever reads it.
+ *
+ * `--` is the club's convention, matching the `-- Planning` tab officers
+ * already keep in the document. `***` was the earlier marker and is still
+ * honoured, because a tab still holding one would otherwise publish
+ * "insert flowchart" to the live site the moment it was wired up. The sync
+ * log names the old marker so the two converge on one.
+ *
+ * Paragraphs only, and only when the line STARTS with the marker: "Jan 30 --
+ * Mar 14" is prose, and stripping a heading would leave its section's text
+ * orphaned under the heading above it.
+ */
+const NOTE_MARKER = /^(--|\*\*\*)/;
+
 /** Build { className -> {bold, italic} } from the document's own stylesheet. */
 function readStyleMap(root) {
     const map = new Map();
@@ -138,9 +153,11 @@ function readList(element, styleMap) {
 
 /**
  * @param {string} html Raw response body from /document/d/e/<pubId>/pub
- * @returns {{title: string|null, sections: Array, tabs: Array}}
+ * @returns {{title: string|null, sections: Array, tabs: Array, notes: Array}}
  *   `title`/`sections` describe the whole document; `tabs` is empty for a
  *   document with no tabs, so a caller that ignores it behaves as before.
+ *   `notes` are the editor notes stripped out — every tab carries its own, so
+ *   `selectTab`'s result has them whether or not the document has tabs.
  */
 export function parseGoogleDoc(html) {
     const root = parse(html, { blockTextElements: { style: true, script: false } });
@@ -158,6 +175,7 @@ export function parseGoogleDoc(html) {
     let title = null;
     const sections = [];
     const tabs = [];
+    const notes = [];
     let currentTab = null;
     let current = null;
 
@@ -183,7 +201,7 @@ export function parseGoogleDoc(html) {
             // tab's name in the Docs sidebar, not page content.
             if (tag === 'P' && hasClass(child, 'title')) {
                 const name = readSpans(child, styleMap).map((s) => s.text).join('').trim();
-                currentTab = { name, title: null, sections: [] };
+                currentTab = { name, title: null, sections: [], notes: [] };
                 tabs.push(currentTab);
                 current = null;
                 continue;
@@ -237,6 +255,16 @@ export function parseGoogleDoc(html) {
             const spans = readSpans(child, styleMap);
             if (!spans.length) continue;
 
+            const text = spans.map((s) => s.text).join('').trim();
+            if (tag === 'P' && NOTE_MARKER.test(text)) {
+                // Shared by reference with the tab, the same way sections are,
+                // so the two views can never disagree about what was found.
+                const note = { section: current.heading, text };
+                notes.push(note);
+                currentTab?.notes.push(note);
+                continue;
+            }
+
             current.blocks.push(
                 tag === 'P'
                     ? { type: 'paragraph', spans }
@@ -246,5 +274,5 @@ export function parseGoogleDoc(html) {
     };
 
     visit(contents);
-    return { title, sections, tabs };
+    return { title, sections, tabs, notes };
 }

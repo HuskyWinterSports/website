@@ -132,12 +132,14 @@ async function syncLayout(layoutPath) {
 
     const tabs = document.tabs.map((t) => t.name);
 
+    const notes = parsed.notes ?? [];
+
     if (previous === serialised) {
-        return { layoutName, changed: false, orphans, tabs, sheetWarnings };
+        return { layoutName, changed: false, orphans, tabs, sheetWarnings, notes };
     }
 
     writeFileSync(outputPath, serialised);
-    return { layoutName, changed: true, orphans, tabs, sheetWarnings };
+    return { layoutName, changed: true, orphans, tabs, sheetWarnings, notes };
 }
 
 async function main() {
@@ -165,6 +167,20 @@ async function main() {
         // officer adding a note to a spreadsheet must not take the site down.
         for (const warning of result.sheetWarnings ?? []) {
             console.log(`NOTE: ${warning}`);
+        }
+
+        // Notes are stripped from the page, so say where they went. An officer
+        // who leaves one and sees nothing happen learns the wrong lesson.
+        for (const note of result.notes) {
+            const where = note.section ? ` under "${note.section}"` : '';
+            console.log(
+                `NOTE: a line${where} in the ${result.layoutName} document is a ` +
+                `note to a developer, so it has been left off the page:\n` +
+                `      ${note.text}` +
+                (note.text.startsWith('***')
+                    ? `\n      (*** is the old marker — please change it to --)`
+                    : '')
+            );
         }
 
         // Orphans are a warning, not a failure: an editor adding a section

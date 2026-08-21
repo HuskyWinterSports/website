@@ -83,7 +83,19 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": " or through our instagram @huskywintersports."
+              "text": " or through our instagram "
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": "https://www.instagram.com/huskywintersports/?hl=en",
+              "text": "@huskywintersports"
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "."
             }
           ]
         },

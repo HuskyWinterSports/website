@@ -21,6 +21,7 @@ const NAV_ITEMS = [
         items: [
             { label: 'Become an Instructor', to: '/become-an-instructor' },
             { label: 'Diversity and Inclusion', to: '/diversity-and-inclusion' },
+            { label: 'Our History', to: '/our-history' },
         ],
     },
     {
@@ -30,6 +31,10 @@ const NAV_ITEMS = [
             { label: 'Contact Us', to: '/contact-us' },
         ],
     },
+    // Top level rather than inside About Us: donating is something to do, not
+    // a fact about the club, and a donation page two menus deep gets very
+    // little traffic.
+    { label: 'Support Us', to: '/support-us' },
 ];
 
 export default function Navbar() {

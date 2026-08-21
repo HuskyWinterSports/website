@@ -1,0 +1,80 @@
+{
+  "route": "/our-history",
+  "title": "Our History",
+  "blocks": [
+    {
+      "_note": "Left-aligned at a reading measure rather than centred: this is the longest run of continuous prose on the site — six paragraphs spanning 1937 to now — and centred text makes the eye hunt for the start of every line.",
+      "type": "white-stripe qa",
+      "showTitle": true,
+      "lead": true,
+      "content": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Husky Winter Sports is a student-run nonprofit organization that provides ski and snowboard lessons taught by University of Washington students. Our mission is to make winter sports accessible to everyone, regardless of their skill level or background."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "“Provide fun, safe, high quality and affordable mountain experiences to skiers and snowboarders of all ability levels, and to foster friendships among like-minded winter sports enthusiasts.\""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Founded in 1937, we are the oldest Registered Student Organization at UW! HWS initially began as a recreation club to help students get into the snowy Cascade mountains. Originally traveling by train, members shredded all over the Pacific Northwest including Mt. Rainier, Stevens Pass, and the Snoqualmie Pass area. By the 1970s, HWS was one of the largest student clubs in the United States with many members and even a sponsorship by Rainier Beer."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "In the 1950s, the club began teaching lessons at Snoqualmie Pass and were able to enjoy free skiing by offering weekend lessons to the Seattle area public and to students and faculty at the UW. Members became certified ski instructors through the Professional Ski Instructors of America (PSIA), the world’s largest nonprofit education association dedicated to promoting the sports of skiing and snowboarding through instruction. In 1996, Husky Winter Sports added a snowboard program to its lineup, becoming one of the first area ski schools to do so. That same year, the American Association of Snowboard Instructors (AASI) was created by the riders at PSIA to help standardize the teaching methods of America’s snowboard instructors. Since then, each season members of HWS train and test for PSIA and AASI teaching certifications.Today, Husky Winter Sports operates at the Summit at Snoqualmie Central out of the Ullr hut. Besides being our patron saint of snow and skiing, Ullr is also the name of the parent ski school that acts as the bridge between Huskies, Snoqualmie, and PSIA. "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "In 2023, Husky Winter Sports rolled out our newest program, 0-T60, or “Triple-60”. This is a program offered for beginner students at UW that aims to increase accessibility to snow sports for those who face socio-economic barriers. Presidents and Equity Officers through this pivotal season developed this program for beginners to ski and learn alongside experienced HWS members. Due to having the sickest group of supportive and encouraging instructors on the mountain, this program has fostered an environment for those new to the sport with limited access in the past. Now, the T60 program has been fully incorporated into our regular season operations as well as our annual event, Spread the Shred. T60 is no longer considered just a “beginner program” but an essential part of the lessons we offer and our mission on the mountain. HWS believes that enjoying the winter season through skiing and snowboarding is an important opportunity for ALL to access. Life is not complete without spreading the shred with our friends. All of HWS extends a whole hearted thank you to every helping hand that made this initiative possible and continues to do so. "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Every year that Huskies continue, new levels of stoke are reached. We are a community of students who don’t just teach and ski in the winter, but a family that sticks together all year long. One day Snoqualmie Pass may be dry, but Husky Winter Sports will never die!"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

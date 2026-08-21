@@ -1,0 +1,16 @@
+{
+  "route": "/support-us",
+  "source": {
+    "kind": "google-doc",
+    "publishedId": "2PACX-1vQ53bIBpIbYs7rqDxydTDD9aO20F7JeeqxmLwaH33FMV2dZ0MyEy9Pf8N6BRZgsdbtRGtdwS226v7Eh",
+    "tab": "Support Us"
+  },
+  "blocks": [
+    {
+      "_note": "One panel. The tab is three short paragraphs — what the club believes, where the money goes, and how to send it — which is a single argument rather than three sections.",
+      "type": "big-white-box",
+      "showTitle": true,
+      "section": "Support our Stoked Volunteer Instructors!"
+    }
+  ]
+}

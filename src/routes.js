@@ -60,6 +60,20 @@ export const ROUTES = [
             'and how your donation supports our programs.',
     },
     {
+        path: '/our-history',
+        title: 'Our History | Husky Winter Sports',
+        description:
+            'Founded in 1937 and the oldest registered student organisation at UW: how Husky ' +
+            'Winter Sports grew from a train-riding recreation club into a ski and snowboard school.',
+    },
+    {
+        path: '/support-us',
+        title: 'Support Us | Husky Winter Sports',
+        description:
+            'Donate to Husky Winter Sports and help our volunteer student instructors bring ' +
+            'skiing and snowboarding to people who could not otherwise get on the mountain.',
+    },
+    {
         path: '/faq',
         title: 'FAQ | Husky Winter Sports',
         description:

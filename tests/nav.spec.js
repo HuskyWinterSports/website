@@ -35,6 +35,7 @@ const NAV = [
         links: [
             { label: 'Become an Instructor', path: '/become-an-instructor' },
             { label: 'Diversity and Inclusion', path: '/diversity-and-inclusion' },
+            { label: 'Our History', path: '/our-history' },
         ],
     },
     {
@@ -44,6 +45,14 @@ const NAV = [
             { label: 'Contact Us', path: '/contact-us' },
         ],
     },
+];
+
+// Links that sit directly in the bar rather than inside a dropdown. They are
+// reached differently — no group toggle to open first — so a page moved out of
+// a menu could otherwise lose its coverage silently.
+const TOP_LEVEL = [
+    { label: 'Home', path: '/' },
+    { label: 'Support Us', path: '/support-us' },
 ];
 
 /** True when the current project emulates a touchscreen. */
@@ -97,12 +106,15 @@ test.describe('every page is reachable from the nav', () => {
         }
     }
 
-    test('Home is reachable', async ({ page }) => {
-        await page.goto('/faq');
-        await openMenu(page);
-        await activate(page.getByRole('link', { name: 'Home', exact: true }));
-        await expect(page.locator('main h1')).toBeVisible();
-    });
+    for (const { label, path } of TOP_LEVEL) {
+        test(`top level → ${label}`, async ({ page }) => {
+            await page.goto('/faq');
+            await openMenu(page);
+            await activate(page.getByRole('link', { name: label, exact: true }));
+            await expect(page).toHaveURL(new RegExp(`${path.replace('/', '\\/')}$`));
+            await expect(page.locator('main h1')).toBeVisible();
+        });
+    }
 });
 
 test.describe('dropdown behaviour', () => {

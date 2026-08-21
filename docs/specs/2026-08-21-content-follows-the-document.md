@@ -269,14 +269,15 @@ So:
   director"*, or the sheet row is deleted. An unread row is a trap: someone
   updates it, nothing changes, and they lose trust in the sheet.
 
-**One thing to confirm during review.** The document's policy currently reads
-*"by December 31st, one month before the lessons' scheduled start date"*, which
-is two different rules. "One month before the start" gives Dec 30 in some
-seasons and Dec 31 in others. I recommend defining it as **December 31 of the
-calendar year before the season** — it matches what is published today, it is
-easy to quote in an email, and a refund deadline that wobbles by a day each year
-is harder to administer than one that does not. The wobbling version is a
-one-line change if you would rather have it.
+**Decided.** The document's policy read *"by December 31st, one month before the
+lessons' scheduled start date"*, which is two different rules — "one month
+before the start" gives Dec 30 in some seasons and Dec 31 in others.
+
+The deadline is **December 31 of the calendar year before the season**. It
+matches what is published today, it is easy to quote in an email, and a refund
+deadline that wobbles by a day each year is harder to administer than one that
+does not. The document's "one month before" clause is dropped, since the fixed
+date is now the rule rather than an approximation of one.
 
 ### Cleanup this requires
 
@@ -397,9 +398,6 @@ it properly.
 
 ## Open, waiting on the club
 
-- **The refund deadline rule** — fixed December 31, or genuinely one calendar
-  month before the first lesson? See §5. This one changes what the club is
-  held to, so it wants a decision rather than a default.
 - The **T60 flowchart** — an image, or a document to link to?
 - **Training manual** URLs.
 - *"Joining mailing list button?"* — read as a button to `/join-our-mailing-list`

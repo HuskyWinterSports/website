@@ -1,4 +1,5 @@
 {
+  "_pending": "\"Check out how we teach!\" is deliberately not in the blocks below. Its whole content is 'Learn more about our program and how we teach through our training manuals:' — one sentence ending in a colon, because the note naming the manuals is stripped before publishing. Add a block for it once the club sends the links. Until then the sync reports it as an unused section on every run, which is the reminder.",
   "route": "/become-an-instructor",
   "source": {
     "kind": "google-doc",
@@ -13,7 +14,13 @@
       "section": "How can I ski for free?"
     },
     { "type": "big-purple-box", "section": "I’m a student, how do I join?" },
-    { "type": "big-white-box", "section": "I’m a student, how do I learn?" },
-    { "type": "big-purple-box", "section": "Check out how we teach!" }
+    {
+      "_note": "The document's sentence ends 'see if you're eligible to learn here:' and pointed at a note asking for a link. Without one the page makes a promise it does not keep, so the button is the destination that sentence names.",
+      "type": "big-white-box",
+      "section": "I’m a student, how do I learn?",
+      "buttons": [
+        { "label": "ZERO TO TRIPLE-60", "href": "/diversity-and-inclusion" }
+      ]
+    }
   ]
 }

@@ -157,8 +157,15 @@
       ]
     },
     {
+      "_note": "The document's sentence ends 'see if you're eligible to learn here:' and pointed at a note asking for a link. Without one the page makes a promise it does not keep, so the button is the destination that sentence names.",
       "type": "big-white-box",
       "section": "I’m a student, how do I learn?",
+      "buttons": [
+        {
+          "label": "ZERO TO TRIPLE-60",
+          "href": "/diversity-and-inclusion"
+        }
+      ],
       "heading": "I’m a student, how do I learn?",
       "content": [
         {
@@ -169,24 +176,6 @@
               "italic": false,
               "href": null,
               "text": "Do you want to ski for free with Husky Winter Sports but haven’t had the chance to learn to ride yet? Check out our Triple60 program and see if you’re eligible to learn here:"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "big-purple-box",
-      "section": "Check out how we teach!",
-      "heading": "Check out how we teach!",
-      "content": [
-        {
-          "type": "paragraph",
-          "spans": [
-            {
-              "bold": false,
-              "italic": false,
-              "href": null,
-              "text": "Interested in trying out? Learn more about our program and how we teach through our training manuals:"
             }
           ]
         }

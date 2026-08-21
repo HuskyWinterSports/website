@@ -3,7 +3,6 @@
   "title": "Email List",
   "blocks": [
     {
-      "_note": "The form is layout, not words. Swapping to a new form is a one-line change here; the signup URL is not something an editor should have to paste into prose correctly.",
       "type": "big-white-box centered-text",
       "showTitle": true,
       "lead": true,

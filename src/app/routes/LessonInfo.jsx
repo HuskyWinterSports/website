@@ -1,5 +1,3 @@
-import '../../assets/Global.css'
-import '../../assets/LessonInfo.css'
 import ContentBlocks from '../../components/ContentBlocks.jsx'
 import page from '../../../content/lesson-info.json'
 

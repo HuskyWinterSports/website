@@ -169,7 +169,6 @@
       ]
     },
     {
-      "_note": "The first sentence is the rule the dates follow and is true every year. The second is generated from it, so it stays right in 2048 when 'the second weekend in March' will not be.",
       "type": "purple-stripe",
       "heading": "2026/27 Dates",
       "content": [
@@ -208,7 +207,6 @@
       "type": "white-stripe qa",
       "section": "Levels",
       "cards": true,
-      "_note": "The four levels are a comparison, not a sequence of prose: cards let a parent scan them side by side and pick one.",
       "heading": "Levels",
       "content": [
         {
@@ -333,7 +331,6 @@
       "boxes": [
         {
           "heading": "Group",
-          "inset": true,
           "items": [
             "3 weeks - $240",
             "6 weeks - $360"
@@ -341,7 +338,6 @@
         },
         {
           "heading": "Single-Student",
-          "inset": true,
           "items": [
             "3 weeks - $660",
             "6 weeks - $990"
@@ -349,7 +345,6 @@
         },
         {
           "heading": "Friends & Family",
-          "inset": true,
           "items": [
             "3 weeks - $325",
             "6 weeks - $485"

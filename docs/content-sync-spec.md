@@ -1,17 +1,11 @@
 # Content Sync Spec — editing the website from Google Workspace
 
-**Status: phase 1 is built and running**, as of 2026-08-11. Transport verified
-(§4), tabs verified (§4.2b), parser and validation written, the hourly sync
-running (§6), and `/diversity-and-inclusion` served from a document tab. Proven
-end to end: an edit to the document reached the live site with nobody touching
-GitHub.
+**Status: built and running.** All ten pages are served from the club's Google
+Doc and Sheet, the hourly sync is live (§6), and an edit to the document reaches
+the site with nobody touching GitHub.
 
-**Waiting on the club, not on a developer:** install the watcher (§7.2), and
-paste the remaining tabs from
-[`doc-tabs-blockout.md`](doc-tabs-blockout.md).
-
-**Next for a developer:** phase 2 — the Sheet (§5.4), then a page at a time as
-its tab is filled in.
+**Next for a developer:** sections follow the document rather than a whitelist —
+see `specs/2026-08-21-content-follows-the-document.md`.
 
 ---
 
@@ -901,11 +895,6 @@ Signup data (dates, prices, status), then Lesson Info, Lesson Registration, FAQ,
 Become an Instructor, Contact Us. Lesson Info and Lesson Registration mix prose
 and tabular data, so they interleave doc-sourced and sheet-sourced blocks in one
 layout file — which the per-block `source` design already allows.
-
-**[`doc-tabs-blockout.md`](doc-tabs-blockout.md) is the paste-ready text** for
-every remaining tab, drawn verbatim from the live pages, with the split against
-Sheets already drawn and the known content bugs flagged inline rather than
-copied across.
 
 **Layout files are added one page at a time, as each tab is filled in.** Not
 up front: `npm run sync` runs hourly against a live site, so a layout naming a

@@ -217,9 +217,7 @@ function Section({ block, title }) {
                     {block.boxes.map((box, index) => (
                         <div className="box" key={index}>
                             <h3>{box.heading}</h3>
-                            {box.inset
-                                ? <div className="little-white-box"><BoxItems items={box.items} /></div>
-                                : <BoxItems items={box.items} />}
+                            <BoxItems items={box.items} />
                         </div>
                     ))}
                 </section>

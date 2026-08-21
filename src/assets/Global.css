@@ -272,10 +272,6 @@ h4,
     opacity: 0.85;
 }
 
-.gray-stripe {
-  background-color: lightgray;
-}
-
 .centered-text {
   text-align: center;
 }
@@ -286,10 +282,6 @@ h1 {
 
 ul {
   text-align: left;
-}
-
-.topic {
-  margin: 40px 0;
 }
 
 .cards {
@@ -321,11 +313,8 @@ ul {
   font-size: 0.9em;
 }
 
-/* An introductory sentence above a row of boxes — the season note on Lesson
-   Info is the first of these. The stripe runs the full width of the window, so
-   without a cap the line reaches ~1100px on a desktop and the eye loses its
-   place coming back to the left edge. Matches the 800px measure .white-stripe
-   has always used. */
+/* An introductory sentence above a row of boxes. The stripe is full-width, so
+   without a cap the line reaches ~1100px. Matches .white-stripe's measure. */
 .purple-stripe > p {
   max-width: 800px;
   margin: 10px auto 0;
@@ -392,10 +381,8 @@ ul {
     transition-duration: 300ms;
 }
 
-/* Buttons started out home-banner-only and are now used on ordinary pages, so
-   they live here rather than in Home.css. On a white panel a white border
-   reads as a gap around the button instead of an outline, and a left-aligned
-   row under centred prose looks stranded. */
+/* Buttons were home-banner-only and are now used on ordinary pages. Under
+   centred prose a left-aligned row looks stranded. */
 .big-white-box .banner-buttons,
 .big-purple-box .banner-buttons,
 .centered-text .banner-buttons {
@@ -403,10 +390,9 @@ ul {
     padding: 20px 0 0;
 }
 
-/* The colour rules are load-bearing, not decoration. `.big-white-box a` and
-   `.big-purple-box a` are (0,1,1) and outrank `.button` at (0,1,0), so without
-   these the label renders in the panel's link colour — purple text on a purple
-   button, i.e. an empty rectangle. Seen in a screenshot, not reasoned about. */
+/* Load-bearing, not decoration: `.big-white-box a` is (0,1,1) and outranks
+   `.button` at (0,1,0), so without these the label takes the panel's link
+   colour — purple on purple, i.e. an empty rectangle. */
 .big-white-box .button,
 .white-stripe .button {
     color: white;

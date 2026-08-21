@@ -32,17 +32,12 @@ import { parse } from 'node-html-parser';
 const BLOCK_TAGS = new Set(['H1', 'H2', 'H3', 'H4', 'P', 'UL', 'OL']);
 
 /**
- * Lines addressed to whoever builds the page rather than to whoever reads it.
+ * Lines addressed to whoever builds the page, not whoever reads it.
  *
- * `--` is the club's convention, matching the `-- Planning` tab officers
- * already keep in the document. `***` was the earlier marker and is still
- * honoured, because a tab still holding one would otherwise publish
- * "insert flowchart" to the live site the moment it was wired up. The sync
- * log names the old marker so the two converge on one.
- *
- * Paragraphs only, and only when the line STARTS with the marker: "Jan 30 --
- * Mar 14" is prose, and stripping a heading would leave its section's text
- * orphaned under the heading above it.
+ * `--` is the club's convention; `***` was the earlier marker and is still
+ * honoured so a tab holding one cannot publish it. Paragraphs only, and only
+ * at the start of a line — "Jan 30 -- Mar 14" is prose, and stripping a
+ * heading would orphan its section's text under the heading above.
  */
 const NOTE_MARKER = /^(--|\*\*\*)/;
 
@@ -257,8 +252,7 @@ export function parseGoogleDoc(html) {
 
             const text = spans.map((s) => s.text).join('').trim();
             if (tag === 'P' && NOTE_MARKER.test(text)) {
-                // Shared by reference with the tab, the same way sections are,
-                // so the two views can never disagree about what was found.
+                // Shared by reference with the tab, as sections are.
                 const note = { section: current.heading, text };
                 notes.push(note);
                 currentTab?.notes.push(note);

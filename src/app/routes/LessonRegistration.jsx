@@ -1,4 +1,3 @@
-import '../../assets/Global.css'
 import ContentBlocks from '../../components/ContentBlocks.jsx'
 import page from '../../../content/lesson-registration.json'
 

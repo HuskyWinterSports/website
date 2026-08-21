@@ -14,7 +14,7 @@
       "section": "What is T60?"
     },
     {
-      "_note": "The section ends 'Interested in supporting this program? Support us.' and that phrase carries no hyperlink in the document, so it was a dangling reference. The button is the destination the sentence names.",
+      "_note": "The section ends 'Interested in supporting this program? Support us.' with no hyperlink in the document. The button is the destination it names.",
       "type": "white-stripe qa",
       "section": "Spread The Shred",
       "buttons": [

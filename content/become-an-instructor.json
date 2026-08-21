@@ -3,7 +3,6 @@
   "title": "Become an Instructor",
   "blocks": [
     {
-      "_note": "Rounded boxes alternating white and purple, the rhythm this page had before the August 2026 content edit. The four sections are questions a student asks in order, so they read as a sequence rather than as one long page.",
       "type": "big-white-box",
       "showTitle": true,
       "section": "How can I ski for free?",
@@ -157,7 +156,6 @@
       ]
     },
     {
-      "_note": "The document's sentence ends 'see if you're eligible to learn here:' and pointed at a note asking for a link. Without one the page makes a promise it does not keep, so the button is the destination that sentence names.",
       "type": "big-white-box",
       "section": "I’m a student, how do I learn?",
       "buttons": [

@@ -3,7 +3,6 @@
   "title": "Contact Us",
   "blocks": [
     {
-      "_note": "No Heading 2s: this page is a title and some paragraphs. `lead` takes everything under the title, so no heading has to be invented to hang content on.",
       "type": "big-white-box centered-text",
       "showTitle": true,
       "lead": true,

@@ -2,7 +2,7 @@ import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { parseSheet } from '../scripts/sync/parse-sheet.js';
-import { sheetBlock, fillTokens, fillLayoutTokens, applyStatus } from '../scripts/sync/apply-sheet.js';
+import { sheetBlock, fillTokens, fillLayoutTokens, applyStatus, derive } from '../scripts/sync/apply-sheet.js';
 import { ContentError } from '../scripts/sync/join-sections.js';
 
 const SHEET = parseSheet(readFileSync(
@@ -17,24 +17,52 @@ describe('dates', () => {
         assert.deepEqual(boxes.map((b) => b.heading), ['Session A', 'Session B']);
     });
 
-    test('lessons keep the sheet order within their session', () => {
+    test('the dates come from the season year, not from the sheet', () => {
+        // The sheet's Session/Lesson/Date columns were deleted in August 2026.
+        // These six are what it used to say by hand for 2026/27.
         assert.deepEqual(boxes[0].items, [
             'Lesson 1: Jan 30 - Jan 31',
             'Lesson 2: Feb 6 - Feb 7',
             'Lesson 3: Feb 20 - Feb 21',
         ]);
+        assert.deepEqual(boxes[1].items, [
+            'Lesson 1: Feb 27 - Feb 28',
+            'Lesson 2: Mar 6 - Mar 7',
+            'Lesson 3: Mar 13 - Mar 14',
+        ]);
     });
 
-    test('a session added to the sheet appears without anyone editing code', () => {
-        // The point of the whole exercise: next season's shape is not fixed
-        // here.
-        const withC = {
-            ...SHEET,
-            sessions: [...SHEET.sessions, { session: 'C', lesson: '1', date: 'Mar 20 - Mar 21' }],
-        };
-        const grown = sheetBlock({ sheet: 'dates' }, withC, 'lesson-info');
-        assert.equal(grown.boxes.length, 3);
-        assert.deepEqual(grown.boxes[2], { heading: 'Session C', items: ['Lesson 1: Mar 20 - Mar 21'] });
+    test('next season needs one cell changed, not twelve', () => {
+        const next = { ...SHEET, settings: { ...SHEET.settings, seasonYear: '2027/28' } };
+        const grown = sheetBlock({ sheet: 'dates' }, next, 'lesson-info');
+        assert.equal(grown.boxes[0].items[0], 'Lesson 1: Jan 29 - Jan 30');
+        assert.equal(grown.boxes[1].items[2], 'Lesson 3: Mar 11 - Mar 12');
+    });
+
+    test('a note under the table is filled in and rendered as prose', () => {
+        // Mirrors the real pipeline: fillLayoutTokens runs over the layout
+        // before sheetBlock sees it, so the note arrives already filled in.
+        const settings = derive(SHEET.settings, 'lesson-info');
+        const entry = fillLayoutTokens(
+            { sheet: 'dates', note: 'They run from {lesson_start} to {lesson_end}.' },
+            settings, 'lesson-info'
+        );
+        const block = sheetBlock(entry, SHEET, 'lesson-info');
+        const text = block.content.map((c) => c.spans.map((s) => s.text).join('')).join('');
+        assert.equal(text, 'They run from January 30, 2027 to March 14, 2027.');
+    });
+
+    test('a season the sheet cannot express stops the build', () => {
+        // Rather than publishing a year of confidently wrong dates.
+        const broken = { ...SHEET, settings: { ...SHEET.settings, seasonYear: 'this winter' } };
+        assert.throws(
+            () => sheetBlock({ sheet: 'dates' }, broken, 'lesson-info'),
+            (error) => {
+                assert.ok(error instanceof ContentError);
+                assert.match(error.message, /"Season Year" cell/);
+                return true;
+            }
+        );
     });
 });
 
@@ -50,25 +78,17 @@ describe('prices', () => {
         });
     });
 
-    test('prices are not zipped against the longer dates column', () => {
-        // The two live in the same grid and have different lengths.
-        assert.notEqual(boxes.length, SHEET.sessions.length);
+    test('prices are not zipped against the longer settings column', () => {
+        // They live in the same grid and have different lengths: three prices
+        // against ten rows of settings. Reading by row would pair them up.
+        assert.equal(boxes.length, 3);
+        assert.deepEqual(boxes.map((b) => b.heading), ['Group', 'Single-Student', 'Friends & Family']);
     });
 });
 
 describe('an empty table stops the build rather than publishing a blank panel', () => {
-    test('dates', () => {
-        assert.throws(
-            () => sheetBlock({ sheet: 'dates' }, { ...SHEET, sessions: [] }, 'lesson-info'),
-            (error) => {
-                assert.ok(error instanceof ContentError);
-                assert.match(error.message, /no lesson dates/);
-                assert.match(error.message, /website has not been changed/i);
-                return true;
-            }
-        );
-    });
-
+    // Dates no longer have this failure mode — there is no way to empty them.
+    // That is the point of computing them.
     test('prices', () => {
         assert.throws(
             () => sheetBlock({ sheet: 'prices' }, { ...SHEET, prices: [] }, 'lesson-info'),
@@ -209,23 +229,37 @@ describe('tokens', () => {
 
     test('an unknown token names what is available', () => {
         assert.throws(
-            () => fillTokens('opens {lesson_start}', SHEET.settings, 'lesson-info'),
+            () => fillTokens('opens {first_lesson}', SHEET.settings, 'lesson-info'),
             (error) => {
-                assert.match(error.message, /\{lesson_start\}, which is not something the sheet provides/);
+                assert.match(error.message, /\{first_lesson\}, which is not something the sheet provides/);
                 assert.match(error.message, /\{season_year\}/);
+                assert.match(error.message, /\{lesson_start\}/);
                 return true;
             }
         );
     });
 
+    test('the refund deadline is derived, not typed into the sheet', () => {
+        // It used to be a hand-maintained "Refund Deadline" row that agreed
+        // with the document's "December 31st" only by luck.
+        assert.equal(
+            fillTokens(
+                'Cancel by {refund_deadline}.',
+                derive(SHEET.settings, 'lesson-registration'),
+                'lesson-registration'
+            ),
+            'Cancel by December 31, 2026.'
+        );
+    });
+
     test('a token the sheet has no value for says which row to add', () => {
-        // Publishing "Cancel by {refund_deadline}" verbatim would be worse
-        // than not publishing at all.
+        // Publishing "Ask {lesson_director}" verbatim would be worse than not
+        // publishing at all.
         assert.throws(
-            () => fillTokens('Cancel by {refund_deadline}', {}, 'lesson-registration'),
+            () => fillTokens('Ask {lesson_director}', {}, 'lesson-registration'),
             (error) => {
                 assert.match(error.message, /does not have a value for it/);
-                assert.match(error.message, /"refund deadline" row/);
+                assert.match(error.message, /"lesson director" row/);
                 return true;
             }
         );

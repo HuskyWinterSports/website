@@ -3,11 +3,15 @@ import { ContentError } from './join-sections.js';
 /**
  * Reads the club's published signup sheet.
  *
- * The sheet is ONE grid holding three unrelated tables side by side, of
- * different lengths, with no row-to-row relationship. Row 3 says "session A
- * lesson 2" AND "Single-Student prices" AND "the season is 2026/27" — three
- * facts that have nothing to do with each other. So this reads column groups,
- * never rows. See docs/content-sync-spec.md §5.4a.
+ * The sheet is ONE grid holding two unrelated tables side by side, of
+ * different lengths, with no row-to-row relationship. Row 3 says
+ * "Single-Student prices" AND "the season is 2026/27" — two facts that have
+ * nothing to do with each other. So this reads column groups, never rows. See
+ * docs/content-sync-spec.md §5.4a.
+ *
+ * It used to hold a third: a hand-typed Session/Lesson/Date calendar. Those
+ * columns were deleted in August 2026 once the season became computable from
+ * the "Season Year" cell. See scripts/sync/lesson-dates.js.
  */
 
 const REGISTRATION_STATES = ['open', 'waitlist', 'full', 'not_yet_open'];
@@ -23,10 +27,23 @@ const REGISTRATION_STATES = ['open', 'waitlist', 'full', 'not_yet_open'];
 const SETTINGS = {
     'Lesson Director': 'lessonDirector',
     'Season Year': 'seasonYear',
-    'Refund Deadline': 'refundDeadline',
     'Ski Registration State': 'skiState',
     'Snowboard Registration State': 'snowboardState',
 };
+
+/**
+ * Labels the sheet may still carry that the website no longer reads.
+ *
+ * "Refund Deadline" was a hand-maintained date until the season became
+ * computable from "Season Year". The leftover row is harmless — but it must
+ * still STOP the value search below. Without this, a "Season Year" cell left
+ * empty would look down the column, find the words "Refund Deadline", and
+ * publish them as the season.
+ *
+ * Officers can delete the row whenever they like. This is here so that not
+ * deleting it is also safe.
+ */
+const RETIRED_LABELS = ['refund deadline'];
 
 // Matching is case-insensitive; messages quote the label as the sheet writes
 // it, so an officer reading an error can find the row by eye.
@@ -102,7 +119,9 @@ function readSettings(column, warnings) {
         // belonging to the label below it. Both would publish a confident
         // wrong answer instead of asking someone to look.
         const next = cells.slice(i + 1).find((c) => c !== '');
-        const value = next && !KEY_BY_LABEL.has(next.toLowerCase()) ? next : null;
+        const isLabel = (cell) =>
+            KEY_BY_LABEL.has(cell.toLowerCase()) || RETIRED_LABELS.includes(cell.toLowerCase());
+        const value = next && !isLabel(next) ? next : null;
 
         if (!value) {
             warnings.push(`"${cells[i]}" in the sheet has no value under it. It has been ignored.`);
@@ -141,7 +160,7 @@ function normaliseState(value, label) {
 
 /**
  * @param {string} csv Raw body from /spreadsheets/d/e/<pubId>/pub?output=csv
- * @returns {{settings: object, sessions: Array, prices: Array, warnings: string[]}}
+ * @returns {{settings: object, prices: Array, warnings: string[]}}
  */
 export function parseSheet(csv) {
     const rows = parseCsv(csv);
@@ -180,13 +199,6 @@ export function parseSheet(csv) {
         settings[key] = normaliseState(settings[key], LABEL_BY_KEY.get(key));
     }
 
-    const session = at('session');
-    const lesson = at('lesson');
-    const date = at('date');
-    const sessions = body
-        .filter((r) => (r[session] ?? '') !== '')
-        .map((r) => ({ session: r[session], lesson: r[lesson], date: r[date] }));
-
     const type = at('lesson type');
     const three = at('3 week price');
     const six = at('6 week price');
@@ -194,8 +206,7 @@ export function parseSheet(csv) {
         .filter((r) => (r[type] ?? '') !== '')
         .map((r) => ({ type: r[type], threeWeek: r[three], sixWeek: r[six] }));
 
-    if (sessions.length === 0) warnings.push('The sheet lists no lesson dates.');
     if (prices.length === 0) warnings.push('The sheet lists no prices.');
 
-    return { settings, sessions, prices, warnings };
+    return { settings, prices, warnings };
 }

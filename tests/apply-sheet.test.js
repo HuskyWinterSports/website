@@ -325,6 +325,39 @@ describe('tokens in the document text', () => {
         assert.equal(textOf(filled), 'Ask {lesson_director}.');
     });
 
+    test('a token in a section heading fills in too', () => {
+        // Headings arrive as bare strings rather than spans, so an earlier
+        // version of this left literal braces in an officer's Heading 2.
+        const filled = fillContentTokens(
+            [{ heading: 'Cancel by {refund_deadline}', content: [] }], settings, 'lesson-registration'
+        );
+        assert.equal(filled[0].heading, 'Cancel by December 31, 2026');
+    });
+
+    test('and in a grouped section heading', () => {
+        const filled = fillContentTokens(
+            [{ groups: [{ heading: 'By {refund_deadline}', content: [] }] }], settings, 'lesson-registration'
+        );
+        assert.equal(filled[0].groups[0].heading, 'By December 31, 2026');
+    });
+
+    test('the layout own strings it passes over are left alone', () => {
+        // walk now touches every string, including ones that are not prose:
+        // block types, form URLs, sheet box items. None contain tokens, and
+        // {form_url} is resolved elsewhere, so none may be altered here.
+        const block = {
+            type: 'big-white-box centered-text',
+            form: { src: 'https://example/form?embedded=true', title: 'Form' },
+            boxes: [{ heading: 'Session A', items: ['Lesson 1: Jan 30 - Jan 31'] }],
+            content: [para('Cancel by {form_url}.')],
+        };
+        const filled = fillContentTokens([block], settings, 'lesson-registration');
+        assert.equal(filled[0].type, block.type);
+        assert.equal(filled[0].form.src, block.form.src);
+        assert.deepEqual(filled[0].boxes, block.boxes);
+        assert.equal(textOf(filled), 'Cancel by {form_url}.');
+    });
+
     test('text with no tokens comes back byte-identical', () => {
         // Every block passes through this, so it must not perturb the 8 pages
         // that use no tokens at all.

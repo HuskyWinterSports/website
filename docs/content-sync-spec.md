@@ -211,6 +211,18 @@ it as a property of the current implementation. Note the contrast with an
 unused **section inside a tab that is in use**, which logs a NOTE — harmless,
 but it does appear.
 
+### 4.2c Editor notes never reach the page
+
+A paragraph whose text starts with `--` is addressed to whoever builds the
+page, not to whoever reads it. It is stripped from the content and listed in
+the sync log. `***` is the club's earlier marker and is honoured too, with the
+log asking for it to be changed — converting the document and wiring a tab are
+separate acts, and either order has to be safe.
+
+**Paragraphs only.** Stripping a `--` heading would orphan its section's text
+under the heading above. Skipping `--` *sections* is a separate rule that
+arrives with auto-sectioning.
+
 ### 4.3 `output=` is ignored for Docs
 
 Tested at the club's suggestion: `/pub?output=md`, `?output=txt` and
@@ -521,18 +533,6 @@ from the **document**. The two behave differently on purpose:
 Freezing the whole site because somebody wrote "{warm} jacket" would be the
 tool getting in the way of the people it exists for. A developer's typo, by
 contrast, would publish braces to a visitor.
-
-### 4.2c Editor notes never reach the page
-
-A paragraph whose text starts with `--` is addressed to whoever builds the
-page, not to whoever reads it. It is stripped from the content and listed in
-the sync log. `***` is the club's earlier marker and is honoured too, with the
-log asking for it to be changed — converting the document and wiring a tab are
-separate acts, and either order has to be safe.
-
-**Paragraphs only.** Stripping a `--` heading would orphan its section's text
-under the heading above. Skipping `--` *sections* is a separate rule that
-arrives with auto-sectioning.
 
 ### 5.6 What each registration state puts on the page
 

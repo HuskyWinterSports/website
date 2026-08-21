@@ -286,11 +286,16 @@ export function fillContentTokens(blocks, settings) {
         return key && settings[key] ? settings[key] : whole;
     });
 
+    // Every string, not just spans. A section heading arrives as a bare string
+    // rather than a span, so a token in an officer's Heading 2 would otherwise
+    // publish as literal braces — the exact failure this function exists to
+    // prevent, one level up. The other strings it now touches (a block's type,
+    // a form's src, a sheet box's items) hold no tokens, and {form_url} is
+    // resolved by applyStatus, so nothing else moves.
     const walk = (value) => {
+        if (typeof value === 'string') return fill(value);
         if (Array.isArray(value)) return value.map(walk);
         if (value && typeof value === 'object') {
-            // A span. Rewrite its text and leave bold/italic/href alone.
-            if (typeof value.text === 'string') return { ...value, text: fill(value.text) };
             return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, walk(v)]));
         }
         return value;

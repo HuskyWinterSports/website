@@ -404,7 +404,13 @@ date, two of them implicitly, and nobody could see they disagreed.
 join the waitlist" copy that currently contradicts itself between two paragraphs
 of the same page. The site picks the sentence; the sheet picks the state.
 
-### 5.4a The sheet as it actually exists — read 2026-08-12
+### 5.4a The sheet as it actually exists — read 2026-08-12, revised 2026-08-21
+
+> **⚠️ Revised 2026-08-21.** The `Session` / `Lesson` / `Date` columns were
+> deleted, and the season is now computed from `Season Year`. `Refund Deadline`
+> is computed too. See §5.4b and
+> `docs/specs/2026-08-21-content-follows-the-document.md` §5. The CSV below is
+> kept because the reasoning about column groups still governs what remains.
 
 Published and fetching cleanly as CSV, no credential:
 
@@ -454,6 +460,79 @@ and the deadline is forgotten, which is the failure this data actually has.
 
 **The dates confirm the last weekend of January** (Jan 30–31), so the Lesson
 Info page, the club's answer and the refund policy now all agree.
+
+### 5.4b Dates are computed, not typed — implemented 2026-08-21
+
+The paragraph above settled the derive-or-type question the wrong way round.
+Typing the deadline by hand meant it agreed with the document's own
+"December 31st" only by luck, and the `Refund Deadline` row was in fact read by
+**nothing** — no layout used the `{refund_deadline}` token it fed. The one date
+the club is legally held to was maintained in two places, neither of which
+checked the other.
+
+So the sheet now carries only what genuinely varies and cannot be derived:
+
+```csv
+Lesson Director,Lesson Type,3 Week Price,6 Week Price
+Charlotte Smith,Group,240,360
+Season Year,Single-Student,660,990
+2026/27,Friends & Family,325,485
+Ski Registration State,,,
+Not yet open,,,
+Snowboard Registration State,,,
+Not yet open,,,
+```
+
+Everything else comes from `scripts/sync/lesson-dates.js`, from one cell:
+
+| Derived | Rule |
+|---|---|
+| The six lesson weekends | Six weekends from the last Saturday in January, skipping Presidents' Day weekend |
+| Sessions A and B | The first three and the last three |
+| `{refund_deadline}` | December 31 of the calendar year before the season |
+| `{lesson_start}` / `{lesson_end}` | The first Saturday and the last Sunday |
+
+**The build never asks what today is.** The only input is `Season Year`, so the
+same sheet gives the same dates on any machine in any timezone in any year —
+which is what lets the tests cover a century without mocking a clock.
+
+**"Ends the second weekend in March" is a consequence, not the rule**, and it is
+false for the 2047/48 and 2075/76 seasons — leap years whose last January
+Saturday is the 25th, where February absorbs a weekend. The sync warns when it
+stops holding rather than letting the page's wording disagree with its own
+table.
+
+**⚠️ A retired label still stops the value search.** `Refund Deadline` is no
+longer a setting, but the row is still in the club's sheet directly under
+`Season Year`. Without `RETIRED_LABELS` in `parse-sheet.js`, an emptied
+`Season Year` would look down the column, find the words "Refund Deadline", and
+compute a year of lesson dates from them.
+
+### 5.4c Tokens work in the document's prose too
+
+`fillTokens` covers strings the **layout** sets; `fillContentTokens` covers text
+from the **document**. The two behave differently on purpose:
+
+| | Written by | An unknown `{token}` |
+|---|---|---|
+| Layout file | a developer | **stops the build** — it is a typo |
+| Document | an officer | passes through untouched |
+
+Freezing the whole site because somebody wrote "{warm} jacket" would be the
+tool getting in the way of the people it exists for. A developer's typo, by
+contrast, would publish braces to a visitor.
+
+### 4.2c Editor notes never reach the page
+
+A paragraph whose text starts with `--` is addressed to whoever builds the
+page, not to whoever reads it. It is stripped from the content and listed in
+the sync log. `***` is the club's earlier marker and is honoured too, with the
+log asking for it to be changed — converting the document and wiring a tab are
+separate acts, and either order has to be safe.
+
+**Paragraphs only.** Stripping a `--` heading would orphan its section's text
+under the heading above. Skipping `--` *sections* is a separate rule that
+arrives with auto-sectioning.
 
 ### 5.6 What each registration state puts on the page
 

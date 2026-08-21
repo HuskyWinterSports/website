@@ -6,13 +6,14 @@
     "tab": "Become an Instructor"
   },
   "blocks": [
-    { "type": "white-stripe centered-text", "showTitle": true, "section": "Who We Are and What We Do" },
-    { "type": "big-white-box", "section": "Opportunity" },
     {
-      "_note": "A rounded box rather than the full-width stripe it used to be. It sat between two rounded boxes, so a band across the page broke the rhythm of the sequence for no reason.",
-      "type": "big-purple-box",
-      "section": "The Process"
+      "_note": "Rounded boxes alternating white and purple, the rhythm this page had before the August 2026 content edit. The four sections are questions a student asks in order, so they read as a sequence rather than as one long page.",
+      "type": "big-white-box",
+      "showTitle": true,
+      "section": "How can I ski for free?"
     },
-    { "type": "big-white-box", "section": "The Perks" }
+    { "type": "big-purple-box", "section": "I’m a student, how do I join?" },
+    { "type": "big-white-box", "section": "I’m a student, how do I learn?" },
+    { "type": "big-purple-box", "section": "Check out how we teach!" }
   ]
 }

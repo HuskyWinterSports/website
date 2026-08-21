@@ -20,9 +20,11 @@
       "section": "Logistics"
     },
     {
+      "_note": "The first sentence is the rule the dates follow and is true every year. The second is generated from it, so it stays right in 2048 when 'the second weekend in March' will not be.",
       "type": "purple-stripe",
       "heading": "{season_year} Dates",
-      "sheet": "dates"
+      "sheet": "dates",
+      "note": "Lessons begin the last weekend in January and run for six weekends, skipping Presidents' Day weekend. This season they run from {lesson_start} to {lesson_end}."
     },
     {
       "type": "white-stripe qa",

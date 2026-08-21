@@ -111,7 +111,7 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "The Summit at Snoqualmie offers passes for a variety of skill levels for different age groups, and Husky Winter Sports cannot purchase and sell these to our students. Unless you already have a Season Pass, please check with your instructor before purchasing daily passes, as special cases exist. For example, never-ever lessons will most likely not ride the lift on their first weekend of instruction and will not need a pass; beginner lessons may wish to purchase a cheaper Beginner pass which allows them to ride on the Holiday and Gallery lifts only. Child tickets (0-6 years) are available for only $15 a day."
+              "text": "The Summit at Snoqualmie offers passes for a variety of skill levels for different age groups, and Husky Winter Sports cannot purchase and sell these to our students. Unless you already have a Season Pass, please check with your instructor before purchasing daily passes, as special cases exist. For example, never-ever lessons will most likely not ride the lift on their first weekend of instruction and will not need a pass; beginner lessons may wish to purchase a cheaper Beginner pass which allows them to ride on the Holiday and Gallery lifts only. "
             }
           ]
         },
@@ -187,25 +187,14 @@
           ]
         },
         {
-          "type": "list",
-          "ordered": false,
-          "items": [
-            [
-              {
-                "bold": false,
-                "italic": false,
-                "href": null,
-                "text": "Our instructors are trained to make sure that your child possesses the necessary skills before they are moved onto more challenging terrain. Younger children may need some time to get used to the snow before they can safely navigate the more advanced terrain served by the lifts."
-              }
-            ],
-            [
-              {
-                "bold": false,
-                "italic": false,
-                "href": null,
-                "text": "Snowboarding is trickier to start than skiing so your child may require some extra time to get used to sliding sideways."
-              }
-            ]
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Our instructors are trained to make sure that your child possesses the necessary skills before they are moved onto more challenging terrain. Younger children may need some time to get used to the snow before they can safely navigate the more advanced terrain served by the lifts. Snowboarding is trickier to start than skiing so your child may require some extra time to get used to sliding sideways."
+            }
           ]
         },
         {
@@ -251,6 +240,29 @@
               "italic": false,
               "href": null,
               "text": "If you ski or snowboard with your student outside of lessons, you can always ask their instructor for games that you could play to help the students improve. You can also always ask your child to show you the fun skills that they’ve learned in lessons. Overall, the key is to keep them stoked to come up to the mountains!"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Can an instructor teach my child in the terrain park?"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Due to the liability of children going into the park, our instructors are not able to enter the terrain park during lesson times. If your child is interested in learning park or freeride skills, we do have experienced instructors who can assist with working on those skills outside of the park."
             }
           ]
         },

@@ -3,10 +3,11 @@
   "title": "Become an Instructor",
   "blocks": [
     {
-      "type": "white-stripe centered-text",
+      "_note": "Rounded boxes alternating white and purple, the rhythm this page had before the August 2026 content edit. The four sections are questions a student asks in order, so they read as a sequence rather than as one long page.",
+      "type": "big-white-box",
       "showTitle": true,
-      "section": "Who We Are and What We Do",
-      "heading": "Who We Are and What We Do",
+      "section": "How can I ski for free?",
+      "heading": "How can I ski for free?",
       "content": [
         {
           "type": "paragraph",
@@ -15,18 +16,7 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "Husky Winter Sports is a student-run organization at the University of Washington that provides ski and snowboard lessons to students and the greater Seattle community. Our mission is to make winter sports accessible to everyone, regardless of their skill level or background."
-            }
-          ]
-        },
-        {
-          "type": "paragraph",
-          "spans": [
-            {
-              "bold": false,
-              "italic": true,
-              "href": null,
-              "text": "\"Provide fun, safe, high quality and affordable mountain experiences to skiers and snowboarders of all ability levels, and to foster friendships among like-minded winter sports enthusiasts.\""
+              "text": "Husky Winter Sports brings together a group of current UW students each season to teach, learn, and shred together. After joining through our tryout process, instructors spend each weekend of winter quarter up at Snoqualmie Pass. Each weekend, instructors will teach two 2.5 hour lessons, go through official PSIA/AASI training, and of course, get to ski with all their friends. "
             }
           ]
         },
@@ -37,35 +27,16 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "As a club, we shred all winter long and try to take advantage of every snow related opportunity we can. As a ski school, we teach lessons each Saturday and Sunday of winter quarter. This boils down to 6 total weekends, with 2.5 hour lessons on both Saturday and Sunday. When we're not teaching lessons, we're shredding the slopes of Summit together as a club."
+              "text": "In exchange for teaching lessons, instructors receive a free season pass, weekend accommodations at the mountain, transportation to and from Snoqualmie, a special Saturday night dinner, fun trips around the PNW, a sick community of outdoor enthusiasts, and so much more! That’s right, it’s all for free! "
             }
           ]
         }
       ]
     },
     {
-      "type": "big-white-box",
-      "section": "Opportunity",
-      "heading": "Opportunity",
-      "content": [
-        {
-          "type": "paragraph",
-          "spans": [
-            {
-              "bold": false,
-              "italic": false,
-              "href": null,
-              "text": "Husky Winter Sports offers a unique opportunity for UW students who are excited about snow sports and interested in sharing them with children and adults of all levels from the Northwest community. All members are trained as ski or snowboard instructors and receive a season pass to the Summit at Snoqualmie in exchange for attending a minimum of two weekend-long training sessions and teaching for all our six lesson weekends. Other benefits include lodging and a meal on Saturday nights, as well as travel compensation for instructor carpools."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "_note": "A rounded box rather than the full-width stripe it used to be. It sat between two rounded boxes, so a band across the page broke the rhythm of the sequence for no reason.",
       "type": "big-purple-box",
-      "section": "The Process",
-      "heading": "The Process",
+      "section": "I’m a student, how do I join?",
+      "heading": "I’m a student, how do I join?",
       "content": [
         {
           "type": "paragraph",
@@ -74,17 +45,21 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "So how do you join Husky Winter Sports? During fall quarter and the beginning of winter quarter we hold many events to give you information about the club, show you how we teach, and opportunities to meet club members and officers."
+              "text": "Already know how to ski and interested in shredding with us? Husky Winter Sports is open for any current UW student to join, we accept both undergrad and grad students! Come check us out and learn more at these upcoming events:"
             }
           ]
-        }
-      ]
-    },
-    {
-      "type": "big-white-box",
-      "section": "The Perks",
-      "heading": "The Perks",
-      "content": [
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Info sessions"
+            }
+          ]
+        },
         {
           "type": "list",
           "ordered": false,
@@ -94,7 +69,7 @@
                 "bold": false,
                 "italic": false,
                 "href": null,
-                "text": "Free Summit at Snoqualmie season pass"
+                "text": "October 19th"
               }
             ],
             [
@@ -102,7 +77,7 @@
                 "bold": false,
                 "italic": false,
                 "href": null,
-                "text": "Arranged carpools to the mountain"
+                "text": "October 27th"
               }
             ],
             [
@@ -110,33 +85,109 @@
                 "bold": false,
                 "italic": false,
                 "href": null,
-                "text": "Organized trips to Whistler and other PNW resorts"
-              }
-            ],
-            [
-              {
-                "bold": false,
-                "italic": false,
-                "href": null,
-                "text": "Training for PSIA/AASI certification"
-              }
-            ],
-            [
-              {
-                "bold": false,
-                "italic": false,
-                "href": null,
-                "text": "Guaranteed riding improvement"
-              }
-            ],
-            [
-              {
-                "bold": false,
-                "italic": false,
-                "href": null,
-                "text": "A rad community of snowsports and outdoor enthusiasts"
+                "text": "November 4th"
               }
             ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Dryland sessions"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "ordered": false,
+          "items": [
+            [
+              {
+                "bold": false,
+                "italic": false,
+                "href": null,
+                "text": "November 9th"
+              }
+            ],
+            [
+              {
+                "bold": false,
+                "italic": false,
+                "href": null,
+                "text": "November 17th"
+              }
+            ],
+            [
+              {
+                "bold": false,
+                "italic": false,
+                "href": null,
+                "text": "November 25th"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Check out our instagram "
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": "https://instagram.com/huskywintersports",
+              "text": "@huskywintersports"
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": " or join our student mailing list for exact times, locations, and more fun events we offer! After meeting us in the fall, sign up for tryouts which are held the second weekend of winter quarter! "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "big-white-box",
+      "section": "I’m a student, how do I learn?",
+      "heading": "I’m a student, how do I learn?",
+      "content": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Do you want to ski for free with Husky Winter Sports but haven’t had the chance to learn to ride yet? Check out our Triple60 program and see if you’re eligible to learn here:"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "big-purple-box",
+      "section": "Check out how we teach!",
+      "heading": "Check out how we teach!",
+      "content": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Interested in trying out? Learn more about our program and how we teach through our training manuals:"
+            }
           ]
         }
       ]

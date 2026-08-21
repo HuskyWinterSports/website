@@ -45,7 +45,7 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "Our lessons run for six total weekends during winter quarter. We offer 3-week ("
+              "text": "Our lessons run for six total weekends during the winter. We offer 3-week ("
             },
             {
               "bold": true,
@@ -169,8 +169,22 @@
       ]
     },
     {
+      "_note": "The first sentence is the rule the dates follow and is true every year. The second is generated from it, so it stays right in 2048 when 'the second weekend in March' will not be.",
       "type": "purple-stripe",
       "heading": "2026/27 Dates",
+      "content": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "text": "Lessons begin the last weekend in January and run for six weekends, skipping Presidents' Day weekend. This season they run from January 30, 2027 to March 14, 2027.",
+              "bold": false,
+              "italic": false,
+              "href": null
+            }
+          ]
+        }
+      ],
       "boxes": [
         {
           "heading": "Session A",
@@ -204,7 +218,7 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "We offer lessons for four levels: Never-ever, Beginner, Intermediate, and Advanced. When registering, please make your best guess as to the most appropriate lesson level and answer every experience question to the best of your ability. The Lesson Director may contact you with more questions while assigning lessons and instructors."
+              "text": "We offer lessons at four levels: Never-ever, Beginner, Intermediate, and Advanced. When registering, please make your best guess at the right level and answer the experience questions as accurately as you can. We work with all abilities – for those who still need help putting on their boots to those reading to carve, tackle rougher terrain, or dial in specific skills. The Lesson Director may follow up with questions while assigning lessons and instructors. "
             }
           ]
         },
@@ -227,7 +241,7 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "The student is brand new to their snowsport or is returning after a hiatus of a year or more."
+              "text": "Brand new to the sport. Will start on the magic carpet hill. "
             }
           ]
         },
@@ -250,7 +264,7 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "The student can make turns on green terrain and is comfortable riding the Magic Carpet. Lift experience may be limited or nonexistent."
+              "text": "Comfortable on skis or a board and knows the basics of turning on green terrain. May have little to no lift experience."
             }
           ]
         },
@@ -273,7 +287,7 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "The student is making linked turns on green terrain and starting to explore blue runs."
+              "text": "Confident on skis or a board and can link turns on easier terrain. Ready to start working on parallel (skis) or carving (board) turns and building confidence on blue terrain. "
             }
           ]
         },
@@ -296,7 +310,18 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "The student can make controlled, linked turns on most runs."
+              "text": "Makes controlled, linked turns and is looking to improve on blue or black terrain."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "**All lessons are available for all ages. "
             }
           ]
         }
@@ -356,7 +381,7 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "Before you head up to the mountain, please make sure you have all of the proper gear. This includes boots, bindings, skis or a snowboard, goggles or sunglasses, waterproof jacket, snow pants, and gloves. Be prepared for varying weather conditions and bring plenty of warm layers and a helmet. If you need to buy or rent equipment or clothing, check out some local shops or ski swaps!"
+              "text": "Before you head up to the mountain, please make sure you have all of the proper gear. This includes boots, bindings, skis or a snowboard, goggles or sunglasses, waterproof jacket, snow pants, and gloves. The Summit at Snoqualmie often experiences wet conditions which we will still run lessons in, so please be prepared and bring plenty of warm/waterproof layers and a helmet. If you need to buy or rent equipment or clothing, check out some local shops or ski swaps!"
             }
           ]
         },

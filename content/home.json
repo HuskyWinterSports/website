@@ -65,9 +65,9 @@
     },
     {
       "type": "purple-stripe",
-      "section": "Why Us",
+      "section": "Why Us?",
       "cards": true,
-      "heading": "Why Us",
+      "heading": "Why Us?",
       "content": [
         {
           "type": "heading",
@@ -77,7 +77,7 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "UW Students"
+              "text": "Lessons for Everyone"
             }
           ]
         },
@@ -88,7 +88,7 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "Unpaid, we're here because we want to spread the love of our favorite sport! This also means money saved on your end!"
+              "text": "From 5 years old to 105, our lessons are designed for all ages and ability levels. Whether you’re starting with pizza and french fries or looking for some extra instruction shredding double blacks, we have the lesson for you!"
             }
           ]
         },
@@ -100,7 +100,7 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "Our Members are the Best"
+              "text": "Support UW Students"
             }
           ]
         },
@@ -111,7 +111,7 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "We do have a hiring process to make sure we only provide the best instruction."
+              "text": "Husky Winter Sports is a nonprofit dedicated to increasing accessibility to snow sports for students at the University of Washington. Your lesson fees help us cover instructor’s passes, equipment, and more. By purchasing a lesson, you support local student instructors while also getting the lowest price on the mountain!"
             }
           ]
         },
@@ -123,7 +123,7 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "Enthusiastic and Safe"
+              "text": "Safety Comes First"
             }
           ]
         },
@@ -134,22 +134,18 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "We all love to have fun on the mountain but we know safety comes first."
+              "text": "Above all else, we value safety on the mountain. Our hiring process brings us responsible and enthusiastic instructors who are trained with PSIA/AASI guidelines to promote safety, fun, and learning on the slopes!"
             }
           ]
-        },
-        {
-          "type": "heading",
-          "level": 3,
-          "spans": [
-            {
-              "bold": false,
-              "italic": false,
-              "href": null,
-              "text": "PSIA/AASI Certified"
-            }
-          ]
-        },
+        }
+      ]
+    },
+    {
+      "_note": "Three sections on this page, not two. The mission statement was in the document all along and was being dropped as unused until August 2026.",
+      "type": "white-stripe centered-text",
+      "section": "Mission Statement",
+      "heading": "Mission Statement",
+      "content": [
         {
           "type": "paragraph",
           "spans": [
@@ -157,7 +153,7 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "Instructors are PSIA/AASI trained or are working towards it."
+              "text": "“Provide fun, safe, high quality and affordable mountain experiences to skiers and snowboarders of all ability levels, and to foster friendships among like-minded winter sports enthusiasts.\""
             }
           ]
         }

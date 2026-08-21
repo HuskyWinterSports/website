@@ -27,6 +27,11 @@
         ]
       }
     },
-    { "type": "purple-stripe", "section": "Why Us", "cards": true }
+    { "type": "purple-stripe", "section": "Why Us?", "cards": true },
+    {
+      "_note": "Three sections on this page, not two. The mission statement was in the document all along and was being dropped as unused until August 2026.",
+      "type": "white-stripe centered-text",
+      "section": "Mission Statement"
+    }
   ]
 }

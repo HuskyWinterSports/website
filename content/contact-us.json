@@ -71,6 +71,29 @@
               "bold": false,
               "italic": false,
               "href": null,
+              "text": "For questions about joining as a UW student, the best way to contact us is via email at "
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": "mailto:huskyws@gmail.com",
+              "text": "huskyws@gmail.com"
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": " or through our instagram @huskywintersports."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
               "text": "*During the Spring and Summer months (March - August), email and voice messages are checked less frequently, and it may take up to one week to receive a response."
             }
           ]

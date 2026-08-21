@@ -4,7 +4,8 @@ import { fileURLToPath } from 'node:url';
 import { parseGoogleDoc } from './parse-google-doc.js';
 import { parseSheet } from './parse-sheet.js';
 import { joinSections, selectTab, ContentError } from './join-sections.js';
-import { sheetBlock, fillLayoutTokens, applyStatus } from './apply-sheet.js';
+import { sheetBlock, fillLayoutTokens, applyStatus, derive, fillContentTokens } from './apply-sheet.js';
+import { seasonEndYear, endsOnSecondSaturdayOfMarch } from './lesson-dates.js';
 
 /**
  * Fetches published Google content, validates it against the repo's layout
@@ -102,6 +103,7 @@ async function syncLayout(layoutPath) {
     // layout sets, so the layout has to be filled in before it is joined
     // against the document.
     let resolved = layout;
+    let settings = null;
     const sheetWarnings = [];
     if (layout.sheet) {
         const csv = await fetchPublished(
@@ -110,18 +112,42 @@ async function syncLayout(layoutPath) {
         const sheet = parseSheet(csv);
         sheetWarnings.push(...sheet.warnings);
 
-        resolved = fillLayoutTokens(layout, sheet.settings, layoutName);
+        // Derived values first: the layout's own strings may use them, and so
+        // may the document's prose further down.
+        settings = derive(sheet.settings, layoutName);
+
+        // The club describes the season as ending on the second weekend in
+        // March. That is a consequence of the six-weekend rule rather than the
+        // rule itself, and it stops being true in 2048. Say so, rather than
+        // letting the page's wording quietly disagree with its own table.
+        if (settings.seasonYear) {
+            const year = seasonEndYear(settings.seasonYear, layoutName);
+            if (!endsOnSecondSaturdayOfMarch(year)) {
+                sheetWarnings.push(
+                    `The ${settings.seasonYear} season ends on the FIRST weekend in ` +
+                    `March, not the second — ${year} is a leap year whose last ` +
+                    `January Saturday is the 25th, so February absorbs a weekend. ` +
+                    `Check any wording that says "the second weekend in March".`
+                );
+            }
+        }
+
+        resolved = fillLayoutTokens(layout, settings, layoutName);
         resolved = {
             ...resolved,
             blocks: resolved.blocks.map((entry) => {
-                if (entry.sheet) return sheetBlock(entry, sheet, layoutName);
-                if (entry.status) return applyStatus(entry, sheet.settings, layoutName);
+                if (entry.sheet) return sheetBlock(entry, { ...sheet, settings }, layoutName);
+                if (entry.status) return applyStatus(entry, settings, layoutName);
                 return entry;
             }),
         };
     }
 
-    const { blocks, orphans } = joinSections(resolved, parsed, layoutName);
+    const { blocks: joined, orphans } = joinSections(resolved, parsed, layoutName);
+
+    // The document's own prose can quote a value too, so the club never has to
+    // maintain the same date in two places.
+    const blocks = settings ? fillContentTokens(joined, settings) : joined;
 
     const output = { route: layout.route, title: parsed.title, blocks };
     const outputPath = join(CONTENT_DIR, `${layoutName}.json`);

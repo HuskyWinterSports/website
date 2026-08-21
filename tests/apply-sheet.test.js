@@ -2,7 +2,7 @@ import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { parseSheet } from '../scripts/sync/parse-sheet.js';
-import { sheetBlock, fillTokens, fillLayoutTokens, applyStatus, derive } from '../scripts/sync/apply-sheet.js';
+import { sheetBlock, fillTokens, fillLayoutTokens, applyStatus, derive, fillContentTokens } from '../scripts/sync/apply-sheet.js';
 import { ContentError } from '../scripts/sync/join-sections.js';
 
 const SHEET = parseSheet(readFileSync(
@@ -267,5 +267,68 @@ describe('tokens', () => {
 
     test('leaves text with no tokens exactly as it was', () => {
         assert.equal(fillTokens('Prices', SHEET.settings, 'x'), 'Prices');
+    });
+});
+
+describe('tokens in the document text', () => {
+    // Without this, {refund_deadline} is a token the club cannot actually use:
+    // only strings the LAYOUT sets get filled in, so a token typed into the
+    // Google Doc would publish as literal braces.
+    const settings = derive(SHEET.settings, 'lesson-registration');
+    const para = (text) => ({
+        type: 'paragraph',
+        spans: [{ text, bold: false, italic: false, href: null }],
+    });
+    const textOf = (blocks) => blocks[0].content[0].spans.map((s) => s.text).join('');
+
+    test('an officer can write {refund_deadline} in the document', () => {
+        const filled = fillContentTokens(
+            [{ content: [para('Cancel by {refund_deadline}.')] }], settings, 'lesson-registration'
+        );
+        assert.equal(textOf(filled), 'Cancel by December 31, 2026.');
+    });
+
+    test('it reaches grouped sections too', () => {
+        const filled = fillContentTokens(
+            [{ groups: [{ heading: 'Refunds', content: [para('By {refund_deadline}.')] }] }],
+            settings, 'lesson-registration'
+        );
+        assert.match(filled[0].groups[0].content[0].spans[0].text, /December 31, 2026/);
+    });
+
+    test('and list items, which is where half the policy lives', () => {
+        const filled = fillContentTokens(
+            [{ content: [{ type: 'list', ordered: false, items: [
+                [{ text: 'Before {refund_deadline}: full refund.', bold: false, italic: false, href: null }],
+            ] }] }],
+            settings, 'lesson-registration'
+        );
+        assert.equal(filled[0].content[0].items[0][0].text, 'Before December 31, 2026: full refund.');
+    });
+
+    test('braces that are not a known token are left exactly alone', () => {
+        // The layout is written by developers, so an unknown token there is a
+        // typo worth stopping the build for. The document is written by
+        // officers, who may reasonably type a brace — and freezing the whole
+        // site over "{warm} jacket" would be the tool getting in the way of
+        // the people it exists for.
+        const filled = fillContentTokens(
+            [{ content: [para('Wear a {warm} jacket.')] }], settings, 'lesson-info'
+        );
+        assert.equal(textOf(filled), 'Wear a {warm} jacket.');
+    });
+
+    test('a known token with no value is left alone rather than blanked', () => {
+        const filled = fillContentTokens(
+            [{ content: [para('Ask {lesson_director}.')] }], {}, 'lesson-registration'
+        );
+        assert.equal(textOf(filled), 'Ask {lesson_director}.');
+    });
+
+    test('text with no tokens comes back byte-identical', () => {
+        // Every block passes through this, so it must not perturb the 8 pages
+        // that use no tokens at all.
+        const blocks = [{ type: 'white-stripe', content: [para('Plain prose.')] }];
+        assert.deepEqual(fillContentTokens(blocks, settings, 'faq'), blocks);
     });
 });

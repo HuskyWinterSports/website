@@ -269,6 +269,36 @@ export function applyStatus(entry, settings, layoutName) {
     };
 }
 
+/**
+ * Fills tokens in text that came from the DOCUMENT, so a date can be written
+ * once and quoted anywhere the club wants to quote it.
+ *
+ * Deliberately more forgiving than fillTokens. A layout file is written by a
+ * developer, so `{seson_year}` there is a typo worth stopping the build for.
+ * The document is written by officers who might reasonably type a brace, and
+ * freezing the whole site over "{warm} jacket" would be the tool getting in
+ * the way of the people it exists for. Unknown tokens, and known tokens the
+ * sheet has no value for, pass through untouched.
+ */
+export function fillContentTokens(blocks, settings) {
+    const fill = (text) => text.replace(/\{([a-z_]+)\}/g, (whole, token) => {
+        const key = TOKENS[token];
+        return key && settings[key] ? settings[key] : whole;
+    });
+
+    const walk = (value) => {
+        if (Array.isArray(value)) return value.map(walk);
+        if (value && typeof value === 'object') {
+            // A span. Rewrite its text and leave bold/italic/href alone.
+            if (typeof value.text === 'string') return { ...value, text: fill(value.text) };
+            return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, walk(v)]));
+        }
+        return value;
+    };
+
+    return blocks.map(walk);
+}
+
 /** Fill every {token} in the layout's own strings, leaving document prose alone. */
 export function fillLayoutTokens(layout, settings, layoutName) {
     const walk = (value) => {

@@ -321,6 +321,17 @@ ul {
   font-size: 0.9em;
 }
 
+/* An introductory sentence above a row of boxes — the season note on Lesson
+   Info is the first of these. The stripe runs the full width of the window, so
+   without a cap the line reaches ~1100px on a desktop and the eye loses its
+   place coming back to the left edge. Matches the 800px measure .white-stripe
+   has always used. */
+.purple-stripe > p {
+  max-width: 800px;
+  margin: 10px auto 0;
+  line-height: 1.6;
+}
+
 .purple-stripe .boxes {
   display: flex;
   justify-content: center;

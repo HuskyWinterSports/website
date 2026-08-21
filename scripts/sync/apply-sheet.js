@@ -136,9 +136,9 @@ export function sheetBlock(entry, sheet, layoutName) {
 
     const { sheet: _table, note, ...rest } = entry;
 
-    // An optional sentence under the table. It lives in the layout rather than
-    // the document because it describes the shape of the season — the rule the
-    // dates follow — rather than anything an officer would want to reword.
+    // An optional sentence introducing the table. It lives in the layout
+    // rather than the document because it describes the shape of the season —
+    // the rule the dates follow — rather than anything an officer would reword.
     return {
         ...rest,
         ...(note ? { content: [{ type: 'paragraph', spans: linkedSpans(note) }] } : {}),

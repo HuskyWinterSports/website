@@ -13,8 +13,25 @@ export default function Footer() {
                         <ul>
                             <li>Address: 207 HUB SAO 130 Box 352238, Seattle, WA 98195</li>
                             <li>Email: <a href="mailto:huskywslessons@gmail.com">huskywslessons@gmail.com</a></li>
-                            <li>Instagram: @huskywintersports</li>
-                            <li>Facebook: @HuskyWinterSports</li>
+                            {/* Instagram is the club's active channel — verified
+                                in a browser, not by status code: instagram.com
+                                returns 200 for accounts that do not exist.
+
+                                Facebook was removed in August 2026. The footer
+                                had advertised @HuskyWinterSports for years and
+                                it does not resolve; every handle variant returns
+                                "This content isn't available right now". The only
+                                Facebook presence is a private group, which sends
+                                a prospective parent to a join request rather than
+                                to anything they can read. */}
+                            <li>
+                                Instagram:{' '}
+                                <a
+                                    href="https://www.instagram.com/huskywintersports/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >@huskywintersports</a>
+                            </li>
                         </ul>
                     </div>
                     <div className='copyright'>  

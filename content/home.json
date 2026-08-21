@@ -3,7 +3,6 @@
   "title": "Husky Winter Sports",
   "blocks": [
     {
-      "_note": "Lessons first: most visitors are parents and adults looking to book, not students looking to join. When registration opens, point the first button at /lesson-registration.",
       "type": "home-banner",
       "banner": true,
       "showTitle": true,
@@ -45,7 +44,6 @@
       ]
     },
     {
-      "_note": "Photos are layout, not words. Swapping in this season's group shot is a one-line change here rather than an officer pasting an image into a document.",
       "slider": {
         "slides": [
           {
@@ -141,7 +139,6 @@
       ]
     },
     {
-      "_note": "Three sections on this page, not two. The mission statement was in the document all along and was being dropped as unused until August 2026.",
       "type": "white-stripe centered-text",
       "section": "Mission Statement",
       "heading": "Mission Statement",

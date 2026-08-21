@@ -1,5 +1,5 @@
 {
-  "_pending": "\"Check out how we teach!\" is deliberately not in the blocks below. Its whole content is 'Learn more about our program and how we teach through our training manuals:' — one sentence ending in a colon, because the note naming the manuals is stripped before publishing. Add a block for it once the club sends the links. Until then the sync reports it as an unused section on every run, which is the reminder.",
+  "_pending": "\"Check out how we teach!\" is left out on purpose: its whole content is a sentence ending in a colon, because the note naming the training manuals is stripped before publishing. Add a block once the links arrive. The sync reports it as unused every run, which is the reminder.",
   "route": "/become-an-instructor",
   "source": {
     "kind": "google-doc",
@@ -8,14 +8,14 @@
   },
   "blocks": [
     {
-      "_note": "Rounded boxes alternating white and purple, the rhythm this page had before the August 2026 content edit. The four sections are questions a student asks in order, so they read as a sequence rather than as one long page.",
+      "_note": "Rounded boxes alternating white and purple. The four sections are questions a student asks in order, so they read as a sequence.",
       "type": "big-white-box",
       "showTitle": true,
       "section": "How can I ski for free?"
     },
     { "type": "big-purple-box", "section": "I’m a student, how do I join?" },
     {
-      "_note": "The document's sentence ends 'see if you're eligible to learn here:' and pointed at a note asking for a link. Without one the page makes a promise it does not keep, so the button is the destination that sentence names.",
+      "_note": "The sentence ends 'eligible to learn here:' and pointed at a stripped note. The button is the destination it names.",
       "type": "big-white-box",
       "section": "I’m a student, how do I learn?",
       "buttons": [

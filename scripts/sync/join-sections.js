@@ -57,6 +57,16 @@ export function selectTab(parsed, tabName, layoutName) {
     );
 }
 
+/**
+ * Drops the `_note` / `_pending` explanations layout files carry.
+ *
+ * They are for whoever reads the layout, and content/<page>.json is bundled
+ * into the JavaScript — so without this every visitor downloads prose about
+ * CSS specificity along with the page they came for.
+ */
+const withoutNotes = (entry) =>
+    Object.fromEntries(Object.entries(entry).filter(([key]) => !key.startsWith('_')));
+
 export function joinSections(layout, parsed, layoutName) {
     const bySection = new Map(
         parsed.sections.filter((s) => s.heading).map((s) => [s.heading.trim(), s])
@@ -93,7 +103,9 @@ export function joinSections(layout, parsed, layoutName) {
         return match;
     };
 
-    const blocks = layout.blocks.map((entry) => {
+    const blocks = layout.blocks.map((raw) => {
+        const entry = withoutNotes(raw);
+
         // Sheet-driven blocks were resolved before this ran and carry their
         // own content; they never look anything up in the document.
         if (entry.boxes) return { ...entry };

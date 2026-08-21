@@ -1,4 +1,3 @@
-import '../../assets/Global.css'
 import '../../assets/Home.css'
 import ContentBlocks from '../../components/ContentBlocks.jsx'
 import page from '../../../content/home.json'

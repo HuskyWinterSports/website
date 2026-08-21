@@ -251,3 +251,35 @@ describe('sections the website does not use yet', () => {
         assert.deepEqual(orphans, []);
     });
 });
+
+describe('notes to developers stay in the repo', () => {
+    // Layout files carry "_note" explanations of why a block looks the way it
+    // does. They were being copied straight into content/<page>.json, which is
+    // bundled into the JavaScript — so ~4.6 KB of prose about CSS specificity
+    // and box rhythm was downloaded by every parent looking for lesson times.
+    test('underscore keys are dropped from the built page', () => {
+        const { blocks } = joinSections(
+            layout([{ type: 'white-stripe', section: 'Support Our Instructors', _note: 'why this is a stripe' }]),
+            parsed, 'x'
+        );
+        assert.ok(!('_note' in blocks[0]), '_note must not reach the browser');
+        assert.equal(blocks[0].type, 'white-stripe');
+        assert.ok(blocks[0].content.length > 0, 'the real content still comes through');
+    });
+
+    test('including on blocks that carry no document section', () => {
+        const { blocks } = joinSections(
+            layout([{ slider: { slides: [] }, _note: 'photos are layout', _pending: 'later' }]),
+            parsed, 'x'
+        );
+        assert.deepEqual(Object.keys(blocks[0]), ['slider']);
+    });
+
+    test('a layout-level note is dropped too', () => {
+        const { blocks } = joinSections(
+            { ...layout([{ type: 'white-stripe', section: 'Support Our Instructors' }]), _pending: 'a section held back' },
+            parsed, 'x'
+        );
+        assert.equal(blocks.length, 1);
+    });
+});

@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import '../../assets/Global.css';
 
 export default function NotFound() {
     return (

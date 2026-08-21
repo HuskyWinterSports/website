@@ -20,7 +20,7 @@
       "section": "Logistics"
     },
     {
-      "_note": "The first sentence is the rule the dates follow and is true every year. The second is generated from it, so it stays right in 2048 when 'the second weekend in March' will not be.",
+      "_note": "The first sentence is the rule and holds every year. The second is generated, so it stays right in 2048 when 'second weekend in March' will not.",
       "type": "purple-stripe",
       "heading": "{season_year} Dates",
       "sheet": "dates",

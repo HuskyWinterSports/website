@@ -7,7 +7,7 @@
   },
   "blocks": [
     {
-      "_note": "Left-aligned at a reading measure rather than centred: this is the longest run of continuous prose on the site — six paragraphs spanning 1937 to now — and centred text makes the eye hunt for the start of every line.",
+      "_note": "Left-aligned at a reading measure: the longest run of prose on the site, and centred text makes the eye hunt for the start of each line.",
       "type": "white-stripe qa",
       "showTitle": true,
       "lead": true

@@ -1,29 +1,16 @@
 import { ContentError } from './join-sections.js';
 
 /**
- * The season's lesson dates, computed rather than typed.
+ * The season's lesson dates, computed rather than typed. The club's rule:
+ * six weekends from the last Saturday in January, skipping Presidents' Day.
  *
- * The rule, from the club:
+ * The only input is the sheet's "Season Year" cell — nothing here asks what
+ * today is, so the same sheet gives the same dates anywhere, and the tests
+ * cover a century without mocking a clock. All arithmetic is UTC, where a week
+ * is exactly 7 * 86400000 ms.
  *
- *     Six lesson weekends, starting on the last Saturday in January, skipping
- *     Presidents' Day weekend.
- *
- * These dates have to keep being right long after everyone who wrote this has
- * graduated, so:
- *
- *   - The only input is the sheet's "Season Year" cell. Nothing here asks what
- *     today is, so the same sheet gives the same dates on any machine, in any
- *     timezone, in any year — and the tests can cover a century without
- *     mocking a clock.
- *   - All arithmetic is UTC, where a week is exactly 7 * 86400000 ms. Local
- *     time drifts by a day across the March daylight-saving change, which is
- *     precisely where these dates land.
- *   - Presidents' Day has been the third Monday in February since the Uniform
- *     Monday Holiday Act took effect in 1971. It is not a moving target.
- *
- * "Lessons end on the second weekend in March" is a CONSEQUENCE of the rule
- * above rather than part of it, and it is not universal — see
- * endsOnSecondSaturdayOfMarch.
+ * "Ends the second weekend in March" is a CONSEQUENCE of that rule, not part
+ * of it, and is not universal — see endsOnSecondSaturdayOfMarch.
  */
 
 const MONTHS = [
@@ -89,18 +76,17 @@ export function presidentsDaySaturday(year) {
 /**
  * The six lesson weekends, in order.
  *
- * Session A is the first three, B the last three, matching the document's own
- * sentence: "We offer 3-week (A or B) or 6-week lesson packages." That split
- * used to live in the sheet; if the club ever changes the shape of a package,
- * this is the line that changes with it.
+ * Session A is the first three, B the last three, matching the document's
+ * "3-week (A or B) or 6-week lesson packages". That split used to live in the
+ * sheet; if the club changes the shape of a package, this changes with it.
  */
 export function lessonWeekends(year) {
     const start = lastSaturdayOfJanuary(year);
     const skip = presidentsDaySaturday(year).getTime();
 
-    // Seven candidates so that removing one still leaves six. Presidents' Day
-    // weekend is always among them: the last Saturday in January falls on the
-    // 25th-31st, and its own Saturday on February 13th-19th.
+    // Seven candidates so removing one still leaves six. Presidents' Day
+    // weekend is always among them: January's last Saturday is the 25th-31st,
+    // and Presidents' Saturday the 13th-19th of February.
     const candidates = Array.from({ length: WEEKENDS + 1 }, (_, i) => plus(start, i * WEEK));
     const kept = candidates.filter((d) => d.getTime() !== skip);
 
@@ -120,15 +106,11 @@ export function lessonWeekends(year) {
 }
 
 /**
- * Whether the season ends on the second weekend in March, which is how the
- * club describes it.
- *
- * True for every season from 2025 to 2047, then false for 2048 and 2076: leap
- * years whose last January Saturday is the 25th, where February 29 absorbs a
- * weekend and the run ends a week earlier than the phrase promises.
- *
- * The sync warns when this is false rather than letting the page's wording
- * quietly stop matching the table printed directly above it.
+ * Whether the season ends on the second weekend in March, as the club
+ * describes it. True from 2025 to 2047, then false for 2048 and 2076 — leap
+ * years whose last January Saturday is the 25th, so February absorbs a
+ * weekend. The sync warns when it stops holding, rather than letting the
+ * page's wording disagree with the table above it.
  */
 export function endsOnSecondSaturdayOfMarch(year) {
     const first = utc(year, 2, 1);
@@ -144,12 +126,7 @@ export function refundDeadline(year) {
     return long(utc(year - 1, 11, 31));
 }
 
-/**
- * The first Saturday and the last Sunday, written out for prose.
- *
- * Derived from lessonWeekends rather than recomputed, so a sentence saying
- * when the season runs cannot disagree with the table listing the weekends.
- */
+/** The first Saturday and last Sunday, written out for prose. */
 export function lessonRange(year) {
     const weekends = lessonWeekends(year);
     const start = lastSaturdayOfJanuary(year);

@@ -73,7 +73,6 @@ describe('prices', () => {
         assert.equal(boxes.length, 3);
         assert.deepEqual(boxes[0], {
             heading: 'Group',
-            inset: true,
             items: ['3 weeks - $240', '6 weeks - $360'],
         });
     });

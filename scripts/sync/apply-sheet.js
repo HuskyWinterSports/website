@@ -28,10 +28,7 @@ const DEFERRED = ['form_url'];
 /**
  * The sheet's own values, plus everything derivable from them.
  *
- * Dates are computed rather than typed so that no date is maintained in two
- * places. Before this the sheet carried a "Refund Deadline" row that nothing
- * read, while the document had "December 31st" typed into its prose — the one
- * date the club is held to, and the two agreed only by luck.
+ * Dates are computed rather than typed so no date is maintained in two places.
  */
 export function derive(settings, layoutName) {
     if (!settings.seasonYear) return settings;
@@ -111,7 +108,6 @@ function priceBoxes(prices, layoutName) {
 
     return prices.map((row) => ({
         heading: row.type,
-        inset: true,
         items: [`3 weeks - $${row.threeWeek}`, `6 weeks - $${row.sixWeek}`],
     }));
 }
@@ -137,8 +133,7 @@ export function sheetBlock(entry, sheet, layoutName) {
     const { sheet: _table, note, ...rest } = entry;
 
     // An optional sentence introducing the table. It lives in the layout
-    // rather than the document because it describes the shape of the season —
-    // the rule the dates follow — rather than anything an officer would reword.
+    // because it describes the rule the dates follow, not the dates themselves.
     return {
         ...rest,
         ...(note ? { content: [{ type: 'paragraph', spans: linkedSpans(note) }] } : {}),
@@ -270,15 +265,11 @@ export function applyStatus(entry, settings, layoutName) {
 }
 
 /**
- * Fills tokens in text that came from the DOCUMENT, so a date can be written
- * once and quoted anywhere the club wants to quote it.
+ * Fills tokens in text that came from the DOCUMENT.
  *
- * Deliberately more forgiving than fillTokens. A layout file is written by a
- * developer, so `{seson_year}` there is a typo worth stopping the build for.
- * The document is written by officers who might reasonably type a brace, and
- * freezing the whole site over "{warm} jacket" would be the tool getting in
- * the way of the people it exists for. Unknown tokens, and known tokens the
- * sheet has no value for, pass through untouched.
+ * Deliberately more forgiving than fillTokens: an unknown token in a layout is
+ * a developer's typo worth failing on, but an officer typing "{warm} jacket"
+ * must not freeze the site. Unresolvable tokens pass through untouched.
  */
 export function fillContentTokens(blocks, settings) {
     const fill = (text) => text.replace(/\{([a-z_]+)\}/g, (whole, token) => {
@@ -286,12 +277,8 @@ export function fillContentTokens(blocks, settings) {
         return key && settings[key] ? settings[key] : whole;
     });
 
-    // Every string, not just spans. A section heading arrives as a bare string
-    // rather than a span, so a token in an officer's Heading 2 would otherwise
-    // publish as literal braces — the exact failure this function exists to
-    // prevent, one level up. The other strings it now touches (a block's type,
-    // a form's src, a sheet box's items) hold no tokens, and {form_url} is
-    // resolved by applyStatus, so nothing else moves.
+    // Every string, not just spans: a section heading is a bare string, and a
+    // token in one would otherwise publish as literal braces.
     const walk = (value) => {
         if (typeof value === 'string') return fill(value);
         if (Array.isArray(value)) return value.map(walk);

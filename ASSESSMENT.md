@@ -1,7 +1,12 @@
 # HWS Website — Content-Editing Feasibility & Codebase Audit
 
 Prepared 2026-08-10. Repo: `HuskyWinterSports/website` @ `5ba5bb2`.
-Nothing in this document has been implemented. It is analysis only.
+
+**⚠️ Read as a record of the starting position, not the current one.** Most of
+what follows has since been built — every page is now served from the club's
+Google Doc and Sheet. The examples below (`LessonInfo.jsx:26`, a hardcoded
+"© 2025") describe files as they were in August 2026 and no longer match the
+code. What is still open is the accessibility list in Part 4.
 
 ---
 
@@ -442,18 +447,13 @@ Proven end to end on 2026-08-11: an edit to the document produced commit
 `f88d901` from the workflow and reached the live site with nobody touching
 GitHub.
 
-**Two things are waiting on the club, not on a developer:**
+**Waiting on the club, not on a developer:**
 
 1. **Install the watcher** — `scripts/watcher/sync-watcher.gs`, written and
    tested, ~2 minutes on the shared Google account. Steps in spec §7.2. Until
    it is installed, the off-season failure it exists for is diagnosed but not
    defended against: GitHub disables the schedule after 60 quiet days and
    nothing anywhere reports it.
-2. **Paste the tabs** — [`docs/doc-tabs-blockout.md`](docs/doc-tabs-blockout.md)
-   is paste-ready text for every remaining page, verbatim from the live site.
-   Cheapest first: Contact Us, Email List, then FAQ and Become an Instructor,
-   then Lesson Info and Lesson Registration. **One page at a time** — a layout
-   file naming a tab that does not exist yet fails the sync every hour.
 
 **✅ Settled 2026-08-11:** the named lesson director had already left the role,
 and the "currently studying abroad" line was no longer relevant. Both are gone

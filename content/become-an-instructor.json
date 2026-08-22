@@ -149,7 +149,19 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": " or join our student mailing list for exact times, locations, and more fun events we offer! After meeting us in the fall, sign up for tryouts which are held the second weekend of winter quarter! "
+              "text": " or join our "
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": "https://mailman21.u.washington.edu/mailman/listinfo/hws-prospies",
+              "text": "student mailing list"
+            },
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": " for exact times, locations, and more fun events we offer! After meeting us in the fall, sign up for tryouts which are held the second weekend of winter quarter! "
             }
           ]
         }

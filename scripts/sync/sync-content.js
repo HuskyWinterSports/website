@@ -3,7 +3,7 @@ import { join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseGoogleDoc } from './parse-google-doc.js';
 import { parseSheet } from './parse-sheet.js';
-import { joinSections, selectTab, ContentError } from './join-sections.js';
+import { joinSections, looksLikeHeadings, selectTab, ContentError } from './join-sections.js';
 import { sheetBlock, fillLayoutTokens, applyStatus, derive, fillContentTokens } from './apply-sheet.js';
 import { seasonEndYear, endsOnSecondSaturdayOfMarch } from './lesson-dates.js';
 
@@ -143,7 +143,7 @@ async function syncLayout(layoutPath) {
         };
     }
 
-    const { blocks: joined, orphans } = joinSections(resolved, parsed, layoutName);
+    const { blocks: joined, auto, held, warnings } = joinSections(resolved, parsed, layoutName);
 
     // The document's own prose can quote a value too, so the club never has to
     // maintain the same date in two places.
@@ -159,13 +159,13 @@ async function syncLayout(layoutPath) {
     const tabs = document.tabs.map((t) => t.name);
 
     const notes = parsed.notes ?? [];
+    const unstyled = looksLikeHeadings(parsed);
+    const result = { layoutName, auto, held, warnings, tabs, sheetWarnings, notes, unstyled };
 
-    if (previous === serialised) {
-        return { layoutName, changed: false, orphans, tabs, sheetWarnings, notes };
-    }
+    if (previous === serialised) return { ...result, changed: false };
 
     writeFileSync(outputPath, serialised);
-    return { layoutName, changed: true, orphans, tabs, sheetWarnings, notes };
+    return { ...result, changed: true };
 }
 
 async function main() {
@@ -209,14 +209,36 @@ async function main() {
             );
         }
 
-        // Orphans are a warning, not a failure: an editor adding a section
-        // before a developer wires it up should not take the site down.
-        for (const heading of result.orphans) {
+        // Lines that look like headings but are styled as ordinary text. This
+        // is what broke five pages in August 2026, silently.
+        if (result.unstyled.length) {
             console.log(
-                `NOTE: the ${result.layoutName} document has a section ` +
-                `"${heading}" that the website does not use yet. It has been ` +
-                `ignored. Ask a developer to add it if it should appear.`
+                `NOTE: ${result.unstyled.length} line(s) in the ${result.layoutName} ` +
+                `document look like headings but are styled as normal text:\n` +
+                result.unstyled.map((t) => `      • ${t}`).join('\n') + `\n` +
+                `      Style them "Heading 2" to turn them into their own sections.`
             );
+        }
+
+        // A section the layout says nothing about still reaches the page; it
+        // just gets one plain style until a developer chooses another.
+        for (const heading of result.auto) {
+            console.log(
+                `NOTE: the ${result.layoutName} document has a section "${heading}" ` +
+                `that the website shows in the default style. Ask a developer if ` +
+                `it should look different.`
+            );
+        }
+
+        for (const heading of result.held) {
+            console.log(
+                `NOTE: "${heading}" is in the ${result.layoutName} document but is ` +
+                `deliberately held back and is not on the website.`
+            );
+        }
+
+        for (const warning of result.warnings) {
+            console.log(`NOTE: ${warning}`);
         }
 
         console.log(

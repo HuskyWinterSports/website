@@ -81,7 +81,7 @@ describe('tabs the website does not use', () => {
         const doc = parseGoogleDoc(FIXTURE);
         const tab = selectTab(doc, 'Diversity and Inclusion', 'diversity-and-inclusion');
 
-        const { blocks, orphans } = joinSections(
+        const { blocks, auto } = joinSections(
             { route: '/x', blocks: [{ section: 'Support our Stoked Volunteer Instructors!', type: 'white-stripe' }] },
             tab,
             'diversity-and-inclusion'
@@ -89,7 +89,7 @@ describe('tabs the website does not use', () => {
 
         // "Lessons" and "Tab 3" are both present in the document and unused.
         assert.ok(doc.tabs.length > 1, 'fixture should have unused tabs');
-        assert.deepEqual(orphans, [], 'an unused tab must not be reported as an orphan section');
+        assert.deepEqual(auto, [], 'an unused tab must not leak a section into this page');
         assert.equal(blocks.length, 1);
     });
 });

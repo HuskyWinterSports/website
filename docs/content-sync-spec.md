@@ -333,6 +333,63 @@ Deliberately minimal, because every rule is a rule an officer can get wrong:
 That last row is a feature: it is what stops pasted-in formatting from wrecking
 the site design.
 
+### 5.2b Sections follow the document — implemented 2026-08-21
+
+**The layout is a set of overrides, not a whitelist.** Every Heading 2 in the
+tab becomes a section on the page, in document order. Where a layout names one,
+its styling and payload win; where it does not, the section renders in one plain
+default style (`white-stripe qa`) and the sync names it in the log.
+
+Before this, a heading the layout did not name was dropped. The August 2026
+content edit is what settled it: three pages silently lost sections, and two
+more failed outright, because heading styles are lost when text is pasted into
+Google Docs and nothing said so.
+
+**One default, no inference.** Not alternating stripe colours — inserting one
+section would repaint every section below it, turning a one-line document edit
+into a large diff and a visibly rearranged page. Not guessing at `cards`
+either: a plausible-looking wrong layout is worse than a plain one.
+
+**Blocks that name no section float.** The photo carousel and the sheet tables
+keep their position relative to the sections around them. Blocks sitting above
+every claimed section open the page.
+
+**⚠️ This REVERSES a guarantee §7 used to make.** "An officer drafting ahead of
+a developer must not be able to take the site down" is still true — but that
+draft now *goes live* instead of being ignored. The `-- Planning` tab is proof
+officers draft in this document. So:
+
+| Marker | Effect |
+|---|---|
+| A Heading 2 starting `--` | the section and everything under it is skipped |
+| `"hidden": true` in the layout | the section is held back by a developer |
+
+The first is the officer saying "not ready"; the second is the repo saying so —
+`Check out how we teach!` is held that way until its training-manual links
+arrive.
+
+**A renamed heading is no longer fatal.** The content is not lost — it renders
+under its new heading in the default style — so a rename is a warning. It stays
+an error only when the block carries something the document cannot supply:
+
+    map, form, buttons, slider, sheet, status, cards, boxes
+
+Losing the map from Location, or the buttons from the home banner, is a real
+regression that a log line would not save anyone from. No new configuration:
+the payload is already visible in the layout file.
+
+### 5.2c Headings that are not headings
+
+The failure that caused most of the August breakage. `looksLikeHeadings` finds
+a short bold line, alone on its paragraph, directly above ordinary text, and
+names each one in the log.
+
+**Reported, never acted on.** Promoting a bold line automatically would split a
+page in two the first time somebody emphasised a sentence. Run against the
+document as it was when it broke, it names exactly the seven lines responsible —
+the four on Become an Instructor and the three Home card titles — and nothing
+on the repaired document.
+
 ### 5.3 The join key is the known weak point
 
 Heading text is both the join key *and* prose, so editors will eventually

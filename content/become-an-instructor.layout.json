@@ -1,5 +1,4 @@
 {
-  "_pending": "\"Check out how we teach!\" is left out on purpose: its whole content is a sentence ending in a colon, because the note naming the training manuals is stripped before publishing. Add a block once the links arrive. The sync reports it as unused every run, which is the reminder.",
   "route": "/become-an-instructor",
   "source": {
     "kind": "google-doc",
@@ -21,6 +20,11 @@
       "buttons": [
         { "label": "ZERO TO TRIPLE-60", "href": "/diversity-and-inclusion" }
       ]
+    },
+    {
+      "_note": "Held back until the training manual links arrive: the section's whole content is a sentence ending in a colon, because the note naming the manuals is stripped before publishing. Remove \"hidden\" and add the links to turn it back on.",
+      "section": "Check out how we teach!",
+      "hidden": true
     }
   ]
 }

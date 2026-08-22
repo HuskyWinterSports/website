@@ -67,7 +67,18 @@ export function selectTab(parsed, tabName, layoutName) {
 const withoutNotes = (entry) =>
     Object.fromEntries(Object.entries(entry).filter(([key]) => !key.startsWith('_')));
 
+/** Block keys holding something the document cannot supply. */
+const PAYLOAD_KEYS = ['map', 'form', 'buttons', 'slider', 'sheet', 'status', 'cards', 'boxes'];
+
+/** A heading an officer has marked as not ready, matching the "-- Planning" tab. */
+const DRAFT_MARKER = '--';
+
+/** What an unclaimed section looks like until a developer says otherwise. */
+const DEFAULT_TYPE = 'white-stripe qa';
+
 export function joinSections(layout, parsed, layoutName) {
+    const warnings = [];
+    const held = [];
     const bySection = new Map(
         parsed.sections.filter((s) => s.heading).map((s) => [s.heading.trim(), s])
     );
@@ -103,7 +114,8 @@ export function joinSections(layout, parsed, layoutName) {
         return match;
     };
 
-    const blocks = layout.blocks.map((raw) => {
+    /** Turn one layout entry into a page block, or null if it renders nothing. */
+    const resolve = (raw) => {
         const entry = withoutNotes(raw);
 
         // Sheet-driven blocks were resolved before this ran and carry their
@@ -162,7 +174,34 @@ export function joinSections(layout, parsed, layoutName) {
         // exist in the document.
         if (!entry.section) return { ...entry };
 
-        const match = requireSection(entry.section);
+        // Held back on purpose — a section whose content is not ready to
+        // publish. Without this, auto-sectioning would put it on the site.
+        if (entry.hidden) {
+            held.push(entry.section);
+            return null;
+        }
+
+        const match = bySection.get(entry.section.trim());
+        if (!match || match.blocks.length === 0) {
+            // The heading was renamed or deleted. Under the old whitelist this
+            // failed the whole site, hourly, until a developer noticed — while
+            // the renamed section still carries its text and will render below
+            // in the default style. So it is only fatal when the block carries
+            // something the document cannot supply.
+            const payload = PAYLOAD_KEYS.filter((k) => k in entry);
+            if (payload.length) requireSection(entry.section);
+
+            warnings.push(match
+                ? `The section "${entry.section}" in the ${layoutName} document is ` +
+                  `empty, so nothing has been published for it. Add some text under ` +
+                  `that heading.`
+                : `The ${layoutName} document no longer has a section ` +
+                  `"${entry.section}". If it was renamed, its text is still on the ` +
+                  `page but in the default style. Rename the heading back, or ask a ` +
+                  `developer to update content/${layoutName}.layout.json`
+            );
+            return null;
+        }
 
         // A cards block draws one card per Heading 3. With none it would
         // render an empty grid — visibly broken, but only to whoever looked.
@@ -179,19 +218,101 @@ export function joinSections(layout, parsed, layoutName) {
         }
 
         return { ...entry, heading: match.heading, content: match.blocks };
-    });
+    };
 
-    // A section the document has but the layout does not is a warning, never
-    // an error: an officer drafting ahead of a developer must not be able to
-    // take the site down.
-    const used = new Set(
-        layout.blocks.flatMap((b) => [b.section, ...(b.sections ?? [])])
-            .filter(Boolean)
-            .map((name) => name.trim())
-    );
-    const orphans = parsed.sections
-        .filter((s) => s.heading && !used.has(s.heading.trim()))
-        .map((s) => s.heading);
+    // Which layout entry, if any, speaks for each document heading.
+    const claimant = new Map();
+    for (const raw of layout.blocks) {
+        for (const name of [raw.section, ...(raw.sections ?? [])].filter(Boolean)) {
+            if (!claimant.has(name.trim())) claimant.set(name.trim(), raw);
+        }
+    }
 
-    return { blocks, orphans };
+    // Walk the DOCUMENT, not the layout. Entries that name no section float:
+    // they are emitted just before the next claimed section they precede, which
+    // keeps the photo carousel and the sheet tables where their layout puts
+    // them without the layout having to drive the order.
+    const blocks = [];
+    const emitted = new Set();
+    const auto = [];
+
+    const claims = (b) => b.lead || b.section || b.sections;
+
+    const emitEntry = (raw) => {
+        if (emitted.has(raw)) return;
+        emitted.add(raw);
+        const block = resolve(raw);
+        if (block) blocks.push(block);
+    };
+
+    const floatsBefore = (raw) => {
+        for (const candidate of layout.blocks) {
+            if (candidate === raw) return;
+            if (emitted.has(candidate)) continue;
+            if (!claims(candidate)) emitEntry(candidate);
+        }
+    };
+
+    // Blocks sitting above every claimed section open the page — three pages
+    // start with a title-only block. Without this they would be swept to the
+    // end by the final pass once auto sections exist.
+    const firstClaim = layout.blocks.findIndex(claims);
+    for (const raw of layout.blocks.slice(0, firstClaim === -1 ? undefined : firstClaim)) {
+        emitEntry(raw);
+    }
+
+    for (const section of parsed.sections) {
+        const name = section.heading?.trim();
+
+        if (name === undefined || name === null) {
+            // The text above the first Heading 2. Only a `lead` block claims it.
+            const leadEntry = layout.blocks.find((b) => b.lead);
+            if (leadEntry) { floatsBefore(leadEntry); emitEntry(leadEntry); }
+            continue;
+        }
+
+        const owner = claimant.get(name);
+        if (owner) { floatsBefore(owner); emitEntry(owner); continue; }
+
+        // Unclaimed. A draft, an empty section, or a heading with no text
+        // renders nothing; anything else gets one plain default style.
+        if (name === '' || name.startsWith(DRAFT_MARKER) || section.blocks.length === 0) continue;
+
+        auto.push(section.heading);
+        blocks.push({ type: DEFAULT_TYPE, heading: section.heading, content: section.blocks });
+    }
+
+    // Anything the document never reached — a trailing floating block, or a
+    // layout entry naming a heading that is gone.
+    for (const raw of layout.blocks) emitEntry(raw);
+
+    return { blocks, auto, held, warnings };
+}
+
+/**
+ * Lines that look like headings but are styled as ordinary text.
+ *
+ * This is what broke five pages in August 2026: heading styles are lost when
+ * text is pasted into Google Docs and nothing said so. Reported, never acted
+ * on — promoting a bold line automatically would split a page in two the first
+ * time somebody emphasised a sentence.
+ */
+export function looksLikeHeadings(parsed) {
+    const found = [];
+    for (const section of parsed.sections) {
+        section.blocks.forEach((block, index) => {
+            if (block.type !== 'paragraph' || !block.spans.length) return;
+            if (!block.spans.every((s) => s.bold)) return;
+
+            const text = block.spans.map((s) => s.text).join('').trim();
+            if (!text || text.length > 80 || /\.$/.test(text)) return;
+
+            const next = section.blocks[index + 1];
+            if (!next || next.type !== 'paragraph') return;
+            if (next.spans.every((s) => s.bold)) return;
+
+            found.push(text);
+        });
+    }
+    return found;
 }

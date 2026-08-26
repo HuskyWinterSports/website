@@ -7,19 +7,21 @@
   },
   "blocks": [
     {
-      "_note": "Left-aligned at a reading measure: the longest run of prose on the site, and centred text makes the eye hunt for the start of each line.",
+      "_note": "Left-aligned at a reading measure: the longest run of prose on the site, and centred text makes the eye hunt for the start of each line. The two newspaper clippings sit inside this panel, under the history they illustrate, rather than in a band of their own at the foot of the page — they are part of the article, not an appendix to it. \"undated\" is everything in the \"our history\" Drive folder NOT named after a year, so another clipping dropped in joins them.",
       "type": "white-stripe qa",
       "showTitle": true,
-      "lead": true
+      "lead": true,
+      "photos": {
+        "use": "figures",
+        "only": "undated"
+      }
     },
     {
       "_note": "The season group photo, one per year, oldest first. \"dated\" picks up any photo in the \"our history\" Drive folder whose name is a year — so adding next season's shot means naming a file 2027 and nothing else. The year prints under the frame rather than over the photograph.",
-      "photos": { "use": "carousel", "only": "dated" }
-    },
-    {
-      "_note": "Everything in the same folder that is NOT named after a year: the two newspaper clippings. They are scans of newsprint, so they link to the full-size file — a clipping nobody can read is decoration.",
-      "type": "white-stripe centered-text",
-      "photos": { "use": "figures", "only": "undated" }
+      "photos": {
+        "use": "carousel",
+        "only": "dated"
+      }
     }
   ]
 }

@@ -22,10 +22,9 @@
       ]
     },
     {
-      "_note": "The manuals are hyperlinked bullets in the document, so officers can swap in a new version without touching this repo. Until those bullets exist the section is one sentence ending in a colon, so it is held back — and held back again for as long as an edit leaves the list empty. No developer at either edge.",
+      "_note": "The manuals are hyperlinked bullets in the document, pointing at PDFs in Drive. New versions are uploaded over the same file, so the links never change and this never needs editing. Purple completes the white/purple alternation the other three boxes run.",
       "type": "big-purple-box",
-      "section": "Check out how we teach!",
-      "hiddenUntil": "list"
+      "section": "Check out how we teach!"
     }
   ]
 }

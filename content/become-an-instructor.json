@@ -190,6 +190,46 @@
           ]
         }
       ]
+    },
+    {
+      "type": "big-purple-box",
+      "section": "Check out how we teach!",
+      "heading": "Check out how we teach!",
+      "content": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "Interested in trying out? Learn more about our program and how we teach through our training handbooks:"
+            }
+          ]
+        },
+        {
+          "type": "list",
+          "ordered": false,
+          "items": [
+            [
+              {
+                "bold": false,
+                "italic": false,
+                "href": null,
+                "text": "ski instructor handbook"
+              }
+            ],
+            [
+              {
+                "bold": false,
+                "italic": false,
+                "href": "https://drive.google.com/file/d/1aCGpQZvhloqEZZh8_f8Llz5O_H7Pc7R1/view?usp=sharing",
+                "text": "snowboard instructor handbook.pdf"
+              }
+            ]
+          ]
+        }
+      ]
     }
   ]
 }

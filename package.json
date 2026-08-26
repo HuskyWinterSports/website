@@ -14,7 +14,8 @@
     "test:all": "npm run test:unit && playwright test",
     "test:report": "playwright show-report",
     "sync": "node scripts/sync/sync-content.js",
-    "audit:widows": "node scripts/audit/find-widows.js"
+    "audit:widows": "node scripts/audit/find-widows.js",
+    "sync:photos": "node scripts/sync/sync-photos.js"
   },
   "dependencies": {
     "react": "^19.1.1",
@@ -32,6 +33,7 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
     "node-html-parser": "^9.0.1",
+    "sharp": "^0.35.3",
     "vite": "^7.1.0"
   }
 }

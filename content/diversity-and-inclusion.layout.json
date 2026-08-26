@@ -6,8 +6,14 @@
     "tab": "Diversity and Inclusion"
   },
   "blocks": [
-    { "type": "big-white-box", "showTitle": true },
-    { "type": "white-stripe qa", "section": "Mission Statement" },
+    {
+      "type": "big-white-box",
+      "showTitle": true
+    },
+    {
+      "type": "white-stripe qa",
+      "section": "Mission Statement"
+    },
     {
       "_note": "The purple stripe between two white ones, so the three sections read as three rather than as one long page.",
       "type": "purple-stripe qa",
@@ -18,8 +24,17 @@
       "type": "white-stripe qa",
       "section": "Spread The Shred",
       "buttons": [
-        { "label": "SUPPORT US", "href": "/support-us" }
+        {
+          "label": "SUPPORT US",
+          "href": "/support-us"
+        }
       ]
+    },
+    {
+      "_note": "The \"diversity and inclusion\" Drive folder is the Spread the Shred photos, so they follow that section. Adding more to the folder extends the carousel.",
+      "photos": {
+        "use": "carousel"
+      }
     }
   ]
 }

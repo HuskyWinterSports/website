@@ -74,6 +74,105 @@
           ]
         }
       ]
+    },
+    {
+      "slider": {
+        "slides": [
+          {
+            "alt": "Husky Winter Sports, 2000s",
+            "caption": "2000s",
+            "ratio": 1.333,
+            "shape": "landscape",
+            "width": 604,
+            "height": 453,
+            "src": "/images/photos/our-history/2000s-604.avif",
+            "srcset": "/images/photos/our-history/2000s-604.avif 604w",
+            "wash": "/images/photos/our-history/2000s-604.avif"
+          },
+          {
+            "alt": "Husky Winter Sports, 2020",
+            "caption": "2020",
+            "ratio": 1.566,
+            "shape": "landscape",
+            "width": 1206,
+            "height": 770,
+            "src": "/images/photos/our-history/2020-1206.avif",
+            "srcset": "/images/photos/our-history/2020-640.avif 640w, /images/photos/our-history/2020-1206.avif 1206w",
+            "wash": "/images/photos/our-history/2020-640.avif"
+          },
+          {
+            "alt": "Husky Winter Sports, 2022",
+            "caption": "2022",
+            "ratio": 1.343,
+            "shape": "landscape",
+            "width": 1206,
+            "height": 898,
+            "src": "/images/photos/our-history/2022-1206.avif",
+            "srcset": "/images/photos/our-history/2022-640.avif 640w, /images/photos/our-history/2022-1206.avif 1206w",
+            "wash": "/images/photos/our-history/2022-640.avif"
+          },
+          {
+            "alt": "Husky Winter Sports, 2023",
+            "caption": "2023",
+            "ratio": 1.333,
+            "shape": "landscape",
+            "width": 4000,
+            "height": 3000,
+            "src": "/images/photos/our-history/2023-2240.avif",
+            "srcset": "/images/photos/our-history/2023-640.avif 640w, /images/photos/our-history/2023-1280.avif 1280w, /images/photos/our-history/2023-2240.avif 2240w",
+            "wash": "/images/photos/our-history/2023-640.avif"
+          },
+          {
+            "alt": "Husky Winter Sports, 2024",
+            "caption": "2024",
+            "ratio": 1.209,
+            "shape": "landscape",
+            "width": 3634,
+            "height": 3005,
+            "src": "/images/photos/our-history/2024-2240.avif",
+            "srcset": "/images/photos/our-history/2024-640.avif 640w, /images/photos/our-history/2024-1280.avif 1280w, /images/photos/our-history/2024-2240.avif 2240w",
+            "wash": "/images/photos/our-history/2024-640.avif"
+          },
+          {
+            "alt": "Husky Winter Sports, 2025",
+            "caption": "2025",
+            "ratio": 1.243,
+            "shape": "landscape",
+            "width": 1909,
+            "height": 1536,
+            "src": "/images/photos/our-history/2025-1909.avif",
+            "srcset": "/images/photos/our-history/2025-640.avif 640w, /images/photos/our-history/2025-1280.avif 1280w, /images/photos/our-history/2025-1909.avif 1909w",
+            "wash": "/images/photos/our-history/2025-640.avif"
+          }
+        ]
+      }
+    },
+    {
+      "type": "white-stripe centered-text",
+      "figures": [
+        {
+          "alt": "Newspaper 1",
+          "caption": null,
+          "ratio": 1.008,
+          "shape": "square",
+          "width": 1206,
+          "height": 1197,
+          "src": "/images/photos/our-history/newspaper-1-1206.avif",
+          "srcset": "/images/photos/our-history/newspaper-1-640.avif 640w, /images/photos/our-history/newspaper-1-1206.avif 1206w",
+          "wash": "/images/photos/our-history/newspaper-1-640.avif"
+        },
+        {
+          "alt": "Newspaper 2",
+          "caption": null,
+          "ratio": 1.008,
+          "shape": "square",
+          "width": 1206,
+          "height": 1197,
+          "src": "/images/photos/our-history/newspaper-2-1206.avif",
+          "srcset": "/images/photos/our-history/newspaper-2-640.avif 640w, /images/photos/our-history/newspaper-2-1206.avif 1206w",
+          "wash": "/images/photos/our-history/newspaper-2-640.avif"
+        }
+      ]
     }
   ]
 }

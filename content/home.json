@@ -47,16 +47,59 @@
       "slider": {
         "slides": [
           {
-            "url": "/images/2025group.jpeg",
-            "alt": "Husky Winter Sports instructors and students, 2025"
+            "alt": "In front of ullr",
+            "caption": null,
+            "ratio": 1.333,
+            "shape": "landscape",
+            "width": 4320,
+            "height": 3240,
+            "src": "/images/photos/home/in-front-of-ullr-2240.avif",
+            "srcset": "/images/photos/home/in-front-of-ullr-640.avif 640w, /images/photos/home/in-front-of-ullr-1280.avif 1280w, /images/photos/home/in-front-of-ullr-2240.avif 2240w",
+            "wash": "/images/photos/home/in-front-of-ullr-640.avif"
           },
           {
-            "url": "/images/2025-2026.jpg",
-            "alt": "The club on the mountain, 2025/2026 season"
+            "alt": "Snowboarder stack",
+            "caption": null,
+            "ratio": 0.75,
+            "shape": "portrait",
+            "width": 3024,
+            "height": 4032,
+            "src": "/images/photos/home/snowboarder-stack-2240.avif",
+            "srcset": "/images/photos/home/snowboarder-stack-640.avif 640w, /images/photos/home/snowboarder-stack-1280.avif 1280w, /images/photos/home/snowboarder-stack-2240.avif 2240w",
+            "wash": "/images/photos/home/snowboarder-stack-640.avif"
           },
           {
-            "url": "/images/2022-2023.jpg",
-            "alt": "The club on the mountain, 2022/2023 season"
+            "alt": "Snowboarders",
+            "caption": null,
+            "ratio": 1.333,
+            "shape": "landscape",
+            "width": 4032,
+            "height": 3024,
+            "src": "/images/photos/home/snowboarders-2240.avif",
+            "srcset": "/images/photos/home/snowboarders-640.avif 640w, /images/photos/home/snowboarders-1280.avif 1280w, /images/photos/home/snowboarders-2240.avif 2240w",
+            "wash": "/images/photos/home/snowboarders-640.avif"
+          },
+          {
+            "alt": "Stretch circle",
+            "caption": null,
+            "ratio": 1.333,
+            "shape": "landscape",
+            "width": 4032,
+            "height": 3024,
+            "src": "/images/photos/home/stretch-circle-2240.avif",
+            "srcset": "/images/photos/home/stretch-circle-640.avif 640w, /images/photos/home/stretch-circle-1280.avif 1280w, /images/photos/home/stretch-circle-2240.avif 2240w",
+            "wash": "/images/photos/home/stretch-circle-640.avif"
+          },
+          {
+            "alt": "Summit",
+            "caption": null,
+            "ratio": 1.333,
+            "shape": "landscape",
+            "width": 4032,
+            "height": 3024,
+            "src": "/images/photos/home/summit-2240.avif",
+            "srcset": "/images/photos/home/summit-640.avif 640w, /images/photos/home/summit-1280.avif 1280w, /images/photos/home/summit-2240.avif 2240w",
+            "wash": "/images/photos/home/summit-640.avif"
           }
         ]
       }

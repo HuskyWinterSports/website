@@ -6,6 +6,7 @@ import { parseSheet } from './parse-sheet.js';
 import { joinSections, looksLikeHeadings, selectTab, ContentError } from './join-sections.js';
 import { sheetBlock, fillLayoutTokens, applyStatus, derive, fillContentTokens } from './apply-sheet.js';
 import { seasonEndYear, endsOnSecondSaturdayOfMarch } from './lesson-dates.js';
+import { photoBlock } from './apply-photos.js';
 
 /**
  * Fetches published Google content, validates it against the repo's layout
@@ -23,6 +24,19 @@ import { seasonEndYear, endsOnSecondSaturdayOfMarch } from './lesson-dates.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const CONTENT_DIR = join(ROOT, 'content');
+
+/**
+ * Photos are synced separately — they change a few times a season and cost
+ * 40 MB to check — so this reads whatever the last photo sync left behind.
+ * Missing entirely is fine: it just means no page has photos yet.
+ */
+function readPhotos() {
+    try {
+        return JSON.parse(readFileSync(join(CONTENT_DIR, 'photos.json'), 'utf8'));
+    } catch {
+        return {};
+    }
+}
 
 const docUrl = (publishedId) =>
     `https://docs.google.com/document/d/e/${publishedId}/pub`;
@@ -84,7 +98,7 @@ async function fetchDoc(publishedId, layoutName) {
     return response.text();
 }
 
-async function syncLayout(layoutPath) {
+async function syncLayout(layoutPath, photos) {
     const layoutName = basename(layoutPath, '.layout.json');
     const layout = JSON.parse(readFileSync(layoutPath, 'utf8'));
 
@@ -143,13 +157,30 @@ async function syncLayout(layoutPath) {
         };
     }
 
+    // Photo blocks carry no words, so they are resolved whether or not the
+    // page has a sheet — unlike the sheet-driven blocks above.
+    const emptyPhotos = [];
+    resolved = {
+        ...resolved,
+        blocks: resolved.blocks.map((entry) => {
+            if (!entry.photos) return entry;
+            const block = photoBlock(entry, photos[layoutName], layoutName);
+            if (block.empty) emptyPhotos.push(block.empty);
+            return block;
+        }),
+    };
+
     const { blocks: joined, auto, warnings } = joinSections(resolved, parsed, layoutName);
 
     // The document's own prose can quote a value too, so the club never has to
     // maintain the same date in two places.
     const blocks = settings ? fillContentTokens(joined, settings) : joined;
 
-    const output = { route: layout.route, title: parsed.title, blocks };
+    const output = {
+        route: layout.route,
+        title: parsed.title,
+        blocks: blocks.filter((block) => !block.empty),
+    };
     const outputPath = join(CONTENT_DIR, `${layoutName}.json`);
     const serialised = JSON.stringify(output, null, 2) + '\n';
 
@@ -160,7 +191,7 @@ async function syncLayout(layoutPath) {
 
     const notes = parsed.notes ?? [];
     const unstyled = looksLikeHeadings(parsed);
-    const result = { layoutName, auto, warnings, tabs, sheetWarnings, notes, unstyled };
+    const result = { layoutName, auto, warnings, tabs, sheetWarnings, notes, unstyled, emptyPhotos };
 
     if (previous === serialised) return { ...result, changed: false };
 
@@ -178,9 +209,11 @@ async function main() {
         return;
     }
 
+    const photos = readPhotos();
+
     let changedCount = 0;
     for (const layoutPath of layouts) {
-        const result = await syncLayout(layoutPath);
+        const result = await syncLayout(layoutPath, photos);
 
         // Printed every run so a forged tab boundary is visible. Tabs are
         // marked by the Title paragraph style, so applying that style inside a
@@ -227,6 +260,19 @@ async function main() {
                 `NOTE: the ${result.layoutName} document has a section "${heading}" ` +
                 `that the website shows in the default style. Ask a developer if ` +
                 `it should look different.`
+            );
+        }
+
+        // A page that asks for photos and has none still publishes; it just
+        // has one less thing on it. Silence here would look like the folder
+        // was never read.
+        for (const request of result.emptyPhotos) {
+            const [use, only] = request.split(':');
+            console.log(
+                `NOTE: the ${result.layoutName} page has a ${use} of photos, but ` +
+                `its Drive folder has no ${only === 'all' ? '' : only + ' '}` +
+                `photos the website can use, so nothing has been drawn there. ` +
+                `Run "npm run sync:photos" after adding some.`
             );
         }
 

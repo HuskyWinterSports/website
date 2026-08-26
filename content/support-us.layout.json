@@ -11,6 +11,13 @@
       "type": "big-white-box",
       "showTitle": true,
       "section": "Support our Stoked Volunteer Instructors!"
+    },
+    {
+      "_note": "One photo, so a figure rather than a carousel — a carousel with nothing to page through is chrome for its own sake. If officers add more to the \"support us\" folder they all appear side by side.",
+      "type": "white-stripe centered-text",
+      "photos": {
+        "use": "figures"
+      }
     }
   ]
 }

@@ -246,19 +246,6 @@
     outline-offset: 2px;
 }
 
-/* At the ends. Shown rather than hidden, so the control does not move and the
-   visitor can see there is nothing further that way. */
-.image-slider .left-arrow:disabled,
-.image-slider .right-arrow:disabled {
-    opacity: 0.3;
-    cursor: default;
-}
-
-.image-slider .left-arrow:disabled:hover,
-.image-slider .right-arrow:disabled:hover {
-    background: rgba(80, 44, 132, 0.7);
-}
-
 .caption-text h2 {
     font-size: 1.2em;
     font-weight: normal;

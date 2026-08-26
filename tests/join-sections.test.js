@@ -1,6 +1,6 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
-import { joinSections, looksLikeHeadings, ContentError } from '../scripts/sync/join-sections.js';
+import { joinSections, looksLikeHeadings, staleYears, ContentError } from '../scripts/sync/join-sections.js';
 
 /**
  * These cover the paths a club officer will actually hit — a renamed heading,
@@ -474,5 +474,135 @@ describe('headings that are not headings', () => {
     test('a bold line with nothing under it is not a heading either', () => {
         const bold = (text) => ({ type: 'paragraph', spans: [{ text, bold: true, italic: false, href: null }] });
         assert.deepEqual(looksLikeHeadings({ sections: [{ heading: null, blocks: [bold('Sign-off')] }] }), []);
+    });
+});
+
+/**
+ * Headings that are addresses rather than titles.
+ *
+ * "Tagline" names the two lines under the home banner and "About" names the
+ * footer's legal paragraph; neither is ever printed. A `~` in front is how the
+ * document admits that, so an officer can tell which headings are load-bearing
+ * before they rename one.
+ */
+describe('headings marked as labels', () => {
+    const marked = {
+        title: 'Home',
+        sections: [
+            { heading: '~ Tagline', blocks: [paragraph('Ski and Snowboard School')] },
+            { heading: 'Why Us?', blocks: [paragraph('because')] },
+        ],
+    };
+
+    test('the marker is not part of the join key', () => {
+        const { blocks } = joinSections(
+            layout([{ section: 'Tagline', type: 'home-banner', showHeading: false }]),
+            marked,
+            'home'
+        );
+        assert.equal(blocks[0].type, 'home-banner');
+        assert.equal(blocks[0].content[0].spans[0].text, 'Ski and Snowboard School');
+    });
+
+    test('adding one to a heading the layout claims changes nothing on the page', () => {
+        const plain = {
+            title: 'Home',
+            sections: [
+                { heading: 'Tagline', blocks: [paragraph('Ski and Snowboard School')] },
+                { heading: 'Why Us?', blocks: [paragraph('because')] },
+            ],
+        };
+        const request = [{ section: 'Tagline', type: 'home-banner', showHeading: false }];
+        assert.deepEqual(
+            joinSections(layout(request), plain, 'home').blocks,
+            joinSections(layout(request), marked, 'home').blocks
+        );
+    });
+
+    test('a block that does not show its heading is not given one', () => {
+        const { blocks } = joinSections(
+            layout([{ section: 'Tagline', type: 'home-banner', showHeading: false }]),
+            marked,
+            'home'
+        );
+        assert.equal('heading' in blocks[0], false);
+        // And the flag itself stays in the repo rather than being shipped to
+        // every visitor along with the page.
+        assert.equal('showHeading' in blocks[0], false);
+    });
+
+    test('a marked heading is never printed, even with no layout to say so', () => {
+        const { blocks, auto } = joinSections(layout([]), marked, 'home');
+        assert.equal('heading' in blocks[0], false);
+        assert.equal(blocks[0].content[0].spans[0].text, 'Ski and Snowboard School');
+        // Still named in the log: nothing is hidden from a developer.
+        assert.deepEqual(auto, ['Tagline', 'Why Us?']);
+    });
+
+    test('an unmarked heading that is never drawn is reported, not failed', () => {
+        const plain = {
+            title: 'Home',
+            sections: [{ heading: 'Tagline', blocks: [paragraph('x')] }],
+        };
+        const { blocks, warnings } = joinSections(
+            layout([{ section: 'Tagline', type: 'home-banner', showHeading: false }]),
+            plain,
+            'home'
+        );
+        assert.equal(blocks.length, 1);
+        assert.match(warnings.join('\n'), /"Tagline" is never printed on home/);
+        assert.match(warnings.join('\n'), /~ Tagline/);
+    });
+
+    test('a marked heading the website does print is reported the other way', () => {
+        const { warnings } = joinSections(
+            layout([{ section: 'Tagline', type: 'white-stripe' }]),
+            marked,
+            'home'
+        );
+        assert.match(warnings.join('\n'), /marked as a label, but the website does print it/);
+    });
+
+    test('failure messages name sections without the marker', () => {
+        // Otherwise a renamed heading is answered with "rename it back to
+        // Tagline" beside a list saying "~ Tagline" — an instruction to undo
+        // the marker the same system asked for.
+        assert.throws(
+            () => joinSections(
+                layout([{ section: 'Gone', type: 'white-stripe', map: { src: 'x', title: 'y' } }]),
+                marked,
+                'home'
+            ),
+            (error) => {
+                assert.ok(error instanceof ContentError);
+                assert.match(error.message, /• Tagline/);
+                assert.doesNotMatch(error.message, /~/);
+                return true;
+            }
+        );
+    });
+});
+
+/**
+ * A year typed into the document is a fact with an expiry date. The footer
+ * read "© 2025" throughout 2026 because nobody's job was to notice.
+ */
+describe('copyright years that have been overtaken', () => {
+    test('a year behind the clock is found', () => {
+        assert.deepEqual(staleYears([paragraph('© 2025 HWS. All rights reserved.')], '2026'), ['© 2025']);
+    });
+
+    test('this year is not', () => {
+        assert.deepEqual(staleYears([paragraph('© 2026 HWS. All rights reserved.')], '2026'), []);
+    });
+
+    test('a year that is not a copyright is left alone', () => {
+        // "Founded in 1937" is the second sentence of Our History.
+        assert.deepEqual(staleYears([paragraph('Founded in 1937, we are the oldest RSO at UW.')], '2026'), []);
+    });
+
+    test('it looks inside headings and list items too, not just paragraphs', () => {
+        const blocks = [{ type: 'list', ordered: false, items: [[{ text: '© 2019 HWS' }]] }];
+        assert.deepEqual(staleYears(blocks, '2026'), ['© 2019']);
     });
 });

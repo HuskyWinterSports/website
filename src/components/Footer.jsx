@@ -1,5 +1,21 @@
 import '../assets/Footer.css';
+import content from '../../content/footer.json';
+import { Blocks } from './ContentBlocks.jsx';
 
+/**
+ * The footer, on every page.
+ *
+ * Its words come from the "Footer" tab of the club's document, like every
+ * other page's do — the address, the email, the Instagram handle, the Forest
+ * Service permit wording and the non-discrimination clause. An officer changes
+ * any of them by editing the document, which is the whole point: the previous
+ * version of this file had them typed into JavaScript, where the only way to
+ * fix a wrong address was a pull request.
+ *
+ * What stays here is what is not words: which piece goes in which column, and
+ * the partner logos, which are files in this repository rather than anything
+ * the document could name.
+ */
 export default function Footer() {
     return (
         <>
@@ -8,31 +24,16 @@ export default function Footer() {
             </div>
             <footer>
                 <div className='footer-info'>
-                    <div className='contact-info'> 
-                        <h3>Contact Us</h3>
-                        <ul>
-                            <li>Address: 207 HUB SAO 130 Box 352238, Seattle, WA 98195</li>
-                            <li>Email: <a href="mailto:huskywslessons@gmail.com">huskywslessons@gmail.com</a></li>
-                            {/* Facebook was dropped in August 2026: the handle
-                                the footer advertised does not resolve, and the
-                                club's only presence there is a private group. */}
-                            <li>
-                                Instagram:{' '}
-                                <a
-                                    href="https://www.instagram.com/huskywintersports/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >@huskywintersports</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className='copyright'>  
-                        <p>HWS operates under Ullr Inc. as a concessionaire under US Forest Service Permits issued to Ski Lifts Inc. partially operating within the Mt. Baker, Snoqualmie, and Wenatchee National Forests. Partners in Winter Recreation. This program provides employment, services, and privileges regardless of race, color, creed, sex, religion, age, or national origin.</p>
-                        {/* Computed, not typed. It read "© 2025" in August 2026,
-                            because a hardcoded year is a fact with an expiry
-                            date and nobody whose job it is to notice. */}
-                        <p>© {new Date().getFullYear()} HWS. All rights reserved.</p>
-                    </div>
+                    {content.blocks.map((block, index) => (
+                        <div className={block.type} key={index}>
+                            {/* "Contact Us" is drawn; "About" is a label for
+                                the legal paragraph and is not. The layout file
+                                is what decides, and the ~ in the document says
+                                so to whoever is reading it there. */}
+                            {block.heading && <h3>{block.heading}</h3>}
+                            <Blocks content={block.content} />
+                        </div>
+                    ))}
                 </div>
                 <ul>
                     <li><img src='/images/summit.avif' alt="The Summit at Snoqualmie"/></li>

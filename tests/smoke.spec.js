@@ -14,6 +14,8 @@ const ROUTES = [
     '/join-our-mailing-list',
     '/become-an-instructor',
     '/diversity-and-inclusion',
+    '/our-history',
+    '/support-us',
     '/faq',
     '/contact-us',
 ];
@@ -167,4 +169,23 @@ test('the site has a page title and meta description', async ({ page }) => {
     await expect(page).toHaveTitle(/.+/);
     const description = page.locator('meta[name="description"]');
     await expect(description).toHaveAttribute('content', /.+/);
+});
+
+/**
+ * The footer's words come from the document like every page's do, so a renamed
+ * heading in the Footer tab can empty it. That is a warning rather than a
+ * failure in the sync — the right call for a page, where the text survives
+ * under its new heading — but the footer has no such place to land.
+ *
+ * Asserted by structure, never by wording: the address will change when the PO
+ * box arrives, and that must not fail a build.
+ */
+test('the footer still has its contact details and its legal text', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('footer .contact-info h3')).toBeVisible();
+    expect(await page.locator('footer .contact-info li').count()).toBeGreaterThan(0);
+    expect(await page.locator('footer .copyright p').count()).toBeGreaterThan(0);
+
+    // "About" names the legal paragraph for the layout and is never printed.
+    await expect(page.locator('footer .copyright h3')).toHaveCount(0);
 });

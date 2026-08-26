@@ -10,8 +10,14 @@ import { seasonEndYear, lessonWeekends, refundDeadline, lessonRange } from './le
  * think about what a box is.
  */
 
-/** `{season_year}` and friends, usable in any string a layout file sets. */
+/**
+ * `{season_year}` and friends, usable in any string a layout file sets.
+ *
+ * `{year}` is the odd one out: it comes from the clock rather than the sheet,
+ * so it works on every page whether or not one is attached. See §5.4c.
+ */
 const TOKENS = {
+    year: 'year',
     season_year: 'seasonYear',
     lesson_director: 'lessonDirector',
     refund_deadline: 'refundDeadline',

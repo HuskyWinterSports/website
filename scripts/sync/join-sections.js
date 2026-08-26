@@ -73,24 +73,50 @@ const PAYLOAD_KEYS = ['map', 'form', 'buttons', 'slider', 'sheet', 'status', 'ca
 /** A heading an officer has marked as not ready, matching the "-- Planning" tab. */
 const DRAFT_MARKER = '--';
 
+/**
+ * A heading that names a section for the website without being shown on it.
+ *
+ * Some headings are addresses, not titles: "Tagline" names the two lines of
+ * the home banner, and "About" names the legal paragraph in the footer.
+ * Neither is ever printed, so an officer reading the document has no way to
+ * know that renaming one moves a piece of the site while renaming the other
+ * only changes what a visitor reads.
+ *
+ * A `~` in front says so. It is a second prefix marker beside `--`, and like
+ * `--` it is taken off before anything is matched, so adding or removing one
+ * can never orphan a block. The layout decides what is drawn; the marker is
+ * how the document admits it.
+ */
+const LABEL_MARKER = '~';
+
+/** A heading's join key: its text, with any label marker taken off. */
+export const sectionKey = (name) => name.replace(/^\s*~+\s*/, '').trim();
+
+/** Whether the document marks this heading as a label rather than a title. */
+const isLabel = (name) => name.trimStart().startsWith(LABEL_MARKER);
+
 /** What an unclaimed section looks like until a developer says otherwise. */
 const DEFAULT_TYPE = 'white-stripe qa';
 
 export function joinSections(layout, parsed, layoutName) {
     const warnings = [];
     const bySection = new Map(
-        parsed.sections.filter((s) => s.heading).map((s) => [s.heading.trim(), s])
+        parsed.sections.filter((s) => s.heading).map((s) => [sectionKey(s.heading), s])
     );
 
+    // Listed by join key, so a section marked "~ About" is named "About" here
+    // — the same name the layout uses and the same one the message below asks
+    // the reader to restore. Printing the marker would read as an instruction
+    // to take it off again.
     const listSections = () =>
         parsed.sections
             .filter((s) => s.heading)
-            .map((s) => `  • ${s.heading}`)
+            .map((s) => `  • ${sectionKey(s.heading)}`)
             .join('\n') || '  (the document has no Heading 2 sections at all)';
 
     /** Find a section by heading, or fail with the message an editor needs. */
     const requireSection = (name) => {
-        const match = bySection.get(name.trim());
+        const match = bySection.get(sectionKey(name));
         if (!match) {
             throw new ContentError(
                 `The section "${name}" was not found in the ${layoutName} document.\n\n` +
@@ -163,7 +189,7 @@ export function joinSections(layout, parsed, layoutName) {
                 ...entry,
                 groups: entry.sections.map((name) => {
                     const found = requireSection(name);
-                    return { heading: found.heading, content: found.blocks };
+                    return { heading: sectionKey(found.heading), content: found.blocks };
                 }),
             };
         }
@@ -173,7 +199,7 @@ export function joinSections(layout, parsed, layoutName) {
         // exist in the document.
         if (!entry.section) return { ...entry };
 
-        const match = bySection.get(entry.section.trim());
+        const match = bySection.get(sectionKey(entry.section));
         if (!match || match.blocks.length === 0) {
             // The heading was renamed or deleted. Under the old whitelist this
             // failed the whole site, hourly, until a developer noticed — while
@@ -209,14 +235,42 @@ export function joinSections(layout, parsed, layoutName) {
             );
         }
 
-        return { ...entry, heading: match.heading, content: match.blocks };
+        // Whether a heading is drawn is a design decision, so the layout is
+        // what settles it; the document's marker only says so out loud. When
+        // the two disagree the document is the one that misleads a reader, so
+        // that is what the warning asks to change.
+        const { showHeading, ...rest } = entry;
+        const key = sectionKey(match.heading);
+        if (showHeading === false && !isLabel(match.heading)) {
+            warnings.push(
+                `The heading "${key}" is never printed on ${layoutName} — it is ` +
+                `only there to name that part of the page. Renaming it ` +
+                `"${LABEL_MARKER} ${key}" in the document would say so to whoever ` +
+                `edits it next. Nothing on the website changes either way.`
+            );
+        }
+        if (showHeading !== false && isLabel(match.heading)) {
+            warnings.push(
+                `The heading "${LABEL_MARKER} ${key}" in the ${layoutName} document ` +
+                `is marked as a label, but the website does print it — as ` +
+                `"${key}", without the ${LABEL_MARKER}. Take the ${LABEL_MARKER} ` +
+                `off, or ask a developer.`
+            );
+        }
+
+        return {
+            ...rest,
+            ...(showHeading === false ? {} : { heading: key }),
+            content: match.blocks,
+        };
     };
 
     // Which layout entry, if any, speaks for each document heading.
     const claimant = new Map();
     for (const raw of layout.blocks) {
         for (const name of [raw.section, ...(raw.sections ?? [])].filter(Boolean)) {
-            if (!claimant.has(name.trim())) claimant.set(name.trim(), raw);
+            const key = sectionKey(name);
+            if (!claimant.has(key)) claimant.set(key, raw);
         }
     }
 
@@ -254,7 +308,7 @@ export function joinSections(layout, parsed, layoutName) {
     }
 
     for (const section of parsed.sections) {
-        const name = section.heading?.trim();
+        const name = section.heading == null ? section.heading : sectionKey(section.heading);
 
         if (name === undefined || name === null) {
             // The text above the first Heading 2. Only a `lead` block claims it.
@@ -270,8 +324,15 @@ export function joinSections(layout, parsed, layoutName) {
         // renders nothing; anything else gets one plain default style.
         if (name === '' || name.startsWith(DRAFT_MARKER) || section.blocks.length === 0) continue;
 
-        auto.push(section.heading);
-        blocks.push({ type: DEFAULT_TYPE, heading: section.heading, content: section.blocks });
+        auto.push(name);
+        blocks.push({
+            type: DEFAULT_TYPE,
+            // A marked heading is not printed even here, where no layout has
+            // said anything about it. The marker means "this is a label", and
+            // a default style is not a reason to publish one.
+            ...(isLabel(section.heading) ? {} : { heading: name }),
+            content: section.blocks,
+        });
     }
 
     // Anything the document never reached — a trailing floating block, or a
@@ -306,5 +367,33 @@ export function looksLikeHeadings(parsed) {
             found.push(text);
         });
     }
+    return found;
+}
+
+/**
+ * Copyright lines whose year has already been overtaken.
+ *
+ * A year typed into the document is a fact with an expiry date and nobody
+ * whose job it is to notice: the footer read "© 2025" in August 2026, because
+ * it was typed once and never looked at again. Writing `{year}` instead is
+ * right every year, and this is what tells an officer that.
+ *
+ * Reported, never corrected. Silently publishing a year the document does not
+ * say would leave an editor looking at two different answers with no way to
+ * tell which one the website believes.
+ */
+export function staleYears(blocks, thisYear) {
+    const found = [];
+    const walk = (value) => {
+        if (typeof value === 'string') {
+            const match = /©\s*(\d{4})/.exec(value);
+            if (match && match[1] !== String(thisYear)) found.push(match[0]);
+        } else if (Array.isArray(value)) {
+            value.forEach(walk);
+        } else if (value && typeof value === 'object') {
+            Object.values(value).forEach(walk);
+        }
+    };
+    walk(blocks);
     return found;
 }

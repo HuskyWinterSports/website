@@ -87,6 +87,67 @@
           ]
         }
       ]
+    },
+    {
+      "slider": {
+        "slides": [
+          {
+            "alt": "Peace signs",
+            "caption": null,
+            "ratio": 1.5,
+            "shape": "landscape",
+            "width": 6000,
+            "height": 4000,
+            "src": "/images/photos/diversity-and-inclusion/peace-signs-2240.avif",
+            "srcset": "/images/photos/diversity-and-inclusion/peace-signs-640.avif 640w, /images/photos/diversity-and-inclusion/peace-signs-1280.avif 1280w, /images/photos/diversity-and-inclusion/peace-signs-2240.avif 2240w",
+            "wash": "/images/photos/diversity-and-inclusion/peace-signs-640.avif"
+          },
+          {
+            "alt": "STS 1",
+            "caption": null,
+            "ratio": 1.511,
+            "shape": "landscape",
+            "width": 1206,
+            "height": 798,
+            "src": "/images/photos/diversity-and-inclusion/sts-1-1206.avif",
+            "srcset": "/images/photos/diversity-and-inclusion/sts-1-640.avif 640w, /images/photos/diversity-and-inclusion/sts-1-1206.avif 1206w",
+            "wash": "/images/photos/diversity-and-inclusion/sts-1-640.avif"
+          },
+          {
+            "alt": "STS 2",
+            "caption": null,
+            "ratio": 1.529,
+            "shape": "landscape",
+            "width": 1206,
+            "height": 789,
+            "src": "/images/photos/diversity-and-inclusion/sts-2-1206.avif",
+            "srcset": "/images/photos/diversity-and-inclusion/sts-2-640.avif 640w, /images/photos/diversity-and-inclusion/sts-2-1206.avif 1206w",
+            "wash": "/images/photos/diversity-and-inclusion/sts-2-640.avif"
+          },
+          {
+            "alt": "STS 3",
+            "caption": null,
+            "ratio": 1.5,
+            "shape": "landscape",
+            "width": 6000,
+            "height": 4000,
+            "src": "/images/photos/diversity-and-inclusion/sts-3-2240.avif",
+            "srcset": "/images/photos/diversity-and-inclusion/sts-3-640.avif 640w, /images/photos/diversity-and-inclusion/sts-3-1280.avif 1280w, /images/photos/diversity-and-inclusion/sts-3-2240.avif 2240w",
+            "wash": "/images/photos/diversity-and-inclusion/sts-3-640.avif"
+          },
+          {
+            "alt": "STS 4",
+            "caption": null,
+            "ratio": 1.5,
+            "shape": "landscape",
+            "width": 6000,
+            "height": 4000,
+            "src": "/images/photos/diversity-and-inclusion/sts-4-2240.avif",
+            "srcset": "/images/photos/diversity-and-inclusion/sts-4-640.avif 640w, /images/photos/diversity-and-inclusion/sts-4-1280.avif 1280w, /images/photos/diversity-and-inclusion/sts-4-2240.avif 2240w",
+            "wash": "/images/photos/diversity-and-inclusion/sts-4-640.avif"
+          }
+        ]
+      }
     }
   ]
 }

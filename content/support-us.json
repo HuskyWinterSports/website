@@ -42,6 +42,22 @@
           ]
         }
       ]
+    },
+    {
+      "type": "white-stripe centered-text",
+      "figures": [
+        {
+          "alt": "Heart hands",
+          "caption": null,
+          "ratio": 0.75,
+          "shape": "portrait",
+          "width": 4284,
+          "height": 5712,
+          "src": "/images/photos/support-us/heart-hands-2240.avif",
+          "srcset": "/images/photos/support-us/heart-hands-640.avif 640w, /images/photos/support-us/heart-hands-1280.avif 1280w, /images/photos/support-us/heart-hands-2240.avif 2240w",
+          "wash": "/images/photos/support-us/heart-hands-640.avif"
+        }
+      ]
     }
   ]
 }

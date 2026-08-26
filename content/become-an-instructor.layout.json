@@ -12,13 +12,25 @@
       "showTitle": true,
       "section": "How can I ski for free?"
     },
-    { "type": "big-purple-box", "section": "I’m a student, how do I join?" },
+    {
+      "_note": "Straight after the answer to \"how can I ski for free?\". The photos in the \"become an instructor\" Drive folder show exactly what that sentence describes — a weekend on the mountain — so they belong next to it, not at the foot of the page.",
+      "photos": {
+        "use": "carousel"
+      }
+    },
+    {
+      "type": "big-purple-box",
+      "section": "I’m a student, how do I join?"
+    },
     {
       "_note": "The sentence ends 'eligible to learn here:' and pointed at a stripped note. The button is the destination it names.",
       "type": "big-white-box",
       "section": "I’m a student, how do I learn?",
       "buttons": [
-        { "label": "ZERO TO TRIPLE-60", "href": "/diversity-and-inclusion" }
+        {
+          "label": "ZERO TO TRIPLE-60",
+          "href": "/diversity-and-inclusion"
+        }
       ]
     },
     {

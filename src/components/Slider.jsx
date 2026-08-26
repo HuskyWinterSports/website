@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 /**
  * The photo carousel, used on the home page and for the history archive.
@@ -14,95 +14,138 @@ import { useState, useEffect } from 'react';
  * the version this replaced threw away 43% of every group photo, taking the
  * back row's heads and the year painted across the sky with it. Fitting means
  * nobody has to know the rules before uploading, which is the whole point.
+ *
+ * It moves sideways, as a scroll-snapping track rather than a crossfade. That
+ * is what makes it swipeable on a phone and two-finger scrollable on a
+ * trackpad without a line of code for either — the browser already knows how
+ * to scroll. The arrows and dots drive the same scroll, so there is one notion
+ * of where you are rather than two that can disagree.
  */
 
 /**
  * How wide the photo will actually be drawn, as a sizes expression.
  *
- * `loading="lazy"` is no help to a carousel — every slide is stacked inside
- * the viewport, just transparent, so the browser considers them all visible.
- * And a fitted photo is much narrower than the band that holds it: a 4:3 shot
- * in this band covers about 46% of a wide screen, so telling the browser
- * "100vw" makes it fetch a file more than twice the size it needs. This says
- * what will really be drawn: the band's height times the photo's own shape,
- * never more than the screen.
+ * `loading="lazy"` is not trusted here — measured at 1842 KB on the home page
+ * when every slide was allowed to load — and a fitted photo is much narrower
+ * than the band that holds it: a 4:3 shot covers about 46% of a wide screen,
+ * so telling the browser "100vw" makes it fetch a file more than twice the
+ * size it needs. This says what will really be drawn: the band's height times
+ * the photo's own shape, never more than the screen.
  *
  * Keep in step with `.image-slider { height }` in Home.css.
  */
 const sizesFor = (ratio) => `(max-width: 700px) 100vw, min(100vw, calc(min(620px, 46vw) * ${ratio}))`;
 
 export default function Slider({ slides, caption }) {
+    const track = useRef(null);
     const [index, setIndex] = useState(0);
 
-    // Which slides have had their images attached. Every slide is in the DOM
-    // from the start so the crossfade has something to fade to, but a slide
-    // nobody has looked at yet costs nothing to download.
+    // Which slides have had their images attached. Every slide is in the track
+    // from the start so the scroll has somewhere to go, but a slide nobody has
+    // reached yet costs nothing to download.
     const [loaded, setLoaded] = useState(() => new Set([0]));
 
-    const step = (by) => setIndex((i) => (i + by + slides.length) % slides.length);
-    const current = slides[index];
+    const goTo = useCallback((next) => {
+        const el = track.current;
+        if (!el) return;
+        // Clamped, not wrapped. On a crossfade, going from the last photo to
+        // the first was a fade like any other; on a track it is a sweep past
+        // every photo in between, which reads as the page running away from
+        // you. The arrows stop at the ends and say so instead.
+        const to = Math.max(0, Math.min(next, slides.length - 1));
+        // scrollTo with no `behavior` uses the CSS `scroll-behavior`, which is
+        // set to `auto` under prefers-reduced-motion. Passing 'smooth' here
+        // would override that and animate for people who asked it not to.
+        el.scrollTo({ left: to * el.clientWidth });
+    }, [slides.length]);
+
+    // The scroll position is the source of truth: a swipe, a trackpad, the
+    // arrows and the dots all move the same thing, so nothing can disagree
+    // about which photo is showing.
+    const onScroll = () => {
+        const el = track.current;
+        if (!el || !el.clientWidth) return;
+        const at = Math.round(el.scrollLeft / el.clientWidth);
+        setIndex((was) => (at === was ? was : Math.min(at, slides.length - 1)));
+    };
 
     useEffect(() => {
-        // The one on screen, and the two either side of it so that pressing an
-        // arrow is instant. Queued behind the first paint rather than racing
-        // it: the visible photo is what the visitor is waiting for.
+        // The one on screen, and the two either side of it: on a sideways
+        // track a neighbour is partly visible the moment a swipe begins.
         const near = [index, index + 1, index - 1]
             .map((i) => (i + slides.length) % slides.length);
-        const attach = () => setLoaded((was) => {
-            if (near.every((i) => was.has(i))) return was;
-            return new Set([...was, ...near]);
-        });
-        const id = requestAnimationFrame(() => setTimeout(attach, 0));
+        const id = requestAnimationFrame(() => setLoaded((was) => (
+            near.every((i) => was.has(i)) ? was : new Set([...was, ...near])
+        )));
         return () => cancelAnimationFrame(id);
     }, [index, slides.length]);
 
     return (
         <figure className="image-slider-figure">
-            <div
-                className="image-slider"
-                onKeyDown={(event) => {
-                    if (event.key === 'ArrowLeft') { step(-1); event.preventDefault(); }
-                    if (event.key === 'ArrowRight') { step(1); event.preventDefault(); }
-                }}
-            >
-                {slides.map((slide, i) => (
-                    <div
-                        key={slide.src}
-                        className={`slide ${i === index ? 'active' : ''}`}
-                        aria-hidden={i === index ? 'false' : 'true'}
-                    >
-                        {loaded.has(i) && (
-                            <>
-                                {/* Decorative: the same photo, out of focus,
-                                    filling the band either side of it. Always
-                                    the smallest file. */}
-                                <img className="slide-wash" src={slide.wash} alt="" aria-hidden="true" />
-                                <img
-                                    className="slide-photo"
-                                    style={{ maxWidth: `min(100%, ${slide.width}px)` }}
-                                    src={slide.src}
-                                    srcSet={slide.srcset}
-                                    sizes={sizesFor(slide.ratio)}
-                                    alt={slide.alt}
-                                    fetchPriority={i === 0 ? 'high' : 'auto'}
-                                    decoding="async"
-                                />
-                            </>
-                        )}
-                    </div>
-                ))}
+            <div className="image-slider">
+                <div
+                    className="slide-track"
+                    ref={track}
+                    onScroll={onScroll}
+                    tabIndex={0}
+                    role="group"
+                    aria-roledescription="carousel"
+                    aria-label={caption ?? 'Photos'}
+                    onKeyDown={(event) => {
+                        // Handled rather than left to the browser: native
+                        // arrow-key scrolling moves by a fixed step and can
+                        // leave the track between two photos.
+                        if (event.key === 'ArrowLeft') { goTo(index - 1); event.preventDefault(); }
+                        if (event.key === 'ArrowRight') { goTo(index + 1); event.preventDefault(); }
+                    }}
+                >
+                    {slides.map((slide, i) => (
+                        <div
+                            key={slide.src}
+                            className="slide"
+                            role="group"
+                            aria-roledescription="slide"
+                            aria-label={`${i + 1} of ${slides.length}`}
+                        >
+                            {loaded.has(i) && (
+                                <>
+                                    {/* Decorative: the same photo, out of
+                                        focus, filling the band either side of
+                                        it. Always the smallest file. */}
+                                    <img className="slide-wash" src={slide.wash} alt="" aria-hidden="true" />
+                                    <img
+                                        className="slide-photo"
+                                        style={{ maxWidth: `min(100%, ${slide.width}px)` }}
+                                        src={slide.src}
+                                        srcSet={slide.srcset}
+                                        sizes={sizesFor(slide.ratio)}
+                                        alt={slide.alt}
+                                        fetchPriority={i === 0 ? 'high' : 'auto'}
+                                        decoding="async"
+                                    />
+                                </>
+                            )}
+                        </div>
+                    ))}
+                </div>
 
                 {slides.length > 1 && (
                     <>
-                        <button className="left-arrow" aria-label="Previous photo" onClick={() => step(-1)}>
-                            &#10094;
-                        </button>
-                        <button className="right-arrow" aria-label="Next photo" onClick={() => step(1)}>
-                            &#10095;
-                        </button>
+                        <button
+                            className="left-arrow"
+                            aria-label="Previous photo"
+                            disabled={index === 0}
+                            onClick={() => goTo(index - 1)}
+                        >&#10094;</button>
+                        <button
+                            className="right-arrow"
+                            aria-label="Next photo"
+                            disabled={index === slides.length - 1}
+                            onClick={() => goTo(index + 1)}
+                        >&#10095;</button>
 
-                        {/* Six years of group photos need a sense of how many
-                            there are and where you are; three did not. */}
+                        {/* Seven years of group photos need a sense of how
+                            many there are and where you are; three did not. */}
                         <div className="slide-dots">
                             {slides.map((slide, i) => (
                                 <button
@@ -110,7 +153,7 @@ export default function Slider({ slides, caption }) {
                                     className={`slide-dot ${i === index ? 'current' : ''}`}
                                     aria-label={`Photo ${i + 1} of ${slides.length}`}
                                     aria-current={i === index ? 'true' : 'false'}
-                                    onClick={() => setIndex(i)}
+                                    onClick={() => goTo(i)}
                                 />
                             ))}
                         </div>
@@ -128,8 +171,8 @@ export default function Slider({ slides, caption }) {
                 club's history photos have no year visible anywhere in the
                 image, so the name of the file is the only thing that dates
                 them. */}
-            {current?.caption && (
-                <figcaption className="slide-year" aria-live="polite">{current.caption}</figcaption>
+            {slides[index]?.caption && (
+                <figcaption className="slide-year" aria-live="polite">{slides[index].caption}</figcaption>
             )}
         </figure>
     );

@@ -76,18 +76,37 @@
     }
 }
 
-/* individual layered slides for crossfade */
-.image-slider .slide {
-    position: absolute;
-    inset: 0; /* top:0; right:0; bottom:0; left:0; */
-    opacity: 0;
-    transition: opacity 800ms ease-in-out;
-    will-change: opacity;
+/* A scroll-snapping track. The browser already knows how to swipe, throw and
+   two-finger scroll; this asks it to stop on whole photos while it does. */
+.image-slider .slide-track {
+    display: flex;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    /* The track is scrolled by swiping, by the arrows and by the dots, so the
+       bar itself would be one more thing sitting over the photograph. */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overscroll-behavior-x: contain;
 }
 
-.image-slider .slide.active {
-    opacity: 1;
-    z-index: 1;
+.image-slider .slide-track::-webkit-scrollbar {
+    display: none;
+}
+
+.image-slider .slide-track:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: -3px;
+}
+
+.image-slider .slide {
+    position: relative;
+    flex: 0 0 100%;
+    height: 100%;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
 }
 
 /* The photo itself: whole, never cropped, whatever shape it arrived in. */
@@ -166,7 +185,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .image-slider .slide { transition: none; }
+    /* scrollTo() is called without an explicit behavior, so it follows this
+       rather than animating past somebody who asked it not to. */
+    .image-slider .slide-track { scroll-behavior: auto; }
 }
 
 
@@ -223,6 +244,19 @@
 .image-slider button:focus-visible {
     outline: 3px solid #fff;
     outline-offset: 2px;
+}
+
+/* At the ends. Shown rather than hidden, so the control does not move and the
+   visitor can see there is nothing further that way. */
+.image-slider .left-arrow:disabled,
+.image-slider .right-arrow:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+.image-slider .left-arrow:disabled:hover,
+.image-slider .right-arrow:disabled:hover {
+    background: rgba(80, 44, 132, 0.7);
 }
 
 .caption-text h2 {

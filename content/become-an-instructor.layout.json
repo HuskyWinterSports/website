@@ -7,20 +7,20 @@
   },
   "blocks": [
     {
-      "_note": "Rounded boxes alternating white and purple. The four sections are questions a student asks in order, so they read as a sequence.",
+      "_note": "Rounded boxes alternating white and purple. The four sections are questions a student asks in order, so they read as a sequence. Each carries one photo from the \"become an instructor\" Drive folder, in name order — inline with the words rather than gathered into a carousel, so a visitor sees all four without clicking anything. A fifth photo would join the last section rather than shuffling the others.",
       "type": "big-white-box",
       "showTitle": true,
-      "section": "How can I ski for free?"
-    },
-    {
-      "_note": "Straight after the answer to \"how can I ski for free?\". The photos in the \"become an instructor\" Drive folder show exactly what that sentence describes — a weekend on the mountain — so they belong next to it, not at the foot of the page.",
+      "section": "How can I ski for free?",
       "photos": {
-        "use": "carousel"
+        "use": "inline"
       }
     },
     {
       "type": "big-purple-box",
-      "section": "I’m a student, how do I join?"
+      "section": "I’m a student, how do I join?",
+      "photos": {
+        "use": "inline"
+      }
     },
     {
       "_note": "The sentence ends 'eligible to learn here:' and pointed at a stripped note. The button is the destination it names.",
@@ -31,12 +31,18 @@
           "label": "ZERO TO TRIPLE-60",
           "href": "/diversity-and-inclusion"
         }
-      ]
+      ],
+      "photos": {
+        "use": "inline"
+      }
     },
     {
       "_note": "The manuals are hyperlinked bullets in the document, pointing at PDFs in Drive. New versions are uploaded over the same file, so the links never change and this never needs editing. Purple completes the white/purple alternation the other three boxes run.",
       "type": "big-purple-box",
-      "section": "Check out how we teach!"
+      "section": "Check out how we teach!",
+      "photos": {
+        "use": "inline"
+      }
     }
   ]
 }

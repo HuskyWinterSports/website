@@ -8,19 +8,28 @@
   "blocks": [
     {
       "type": "big-white-box",
-      "showTitle": true
+      "showTitle": true,
+      "photos": {
+        "use": "inline"
+      }
     },
     {
       "type": "white-stripe qa",
-      "section": "Mission Statement"
+      "section": "Mission Statement",
+      "photos": {
+        "use": "inline"
+      }
     },
     {
       "_note": "The purple stripe between two white ones, so the three sections read as three rather than as one long page.",
       "type": "purple-stripe qa",
-      "section": "What is T60?"
+      "section": "What is T60?",
+      "photos": {
+        "use": "inline"
+      }
     },
     {
-      "_note": "The section ends 'Interested in supporting this program? Support us.' with no hyperlink in the document. The button is the destination it names.",
+      "_note": "Spread the Shred, and the \"diversity and inclusion\" Drive folder is the photographs of it. The folder holds one more photo than this page has places for, so this last section shows two — nothing is ever dropped.",
       "type": "white-stripe qa",
       "section": "Spread The Shred",
       "buttons": [
@@ -28,12 +37,9 @@
           "label": "SUPPORT US",
           "href": "/support-us"
         }
-      ]
-    },
-    {
-      "_note": "The \"diversity and inclusion\" Drive folder is the Spread the Shred photos, so they follow that section. Adding more to the folder extends the carousel.",
+      ],
       "photos": {
-        "use": "carousel"
+        "use": "inline"
       }
     }
   ]

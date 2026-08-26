@@ -6,6 +6,19 @@
       "type": "big-white-box",
       "showTitle": true,
       "section": "How can I ski for free?",
+      "figures": [
+        {
+          "alt": "Close up",
+          "caption": null,
+          "ratio": 1.333,
+          "shape": "landscape",
+          "width": 4032,
+          "height": 3024,
+          "src": "/images/photos/become-an-instructor/close-up-2240.avif",
+          "srcset": "/images/photos/become-an-instructor/close-up-640.avif 640w, /images/photos/become-an-instructor/close-up-1280.avif 1280w, /images/photos/become-an-instructor/close-up-2240.avif 2240w",
+          "wash": "/images/photos/become-an-instructor/close-up-640.avif"
+        }
+      ],
       "heading": "How can I ski for free?",
       "content": [
         {
@@ -33,58 +46,21 @@
       ]
     },
     {
-      "slider": {
-        "slides": [
-          {
-            "alt": "Close up",
-            "caption": null,
-            "ratio": 1.333,
-            "shape": "landscape",
-            "width": 4032,
-            "height": 3024,
-            "src": "/images/photos/become-an-instructor/close-up-2240.avif",
-            "srcset": "/images/photos/become-an-instructor/close-up-640.avif 640w, /images/photos/become-an-instructor/close-up-1280.avif 1280w, /images/photos/become-an-instructor/close-up-2240.avif 2240w",
-            "wash": "/images/photos/become-an-instructor/close-up-640.avif"
-          },
-          {
-            "alt": "Sitting in line",
-            "caption": null,
-            "ratio": 1.333,
-            "shape": "landscape",
-            "width": 5712,
-            "height": 4284,
-            "src": "/images/photos/become-an-instructor/sitting-in-line-2240.avif",
-            "srcset": "/images/photos/become-an-instructor/sitting-in-line-640.avif 640w, /images/photos/become-an-instructor/sitting-in-line-1280.avif 1280w, /images/photos/become-an-instructor/sitting-in-line-2240.avif 2240w",
-            "wash": "/images/photos/become-an-instructor/sitting-in-line-640.avif"
-          },
-          {
-            "alt": "Ullr basement",
-            "caption": null,
-            "ratio": 1.333,
-            "shape": "landscape",
-            "width": 4032,
-            "height": 3024,
-            "src": "/images/photos/become-an-instructor/ullr-basement-2240.avif",
-            "srcset": "/images/photos/become-an-instructor/ullr-basement-640.avif 640w, /images/photos/become-an-instructor/ullr-basement-1280.avif 1280w, /images/photos/become-an-instructor/ullr-basement-2240.avif 2240w",
-            "wash": "/images/photos/become-an-instructor/ullr-basement-640.avif"
-          },
-          {
-            "alt": "Ussie",
-            "caption": null,
-            "ratio": 0.75,
-            "shape": "portrait",
-            "width": 2316,
-            "height": 3088,
-            "src": "/images/photos/become-an-instructor/ussie-2240.avif",
-            "srcset": "/images/photos/become-an-instructor/ussie-640.avif 640w, /images/photos/become-an-instructor/ussie-1280.avif 1280w, /images/photos/become-an-instructor/ussie-2240.avif 2240w",
-            "wash": "/images/photos/become-an-instructor/ussie-640.avif"
-          }
-        ]
-      }
-    },
-    {
       "type": "big-purple-box",
       "section": "I’m a student, how do I join?",
+      "figures": [
+        {
+          "alt": "Sitting in line",
+          "caption": null,
+          "ratio": 1.333,
+          "shape": "landscape",
+          "width": 5712,
+          "height": 4284,
+          "src": "/images/photos/become-an-instructor/sitting-in-line-2240.avif",
+          "srcset": "/images/photos/become-an-instructor/sitting-in-line-640.avif 640w, /images/photos/become-an-instructor/sitting-in-line-1280.avif 1280w, /images/photos/become-an-instructor/sitting-in-line-2240.avif 2240w",
+          "wash": "/images/photos/become-an-instructor/sitting-in-line-640.avif"
+        }
+      ],
       "heading": "I’m a student, how do I join?",
       "content": [
         {
@@ -226,6 +202,19 @@
           "href": "/diversity-and-inclusion"
         }
       ],
+      "figures": [
+        {
+          "alt": "Ullr basement",
+          "caption": null,
+          "ratio": 1.333,
+          "shape": "landscape",
+          "width": 4032,
+          "height": 3024,
+          "src": "/images/photos/become-an-instructor/ullr-basement-2240.avif",
+          "srcset": "/images/photos/become-an-instructor/ullr-basement-640.avif 640w, /images/photos/become-an-instructor/ullr-basement-1280.avif 1280w, /images/photos/become-an-instructor/ullr-basement-2240.avif 2240w",
+          "wash": "/images/photos/become-an-instructor/ullr-basement-640.avif"
+        }
+      ],
       "heading": "I’m a student, how do I learn?",
       "content": [
         {
@@ -244,6 +233,19 @@
     {
       "type": "big-purple-box",
       "section": "Check out how we teach!",
+      "figures": [
+        {
+          "alt": "Ussie",
+          "caption": null,
+          "ratio": 0.75,
+          "shape": "portrait",
+          "width": 2316,
+          "height": 3088,
+          "src": "/images/photos/become-an-instructor/ussie-2240.avif",
+          "srcset": "/images/photos/become-an-instructor/ussie-640.avif 640w, /images/photos/become-an-instructor/ussie-1280.avif 1280w, /images/photos/become-an-instructor/ussie-2240.avif 2240w",
+          "wash": "/images/photos/become-an-instructor/ussie-640.avif"
+        }
+      ],
       "heading": "Check out how we teach!",
       "content": [
         {

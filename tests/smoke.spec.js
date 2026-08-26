@@ -18,6 +18,29 @@ const ROUTES = [
     '/contact-us',
 ];
 
+/**
+ * Scroll the page end to end and wait for every image to finish.
+ *
+ * WebKit starts a lazy image much later than Chromium does — at an iPhone
+ * viewport, three of the four inline photographs on /become-an-instructor had
+ * not begun loading when the page fired `load`, and read as broken.
+ */
+async function settleImages(page) {
+    await page.evaluate(async () => {
+        const step = window.innerHeight;
+        for (let y = 0; y < document.body.scrollHeight; y += step) {
+            window.scrollTo(0, y);
+            await new Promise((resolve) => setTimeout(resolve, 120));
+        }
+        window.scrollTo(0, 0);
+    });
+    // Swallowed on timeout: a genuinely broken image never completes, and the
+    // assertion below names it far better than a wait failure would.
+    await page
+        .waitForFunction(() => Array.from(document.images).every((img) => img.complete), null, { timeout: 15_000 })
+        .catch(() => {});
+}
+
 for (const route of ROUTES) {
     test(`${route} renders without errors`, async ({ page }) => {
         const consoleErrors = [];
@@ -52,6 +75,12 @@ for (const route of ROUTES) {
         await expect(page.locator('main h1')).toBeVisible();
         await expect(page.locator('nav.navbar')).toBeVisible();
         await expect(page.locator('footer')).toBeVisible();
+
+        // Lazy images below the fold have not been asked for yet, and one that
+        // has not been asked for is not a broken one. Scroll the whole page
+        // first so every image is requested — which also means this still
+        // checks the inline photographs, rather than excusing them.
+        await settleImages(page);
 
         // Check images DECODED rather than trusting status codes. `vite
         // preview` falls back to index.html for unknown paths, so a broken

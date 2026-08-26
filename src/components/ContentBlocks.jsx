@@ -177,7 +177,7 @@ function Figures({ figures }) {
         <div className={`figures figures-${Math.min(figures.length, 3)}`}>
             {figures.map((figure) => (
                 <a
-                    className="figure"
+                    className={`figure figure-${figure.shape}`}
                     key={figure.src}
                     href={figure.src}
                     target="_blank"
@@ -202,15 +202,6 @@ function Section({ block, title }) {
     // The carousel is the one block that is purely layout: no words at all.
     if (block.slider) {
         return <Slider slides={block.slider.slides} caption={block.slider.caption} />;
-    }
-
-    if (block.figures && !block.section && !block.lead) {
-        return (
-            <section className={block.type}>
-                {block.heading && <h2>{block.heading}</h2>}
-                <Figures figures={block.figures} />
-            </section>
-        );
     }
 
     // The home banner styles its lines rather than stacking paragraphs, so it
@@ -281,9 +272,12 @@ function Section({ block, title }) {
                 >Loading…</iframe>
             )}
 
-            {block.figures && <Figures figures={block.figures} />}
-
             {block.buttons && <Buttons buttons={block.buttons} />}
+
+            {/* After the buttons, not before. "See if you're eligible to learn
+                here:" points straight at one, and a photograph in between
+                breaks the sentence off from what it names. */}
+            {block.figures && <Figures figures={block.figures} />}
 
             {block.form && <EmbeddedForm form={block.form} />}
         </section>

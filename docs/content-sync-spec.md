@@ -363,10 +363,17 @@ officers draft in this document. So:
 |---|---|
 | A Heading 2 starting `--` | the section and everything under it is skipped |
 | `"hidden": true` in the layout | the section is held back by a developer |
+| `"hiddenUntil": "list"` in the layout | the section is held back until the document supplies a list |
 
-The first is the officer saying "not ready"; the second is the repo saying so —
-`Check out how we teach!` is held that way until its training-manual links
-arrive.
+The first is the officer saying "not ready", the second the repo saying so.
+
+The third needs neither. `Check out how we teach!` is one sentence ending in a
+colon until its training-manual bullets are pasted in — and becomes one again
+for as long as an edit leaves the list empty, which will happen every time a
+new manual version is published. Gating on what the document actually contains
+means the section turns itself on and off without a developer at either edge.
+`hidden`, `hiddenUntil` and `_note` are all instructions to the sync rather than
+parts of the block, so none of them is written into `content/<page>.json`.
 
 **A renamed heading is no longer fatal.** The content is not lost — it renders
 under its new heading in the default style — so a rename is a warning. It stays

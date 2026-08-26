@@ -6,7 +6,7 @@ import { parseSheet } from './parse-sheet.js';
 import { joinSections, looksLikeHeadings, selectTab, ContentError } from './join-sections.js';
 import { sheetBlock, fillLayoutTokens, applyStatus, derive, fillContentTokens } from './apply-sheet.js';
 import { seasonEndYear, endsOnSecondSaturdayOfMarch } from './lesson-dates.js';
-import { photoBlock } from './apply-photos.js';
+import { photoBlock, assignInline } from './apply-photos.js';
 
 /**
  * Fetches published Google content, validates it against the repo's layout
@@ -160,9 +160,18 @@ async function syncLayout(layoutPath, photos) {
     // Photo blocks carry no words, so they are resolved whether or not the
     // page has a sheet — unlike the sheet-driven blocks above.
     const emptyPhotos = [];
+
+    // Sections that asked for a picture of their own are filled first, as a
+    // page-level pass: how many photos each gets depends on how many sections
+    // asked, which no single block can know.
+    const inline = assignInline(resolved.blocks, photos[layoutName], layoutName);
+    if (inline.slots && (photos[layoutName]?.length ?? 0) > inline.slots) {
+        emptyPhotos.push(`spare:${(photos[layoutName].length - inline.slots)}`);
+    }
+
     resolved = {
         ...resolved,
-        blocks: resolved.blocks.map((entry) => {
+        blocks: inline.blocks.map((entry) => {
             if (!entry.photos) return entry;
             const block = photoBlock(entry, photos[layoutName], layoutName);
             if (block.empty) emptyPhotos.push(block.empty);
@@ -268,6 +277,17 @@ async function main() {
         // was never read.
         for (const request of result.emptyPhotos) {
             const [use, only] = request.split(':');
+            if (use === 'spare') {
+                // Nothing is dropped, but say where the extras went — a photo
+                // silently doubling up is worth one line.
+                console.log(
+                    `NOTE: the ${result.layoutName} Drive folder has ${only} more ` +
+                    `photo(s) than the page has places for, so the last section ` +
+                    `shows more than one. Ask a developer for another slot if ` +
+                    `they should be spread out.`
+                );
+                continue;
+            }
             console.log(
                 `NOTE: the ${result.layoutName} page has a ${use} of photos, but ` +
                 `its Drive folder has no ${only === 'all' ? '' : only + ' '}` +

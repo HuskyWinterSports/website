@@ -461,6 +461,13 @@ ul {
   max-width: 520px;
 }
 
+/* A portrait at the same width as a landscape is half again as tall and takes
+   over the section it sits in. Narrower, so the two weigh about the same. */
+.figures .figure-portrait {
+  flex-basis: 300px;
+  max-width: 340px;
+}
+
 .figures img {
   display: block;
   width: 100%;

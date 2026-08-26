@@ -23,7 +23,7 @@ const FILTERS = {
     undated: (photo) => !photo.year,
 };
 
-const USES = ['carousel', 'figures'];
+const USES = ['carousel', 'figures', 'inline'];
 
 export function photoBlock(entry, photos, layoutName) {
     const { use = 'carousel', only = 'all', alt } = entry.photos;
@@ -43,8 +43,8 @@ export function photoBlock(entry, photos, layoutName) {
         );
     }
 
-    const chosen = (photos ?? []).filter(FILTERS[only]);
-    const { photos: _request, ...rest } = entry;
+    const chosen = entry._chosen ?? (photos ?? []).filter(FILTERS[only]);
+    const { photos: _request, _chosen: _picked, ...rest } = entry;
 
     // No photos is not a failure. An officer emptying a folder, or filling it
     // with files the site cannot read, must not be able to take the site down
@@ -77,4 +77,44 @@ export function photoBlock(entry, photos, layoutName) {
     return use === 'carousel'
         ? { ...rest, slider: { slides } }
         : { ...rest, figures: slides };
+}
+
+/**
+ * Hands a page's photos to the sections that asked for one.
+ *
+ * `{ "photos": { "use": "inline" } }` on a section means "put a picture here".
+ * Slots are filled one photo each in name order, and anything left over goes
+ * to the last slot — so adding a photo to the Drive folder changes ONE place
+ * on the page. Sharing them out evenly instead would move every picture on the
+ * page to a different paragraph the moment somebody uploaded a fifth, which is
+ * the same objection that keeps the auto-styled sections from alternating
+ * colours: one upload should not repaint the page.
+ *
+ * Nothing is ever dropped. If there are more photos than slots the last
+ * section shows several; if there are fewer, the empty slots simply have no
+ * picture.
+ */
+export function assignInline(blocks, photos, layoutName) {
+    const slots = blocks.filter((b) => b.photos?.use === 'inline');
+    if (slots.length === 0) return { blocks, slots: 0, placed: 0 };
+
+    const pool = photos ?? [];
+    const share = new Map(slots.map((slot, i) => [
+        slot,
+        i === slots.length - 1 ? pool.slice(i) : pool.slice(i, i + 1),
+    ]));
+
+    return {
+        blocks: blocks.map((block) => {
+            if (!share.has(block)) return block;
+            const mine = share.get(block);
+            if (mine.length === 0) {
+                const { photos: _drop, ...rest } = block;
+                return rest;
+            }
+            return photoBlock({ ...block, _chosen: mine }, pool, layoutName);
+        }),
+        slots: slots.length,
+        placed: Math.min(pool.length, Infinity),
+    };
 }

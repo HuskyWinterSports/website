@@ -141,7 +141,11 @@ export function joinSections(layout, parsed, layoutName) {
 
     /** Turn one layout entry into a page block, or null if it renders nothing. */
     const resolve = (raw) => {
-        const entry = withoutNotes(raw);
+        // Taken off here rather than where it is used, so it cannot ship to a
+        // visitor on one of the branches that returns earlier. It is a note to
+        // the renderer about a heading, and every branch either has no heading
+        // or draws one unconditionally.
+        const { showHeading, ...entry } = withoutNotes(raw);
 
         // Sheet-driven blocks were resolved before this ran and carry their
         // own content; they never look anything up in the document.
@@ -239,7 +243,6 @@ export function joinSections(layout, parsed, layoutName) {
         // what settles it; the document's marker only says so out loud. When
         // the two disagree the document is the one that misleads a reader, so
         // that is what the warning asks to change.
-        const { showHeading, ...rest } = entry;
         const key = sectionKey(match.heading);
         if (showHeading === false && !isLabel(match.heading)) {
             warnings.push(
@@ -259,7 +262,7 @@ export function joinSections(layout, parsed, layoutName) {
         }
 
         return {
-            ...rest,
+            ...entry,
             ...(showHeading === false ? {} : { heading: key }),
             content: match.blocks,
         };

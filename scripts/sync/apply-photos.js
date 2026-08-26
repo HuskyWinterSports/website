@@ -26,7 +26,7 @@ const FILTERS = {
 const USES = ['carousel', 'figures'];
 
 export function photoBlock(entry, photos, layoutName) {
-    const { use = 'carousel', only = 'all' } = entry.photos;
+    const { use = 'carousel', only = 'all', alt } = entry.photos;
 
     if (!USES.includes(use)) {
         throw new ContentError(
@@ -52,7 +52,12 @@ export function photoBlock(entry, photos, layoutName) {
     if (chosen.length === 0) return { ...rest, empty: `${use}:${only}` };
 
     const slides = chosen.map((photo) => ({
-        alt: photo.alt,
+        // The file name is the alt text by default, because that puts it in
+        // the hands of whoever uploads the photo. `alt` in the layout
+        // overrides it for a group of pictures whose file names are only
+        // handles — two scans of newsprint called "newspaper 1" and
+        // "newspaper 2" describe nothing to somebody who cannot see them.
+        alt: alt ?? photo.alt,
         caption: photo.year ?? null,
         ratio: photo.ratio,
         shape: photo.shape,

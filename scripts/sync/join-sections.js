@@ -58,19 +58,14 @@ export function selectTab(parsed, tabName, layoutName) {
 }
 
 /**
- * Keys that instruct the sync rather than describe the block: the `_note`
- * explanations layout files carry, and the two gates below.
+ * Drops the `_note` / `_pending` explanations layout files carry.
  *
  * They are for whoever reads the layout, and content/<page>.json is bundled
  * into the JavaScript — so without this every visitor downloads prose about
  * CSS specificity along with the page they came for.
  */
-const GATE_KEYS = ['hidden', 'hiddenUntil'];
-
 const withoutNotes = (entry) =>
-    Object.fromEntries(Object.entries(entry).filter(
-        ([key]) => !key.startsWith('_') && !GATE_KEYS.includes(key)
-    ));
+    Object.fromEntries(Object.entries(entry).filter(([key]) => !key.startsWith('_')));
 
 /** Block keys holding something the document cannot supply. */
 const PAYLOAD_KEYS = ['map', 'form', 'buttons', 'slider', 'sheet', 'status', 'cards', 'boxes'];
@@ -83,8 +78,6 @@ const DEFAULT_TYPE = 'white-stripe qa';
 
 export function joinSections(layout, parsed, layoutName) {
     const warnings = [];
-    const held = [];
-    const waiting = [];
     const bySection = new Map(
         parsed.sections.filter((s) => s.heading).map((s) => [s.heading.trim(), s])
     );
@@ -180,13 +173,6 @@ export function joinSections(layout, parsed, layoutName) {
         // exist in the document.
         if (!entry.section) return { ...entry };
 
-        // Held back on purpose — a section whose content is not ready to
-        // publish. Without this, auto-sectioning would put it on the site.
-        if (raw.hidden) {
-            held.push(entry.section);
-            return null;
-        }
-
         const match = bySection.get(entry.section.trim());
         if (!match || match.blocks.length === 0) {
             // The heading was renamed or deleted. Under the old whitelist this
@@ -206,18 +192,6 @@ export function joinSections(layout, parsed, layoutName) {
                   `page but in the default style. Rename the heading back, or ask a ` +
                   `developer to update content/${layoutName}.layout.json`
             );
-            return null;
-        }
-
-        // Held back until the document itself supplies what the section is
-        // for. "Check out how we teach!" is one sentence ending in a colon
-        // until its training-manual bullets are pasted in — and becomes one
-        // again while an officer is replacing them with a new version. A
-        // sentence pointing at nothing is worse than no section at all, and
-        // this needs no developer at either edge: the section appears the
-        // moment the list does.
-        if (raw.hiddenUntil && !match.blocks.some((b) => b.type === raw.hiddenUntil)) {
-            waiting.push({ section: entry.section, needs: raw.hiddenUntil });
             return null;
         }
 
@@ -304,7 +278,7 @@ export function joinSections(layout, parsed, layoutName) {
     // layout entry naming a heading that is gone.
     for (const raw of layout.blocks) emitEntry(raw);
 
-    return { blocks, auto, held, waiting, warnings };
+    return { blocks, auto, warnings };
 }
 
 /**

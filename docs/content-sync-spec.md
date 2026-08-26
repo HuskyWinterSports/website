@@ -359,21 +359,12 @@ a developer must not be able to take the site down" is still true — but that
 draft now *goes live* instead of being ignored. The `-- Planning` tab is proof
 officers draft in this document. So:
 
-| Marker | Effect |
-|---|---|
-| A Heading 2 starting `--` | the section and everything under it is skipped |
-| `"hidden": true` in the layout | the section is held back by a developer |
-| `"hiddenUntil": "list"` in the layout | the section is held back until the document supplies a list |
-
-The first is the officer saying "not ready", the second the repo saying so.
-
-The third needs neither. `Check out how we teach!` is one sentence ending in a
-colon until its training-manual bullets are pasted in — and becomes one again
-for as long as an edit leaves the list empty, which will happen every time a
-new manual version is published. Gating on what the document actually contains
-means the section turns itself on and off without a developer at either edge.
-`hidden`, `hiddenUntil` and `_note` are all instructions to the sync rather than
-parts of the block, so none of them is written into `content/<page>.json`.
+**A Heading 2 starting `--` is skipped**, along with everything under it. That
+is the officer saying "not ready", and it is the only way to hold a section
+back. There is deliberately no repo-side switch: a section the repo hides is a
+section an officer cannot unhide, which is the dependency this system exists to
+remove. Training manuals are hyperlinked bullets pointing at Drive PDFs, and a
+new version is uploaded over the same file, so the links never go stale.
 
 **A renamed heading is no longer fatal.** The content is not lost — it renders
 under its new heading in the default style — so a rename is a warning. It stays

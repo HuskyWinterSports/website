@@ -393,6 +393,50 @@ describe('sections follow the document', () => {
         assert.deepEqual(held, ['Not ready']);
     });
 
+    test('a section held back until the document supplies a list stays off', () => {
+        // "Check out how we teach!" is one sentence ending in a colon until
+        // the training manual bullets are pasted in.
+        const { blocks, waiting } = joinSections(
+            layout([{ section: 'Not ready', hiddenUntil: 'list' }]),
+            doc('Real', 'Not ready'), 'x'
+        );
+        assert.deepEqual(headings(blocks), ['Real']);
+        assert.deepEqual(waiting, [{ section: 'Not ready', needs: 'list' }]);
+    });
+
+    test('a held-back section does not fall through to auto-sectioning', () => {
+        // The gate works because the layout still CLAIMS the heading, so the
+        // document walk skips it. If that claim were ever lost the section
+        // would quietly publish — which is the thing being prevented.
+        const { blocks, auto } = joinSections(
+            layout([{ section: 'Not ready', hiddenUntil: 'list' }]),
+            doc('Not ready'), 'x'
+        );
+        assert.deepEqual(blocks, []);
+        assert.deepEqual(auto, []);
+    });
+
+    test('the list appearing in the document turns the section on by itself', () => {
+        // No developer at the moment an officer pastes the links in.
+        const withList = {
+            heading: 'Not ready',
+            blocks: [
+                paragraph('Learn how we teach through our training manuals:'),
+                { type: 'list', ordered: false, items: [[{ text: 'Level 1', href: 'https://drive.google.com/x' }]] },
+            ],
+        };
+        const { blocks, waiting } = joinSections(
+            layout([{ type: 'big-purple-box', section: 'Not ready', hiddenUntil: 'list' }]),
+            doc(withList), 'x'
+        );
+        assert.deepEqual(headings(blocks), ['Not ready']);
+        assert.deepEqual(waiting, []);
+        // The gate is an instruction to the sync, not part of the page: it
+        // must not ship in the JSON every visitor downloads.
+        assert.ok(!('hiddenUntil' in blocks[0]));
+        assert.equal(blocks[0].type, 'big-purple-box');
+    });
+
     test('an empty section is skipped rather than rendered as a blank panel', () => {
         const { blocks } = joinSections(
             layout([]), doc('Real', { heading: 'Nothing here', blocks: [] }), 'x'

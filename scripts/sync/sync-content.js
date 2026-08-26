@@ -21,6 +21,9 @@ import { seasonEndYear, endsOnSecondSaturdayOfMarch } from './lesson-dates.js';
  *     commit every hour.
  */
 
+/** How to describe what a held-back section is waiting for, in the log. */
+const WAITING_ON = { list: 'a bulleted list' };
+
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const CONTENT_DIR = join(ROOT, 'content');
 
@@ -143,7 +146,7 @@ async function syncLayout(layoutPath) {
         };
     }
 
-    const { blocks: joined, auto, held, warnings } = joinSections(resolved, parsed, layoutName);
+    const { blocks: joined, auto, held, waiting, warnings } = joinSections(resolved, parsed, layoutName);
 
     // The document's own prose can quote a value too, so the club never has to
     // maintain the same date in two places.
@@ -160,7 +163,7 @@ async function syncLayout(layoutPath) {
 
     const notes = parsed.notes ?? [];
     const unstyled = looksLikeHeadings(parsed);
-    const result = { layoutName, auto, held, warnings, tabs, sheetWarnings, notes, unstyled };
+    const result = { layoutName, auto, held, waiting, warnings, tabs, sheetWarnings, notes, unstyled };
 
     if (previous === serialised) return { ...result, changed: false };
 
@@ -234,6 +237,17 @@ async function main() {
             console.log(
                 `NOTE: "${heading}" is in the ${result.layoutName} document but is ` +
                 `deliberately held back and is not on the website.`
+            );
+        }
+
+        // Waiting on the document, not on a developer — so the message has to
+        // say what to type. An officer who reads "held back" goes looking for
+        // a CS major instead of pasting the links.
+        for (const { section, needs } of result.waiting) {
+            console.log(
+                `NOTE: "${section}" is in the ${result.layoutName} document but is ` +
+                `not on the website yet. It appears by itself as soon as that ` +
+                `section contains ${WAITING_ON[needs] ?? `a ${needs}`}.`
             );
         }
 

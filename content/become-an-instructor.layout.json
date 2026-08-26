@@ -22,9 +22,10 @@
       ]
     },
     {
-      "_note": "Held back until the training manual links arrive: the section's whole content is a sentence ending in a colon, because the note naming the manuals is stripped before publishing. Remove \"hidden\" and add the links to turn it back on.",
+      "_note": "The manuals are hyperlinked bullets in the document, so officers can swap in a new version without touching this repo. Until those bullets exist the section is one sentence ending in a colon, so it is held back — and held back again for as long as an edit leaves the list empty. No developer at either edge.",
+      "type": "big-purple-box",
       "section": "Check out how we teach!",
-      "hidden": true
+      "hiddenUntil": "list"
     }
   ]
 }

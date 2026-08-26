@@ -875,6 +875,83 @@ Note that the sync's own commits reset the inactivity clock, so an active
 season never approaches it — verified: the bot's content commit updated the
 repository's `pushed_at`. The exposure is exactly the quiet off-season.
 
+## 7A. Photos
+
+Officers drop photos into a Google Drive folder; the sync downloads, converts
+and commits them. **Drive is the inbox, this repository is the server** — no
+page ever points at `drive.google.com`, because those URLs are rate limited,
+uncacheable, and change shape without notice.
+
+### 7A.1 The transport needs no credential either
+
+Two undocumented but public Drive endpoints, in the same spirit as
+publish-to-web:
+
+| Endpoint | Gives |
+|---|---|
+| `drive.google.com/embeddedfolderview?id=…` | the folder's contents as plain HTML |
+| `drive.google.com/uc?export=download&id=…` | the bytes |
+
+**No Apps Script, no API key, no GCP project.** A folder shared "anyone with
+the link" is readable by both. Folders are told from files by the SHAPE of the
+link in each row — `/drive/folders/` versus `/file/d/` — never by the icon
+sprite (cosmetic) or the `aria-label` (localised).
+
+One folder ID lives in the repo. Everything else — which pages have photos,
+how many, what they are called — is decided by what officers put in it.
+
+### 7A.2 One subfolder per page, and the file name is the alt text
+
+A subfolder named `our history` supplies `/our-history`. Loose files at the top
+level are ignored, which is what lets the club keep a staging area there.
+
+The file name does three jobs, so officers control all three without being
+taught a single new concept:
+
+- it is the **alt text** a screen reader announces;
+- it is the **caption** under a figure;
+- if it is a year — `2024`, or `2000s` — it **dates** the photo, and the file
+  joins the history archive in chronological order.
+
+Adding next season's group photo is uploading a file called `2027`.
+
+### 7A.3 The frame fits the photo, never the other way round
+
+Measuring the club's own folder found four different shapes in it: 4:3 phone
+shots, 3:2 camera shots, three portraits, and a 604×453 archival scan. **A
+cropping frame has to pick one of those and mangle the rest.** The version this
+replaced threw 43% away from the top of every group photo, taking the back
+row's heads and the year painted across the sky with it.
+
+So each slide shows the whole photograph, fitted inside the band, over a
+blurred and darkened copy of itself. Nothing is cropped and nothing is
+upscaled past its true size. That is what makes it safe for an officer to
+upload any photo without knowing any rules — which is the entire point.
+
+### 7A.4 What it refuses, and why that is the kind thing to do
+
+**HEIC is rejected.** sharp links libheif and claims to read it, then throws on
+a real iPhone file: `Number of references in iref box (48) exceeds the security
+limits of 16` — measured against the club's own 2026 photo. A format that works
+for some files and not others is worse than one that never works, because the
+failure looks arbitrary. So the file is named in the log with the fix: open it,
+export as JPEG.
+
+An empty folder, a folder matching no page, or a file that is not an image are
+all reported and skipped. **None of them can take the site down.** A page that
+expected photos and got none publishes with one less thing on it.
+
+### 7A.5 Why it runs daily, not hourly
+
+The document changes most weeks; the photos change a few times a season.
+Fetching 40 MB every hour to discover nothing moved is not a reasonable thing
+to do to anyone. Encoding is byte-deterministic — verified — so an unchanged
+folder produces no diff and therefore no commit.
+
+There is no settle-and-confirm wait (§9.2c). That exists because Google
+republishes a document as it is typed, so a half-written sentence can be caught
+mid-edit. A photo is either uploaded or it is not.
+
 ## 8. Phasing
 
 ### Phase 1 — Proof of concept: one page, end-to-end, from a Doc

@@ -1,0 +1,532 @@
+{
+  "become-an-instructor": [
+    {
+      "slug": "close-up",
+      "name": "close up",
+      "alt": "Close up",
+      "year": null,
+      "shape": "landscape",
+      "width": 4032,
+      "height": 3024,
+      "ratio": 1.333,
+      "sources": [
+        {
+          "src": "/images/photos/become-an-instructor/close-up-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/become-an-instructor/close-up-1280.avif",
+          "width": 1280
+        },
+        {
+          "src": "/images/photos/become-an-instructor/close-up-2240.avif",
+          "width": 2240
+        }
+      ]
+    },
+    {
+      "slug": "sitting-in-line",
+      "name": "sitting in line",
+      "alt": "Sitting in line",
+      "year": null,
+      "shape": "landscape",
+      "width": 5712,
+      "height": 4284,
+      "ratio": 1.333,
+      "sources": [
+        {
+          "src": "/images/photos/become-an-instructor/sitting-in-line-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/become-an-instructor/sitting-in-line-1280.avif",
+          "width": 1280
+        },
+        {
+          "src": "/images/photos/become-an-instructor/sitting-in-line-2240.avif",
+          "width": 2240
+        }
+      ]
+    },
+    {
+      "slug": "ullr-basement",
+      "name": "ullr basement",
+      "alt": "Ullr basement",
+      "year": null,
+      "shape": "landscape",
+      "width": 4032,
+      "height": 3024,
+      "ratio": 1.333,
+      "sources": [
+        {
+          "src": "/images/photos/become-an-instructor/ullr-basement-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/become-an-instructor/ullr-basement-1280.avif",
+          "width": 1280
+        },
+        {
+          "src": "/images/photos/become-an-instructor/ullr-basement-2240.avif",
+          "width": 2240
+        }
+      ]
+    },
+    {
+      "slug": "ussie",
+      "name": "ussie",
+      "alt": "Ussie",
+      "year": null,
+      "shape": "portrait",
+      "width": 2316,
+      "height": 3088,
+      "ratio": 0.75,
+      "sources": [
+        {
+          "src": "/images/photos/become-an-instructor/ussie-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/become-an-instructor/ussie-1280.avif",
+          "width": 1280
+        },
+        {
+          "src": "/images/photos/become-an-instructor/ussie-2240.avif",
+          "width": 2240
+        }
+      ]
+    }
+  ],
+  "diversity-and-inclusion": [
+    {
+      "slug": "peace-signs",
+      "name": "peace signs",
+      "alt": "Peace signs",
+      "year": null,
+      "shape": "landscape",
+      "width": 6000,
+      "height": 4000,
+      "ratio": 1.5,
+      "sources": [
+        {
+          "src": "/images/photos/diversity-and-inclusion/peace-signs-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/diversity-and-inclusion/peace-signs-1280.avif",
+          "width": 1280
+        },
+        {
+          "src": "/images/photos/diversity-and-inclusion/peace-signs-2240.avif",
+          "width": 2240
+        }
+      ]
+    },
+    {
+      "slug": "sts-1",
+      "name": "STS 1",
+      "alt": "STS 1",
+      "year": null,
+      "shape": "landscape",
+      "width": 1206,
+      "height": 798,
+      "ratio": 1.511,
+      "sources": [
+        {
+          "src": "/images/photos/diversity-and-inclusion/sts-1-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/diversity-and-inclusion/sts-1-1206.avif",
+          "width": 1206
+        }
+      ]
+    },
+    {
+      "slug": "sts-2",
+      "name": "STS 2",
+      "alt": "STS 2",
+      "year": null,
+      "shape": "landscape",
+      "width": 1206,
+      "height": 789,
+      "ratio": 1.529,
+      "sources": [
+        {
+          "src": "/images/photos/diversity-and-inclusion/sts-2-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/diversity-and-inclusion/sts-2-1206.avif",
+          "width": 1206
+        }
+      ]
+    },
+    {
+      "slug": "sts-3",
+      "name": "STS 3",
+      "alt": "STS 3",
+      "year": null,
+      "shape": "landscape",
+      "width": 6000,
+      "height": 4000,
+      "ratio": 1.5,
+      "sources": [
+        {
+          "src": "/images/photos/diversity-and-inclusion/sts-3-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/diversity-and-inclusion/sts-3-1280.avif",
+          "width": 1280
+        },
+        {
+          "src": "/images/photos/diversity-and-inclusion/sts-3-2240.avif",
+          "width": 2240
+        }
+      ]
+    },
+    {
+      "slug": "sts-4",
+      "name": "STS 4",
+      "alt": "STS 4",
+      "year": null,
+      "shape": "landscape",
+      "width": 6000,
+      "height": 4000,
+      "ratio": 1.5,
+      "sources": [
+        {
+          "src": "/images/photos/diversity-and-inclusion/sts-4-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/diversity-and-inclusion/sts-4-1280.avif",
+          "width": 1280
+        },
+        {
+          "src": "/images/photos/diversity-and-inclusion/sts-4-2240.avif",
+          "width": 2240
+        }
+      ]
+    }
+  ],
+  "home": [
+    {
+      "slug": "in-front-of-ullr",
+      "name": "in front of ullr",
+      "alt": "In front of ullr",
+      "year": null,
+      "shape": "landscape",
+      "width": 4320,
+      "height": 3240,
+      "ratio": 1.333,
+      "sources": [
+        {
+          "src": "/images/photos/home/in-front-of-ullr-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/home/in-front-of-ullr-1280.avif",
+          "width": 1280
+        },
+        {
+          "src": "/images/photos/home/in-front-of-ullr-2240.avif",
+          "width": 2240
+        }
+      ]
+    },
+    {
+      "slug": "snowboarder-stack",
+      "name": "snowboarder stack",
+      "alt": "Snowboarder stack",
+      "year": null,
+      "shape": "portrait",
+      "width": 3024,
+      "height": 4032,
+      "ratio": 0.75,
+      "sources": [
+        {
+          "src": "/images/photos/home/snowboarder-stack-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/home/snowboarder-stack-1280.avif",
+          "width": 1280
+        },
+        {
+          "src": "/images/photos/home/snowboarder-stack-2240.avif",
+          "width": 2240
+        }
+      ]
+    },
+    {
+      "slug": "snowboarders",
+      "name": "snowboarders",
+      "alt": "Snowboarders",
+      "year": null,
+      "shape": "landscape",
+      "width": 4032,
+      "height": 3024,
+      "ratio": 1.333,
+      "sources": [
+        {
+          "src": "/images/photos/home/snowboarders-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/home/snowboarders-1280.avif",
+          "width": 1280
+        },
+        {
+          "src": "/images/photos/home/snowboarders-2240.avif",
+          "width": 2240
+        }
+      ]
+    },
+    {
+      "slug": "stretch-circle",
+      "name": "stretch circle",
+      "alt": "Stretch circle",
+      "year": null,
+      "shape": "landscape",
+      "width": 4032,
+      "height": 3024,
+      "ratio": 1.333,
+      "sources": [
+        {
+          "src": "/images/photos/home/stretch-circle-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/home/stretch-circle-1280.avif",
+          "width": 1280
+        },
+        {
+          "src": "/images/photos/home/stretch-circle-2240.avif",
+          "width": 2240
+        }
+      ]
+    },
+    {
+      "slug": "summit",
+      "name": "summit",
+      "alt": "Summit",
+      "year": null,
+      "shape": "landscape",
+      "width": 4032,
+      "height": 3024,
+      "ratio": 1.333,
+      "sources": [
+        {
+          "src": "/images/photos/home/summit-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/home/summit-1280.avif",
+          "width": 1280
+        },
+        {
+          "src": "/images/photos/home/summit-2240.avif",
+          "width": 2240
+        }
+      ]
+    }
+  ],
+  "our-history": [
+    {
+      "slug": "2000s",
+      "name": "2000s",
+      "alt": "Husky Winter Sports, 2000s",
+      "year": "2000s",
+      "shape": "landscape",
+      "width": 604,
+      "height": 453,
+      "ratio": 1.333,
+      "sources": [
+        {
+          "src": "/images/photos/our-history/2000s-604.avif",
+          "width": 604
+        }
+      ]
+    },
+    {
+      "slug": "2020",
+      "name": "2020",
+      "alt": "Husky Winter Sports, 2020",
+      "year": "2020",
+      "shape": "landscape",
+      "width": 1206,
+      "height": 770,
+      "ratio": 1.566,
+      "sources": [
+        {
+          "src": "/images/photos/our-history/2020-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/our-history/2020-1206.avif",
+          "width": 1206
+        }
+      ]
+    },
+    {
+      "slug": "2022",
+      "name": "2022",
+      "alt": "Husky Winter Sports, 2022",
+      "year": "2022",
+      "shape": "landscape",
+      "width": 1206,
+      "height": 898,
+      "ratio": 1.343,
+      "sources": [
+        {
+          "src": "/images/photos/our-history/2022-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/our-history/2022-1206.avif",
+          "width": 1206
+        }
+      ]
+    },
+    {
+      "slug": "2023",
+      "name": "2023",
+      "alt": "Husky Winter Sports, 2023",
+      "year": "2023",
+      "shape": "landscape",
+      "width": 4000,
+      "height": 3000,
+      "ratio": 1.333,
+      "sources": [
+        {
+          "src": "/images/photos/our-history/2023-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/our-history/2023-1280.avif",
+          "width": 1280
+        },
+        {
+          "src": "/images/photos/our-history/2023-2240.avif",
+          "width": 2240
+        }
+      ]
+    },
+    {
+      "slug": "2024",
+      "name": "2024",
+      "alt": "Husky Winter Sports, 2024",
+      "year": "2024",
+      "shape": "landscape",
+      "width": 3634,
+      "height": 3005,
+      "ratio": 1.209,
+      "sources": [
+        {
+          "src": "/images/photos/our-history/2024-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/our-history/2024-1280.avif",
+          "width": 1280
+        },
+        {
+          "src": "/images/photos/our-history/2024-2240.avif",
+          "width": 2240
+        }
+      ]
+    },
+    {
+      "slug": "2025",
+      "name": "2025",
+      "alt": "Husky Winter Sports, 2025",
+      "year": "2025",
+      "shape": "landscape",
+      "width": 1909,
+      "height": 1536,
+      "ratio": 1.243,
+      "sources": [
+        {
+          "src": "/images/photos/our-history/2025-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/our-history/2025-1280.avif",
+          "width": 1280
+        },
+        {
+          "src": "/images/photos/our-history/2025-1909.avif",
+          "width": 1909
+        }
+      ]
+    },
+    {
+      "slug": "newspaper-1",
+      "name": "newspaper 1",
+      "alt": "Newspaper 1",
+      "year": null,
+      "shape": "square",
+      "width": 1206,
+      "height": 1197,
+      "ratio": 1.008,
+      "sources": [
+        {
+          "src": "/images/photos/our-history/newspaper-1-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/our-history/newspaper-1-1206.avif",
+          "width": 1206
+        }
+      ]
+    },
+    {
+      "slug": "newspaper-2",
+      "name": "newspaper 2",
+      "alt": "Newspaper 2",
+      "year": null,
+      "shape": "square",
+      "width": 1206,
+      "height": 1197,
+      "ratio": 1.008,
+      "sources": [
+        {
+          "src": "/images/photos/our-history/newspaper-2-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/our-history/newspaper-2-1206.avif",
+          "width": 1206
+        }
+      ]
+    }
+  ],
+  "support-us": [
+    {
+      "slug": "heart-hands",
+      "name": "heart hands",
+      "alt": "Heart hands",
+      "year": null,
+      "shape": "portrait",
+      "width": 4284,
+      "height": 5712,
+      "ratio": 0.75,
+      "sources": [
+        {
+          "src": "/images/photos/support-us/heart-hands-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/support-us/heart-hands-1280.avif",
+          "width": 1280
+        },
+        {
+          "src": "/images/photos/support-us/heart-hands-2240.avif",
+          "width": 2240
+        }
+      ]
+    }
+  ]
+}

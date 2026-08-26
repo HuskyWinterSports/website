@@ -50,30 +50,123 @@
 }
 
 /* below this is image slider styling */
+.image-slider-figure {
+    margin: 0;
+}
+
 .image-slider {
     position: relative;
     overflow: hidden;
-    height: min(700px, 50vw);
+    /* Shorter than the 700px it replaced. The photo is fitted rather than
+       cropped now, so a shorter band means a WIDER photo, not less of one. */
+    height: min(620px, 46vw);
     width: 100%;
+    /* Seen only in the instant before the first photo decodes, and behind a
+       photo narrower than the band on a very wide screen. */
+    background-color: #2a1745;
+}
+
+/* A phone screen is narrow, so a band sized off its WIDTH is very short and a
+   fitted photo ends up floating in the middle of it. Sized off the width the
+   other way round instead: tall enough that a 4:3 photo — which is most of
+   them — reaches both edges. */
+@media (max-width: 700px) {
+    .image-slider {
+        height: 72vw;
+    }
 }
 
 /* individual layered slides for crossfade */
 .image-slider .slide {
     position: absolute;
     inset: 0; /* top:0; right:0; bottom:0; left:0; */
-    background-repeat: no-repeat;
-    background-position: center bottom;
-    background-size: cover;
     opacity: 0;
-    transition: opacity 800ms ease-in-out, transform 800ms ease-in-out;
-    transform: scale(1.02);
-    will-change: opacity, transform;
+    transition: opacity 800ms ease-in-out;
+    will-change: opacity;
 }
 
 .image-slider .slide.active {
     opacity: 1;
-    transform: scale(1);
     z-index: 1;
+}
+
+/* The photo itself: whole, never cropped, whatever shape it arrived in. */
+.image-slider .slide-photo {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+}
+
+/* The same photo out of focus, filling the band either side of it. Scaled up
+   so the blur has no visible edge to feather against. */
+.image-slider .slide-wash {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(34px) brightness(0.38) saturate(0.6);
+    transform: scale(1.18);
+}
+
+/* Separates the photo from its own out-of-focus copy. Without it a snowy
+   left edge and a pale wash run together and the frame looks broken. */
+.image-slider .slide-photo {
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.55);
+}
+
+/* The dots sit over the photo whenever it fills the band, and most of these
+   photos are mostly snow. The pill is what keeps them visible. */
+.image-slider .slide-dots {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 14px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(20, 8, 36, 0.5);
+}
+
+.image-slider .slide-dot {
+    width: 9px;
+    height: 9px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+}
+
+.image-slider .slide-dot.current {
+    background: #fff;
+}
+
+.image-slider .slide-dot:hover {
+    background: #c39ae4;
+}
+
+/* Below the photograph, not over it: three of the club's history photos have
+   no year anywhere in the image. */
+.slide-year {
+    margin: 10px auto 0;
+    text-align: center;
+    font-size: 1.05em;
+    letter-spacing: 3px;
+    font-variant-numeric: tabular-nums;
+    color: rgb(80, 44, 132);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .image-slider .slide { transition: none; }
 }
 
 
@@ -108,10 +201,28 @@
 .image-slider .left-arrow { left: 12px; }
 .image-slider .right-arrow { right: 12px; }
 
+/* On a phone the photo reaches both edges, so the arrows sit on top of it.
+   Smaller and tighter to the edge, so they cover as little of it as possible. */
+@media (max-width: 700px) {
+    .image-slider .left-arrow,
+    .image-slider .right-arrow {
+        padding: 8px 9px;
+        font-size: 0.85em;
+    }
+
+    .image-slider .left-arrow { left: 4px; }
+    .image-slider .right-arrow { right: 4px; }
+}
+
 .image-slider .left-arrow:hover,
 .image-slider .right-arrow:hover {
     background: #c39ae4;
     transition-duration: 300ms;
+}
+
+.image-slider button:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 2px;
 }
 
 .caption-text h2 {

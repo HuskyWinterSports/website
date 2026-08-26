@@ -162,10 +162,48 @@ function Buttons({ buttons }) {
     );
 }
 
+/**
+ * Photographs that are not a carousel: the club's two newspaper clippings.
+ *
+ * Fitted rather than cropped, like the carousel, and linked to the full-size
+ * file — a scan of 1996 newsprint is only worth having if it can be read.
+ */
+function Figures({ figures }) {
+    return (
+        <div className={`figures figures-${Math.min(figures.length, 3)}`}>
+            {figures.map((figure) => (
+                <figure key={figure.src}>
+                    <a href={figure.src} target="_blank" rel="noopener noreferrer">
+                        <img
+                            style={{ maxWidth: `min(100%, ${figure.width}px)` }}
+                            src={figure.src}
+                            srcSet={figure.srcset}
+                            sizes="(max-width: 700px) 92vw, 46vw"
+                            alt={figure.alt}
+                            loading="lazy"
+                            decoding="async"
+                        />
+                    </a>
+                    <figcaption>{figure.caption ?? figure.alt}</figcaption>
+                </figure>
+            ))}
+        </div>
+    );
+}
+
 function Section({ block, title }) {
     // The carousel is the one block that is purely layout: no words at all.
     if (block.slider) {
         return <Slider slides={block.slider.slides} caption={block.slider.caption} />;
+    }
+
+    if (block.figures && !block.section && !block.lead) {
+        return (
+            <section className={block.type}>
+                {block.heading && <h2>{block.heading}</h2>}
+                <Figures figures={block.figures} />
+            </section>
+        );
     }
 
     // The home banner styles its lines rather than stacking paragraphs, so it
@@ -235,6 +273,8 @@ function Section({ block, title }) {
                     referrerPolicy="strict-origin-when-cross-origin"
                 >Loading…</iframe>
             )}
+
+            {block.figures && <Figures figures={block.figures} />}
 
             {block.buttons && <Buttons buttons={block.buttons} />}
 

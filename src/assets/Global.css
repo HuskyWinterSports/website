@@ -444,3 +444,38 @@ ul {
   }
 
 }
+/* Photographs that are not a carousel — the club's newspaper clippings.
+   Fitted, never cropped, matching how the carousel treats a photo. */
+.figures {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+  margin: 8px auto 0;
+  max-width: 1120px;
+}
+
+.figures figure {
+  margin: 0;
+  flex: 1 1 380px;
+  max-width: 520px;
+}
+
+.figures img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.figures figcaption {
+  margin-top: 8px;
+  font-size: 0.9em;
+  letter-spacing: 1px;
+  opacity: 0.85;
+}
+
+.figures a:focus-visible {
+  outline: 3px solid rgb(80, 44, 132);
+  outline-offset: 3px;
+}

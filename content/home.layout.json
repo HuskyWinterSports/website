@@ -18,14 +18,8 @@
       ]
     },
     {
-      "_note": "Photos are layout, not words. Swapping in this season's group shot is a one-line change here rather than an officer pasting an image into a document.",
-      "slider": {
-        "slides": [
-          { "url": "/images/2025group.jpeg", "alt": "Husky Winter Sports instructors and students, 2025" },
-          { "url": "/images/2025-2026.jpg", "alt": "The club on the mountain, 2025/2026 season" },
-          { "url": "/images/2022-2023.jpg", "alt": "The club on the mountain, 2022/2023 season" }
-        ]
-      }
+      "_note": "Every photo in the \"home\" subfolder of the club's Drive photo folder, in name order. Officers add and remove photos there; nothing here changes. The file name becomes the alt text a screen reader announces, so renaming a photo well is an accessibility fix nobody needs to be told about.",
+      "photos": { "use": "carousel" }
     },
     { "type": "purple-stripe", "section": "Why Us?", "cards": true },
     {

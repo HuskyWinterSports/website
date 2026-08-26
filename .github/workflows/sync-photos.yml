@@ -1,0 +1,141 @@
+name: Sync photos from Drive
+
+# Reads the club's shared Google Drive photo folder, converts everything in it
+# for the web, and commits the result.
+#
+# Separate from the content sync, and far less often, because the two change at
+# completely different rates: the document is edited most weeks, the photos a
+# few times a season. Downloading 40 MB of holiday snaps every hour to discover
+# nothing moved is not a reasonable thing to do to anyone.
+#
+# No credential is involved. The folder is read over its "anyone with the link"
+# share, so there is nothing here that expires when an officer graduates.
+
+on:
+  schedule:
+    # Daily at 05:41 UTC — roughly 9:41pm in Seattle, well clear of the hourly
+    # content sync, and off the hour where GitHub's scheduler is contended.
+    - cron: '41 5 * * *'
+  # The "I just added photos" button.
+  # Actions tab -> Sync photos from Drive -> Run workflow.
+  workflow_dispatch:
+
+concurrency:
+  group: content-sync
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  photos:
+    name: Pull from Drive
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Pull the photos from Drive
+        run: |
+          set -o pipefail
+          npm run sync:photos 2>&1 | tee photos.log
+
+      # The pages embed the photo list, so they are regenerated from the new
+      # manifest in the same run. Without this a photo would land in the repo
+      # and not appear on the site until the next content sync.
+      - name: Rebuild the pages that show them
+        run: npm run sync
+
+      - name: Explain the failure in plain language
+        if: failure()
+        run: |
+          {
+            echo '## The photos could not be updated'
+            echo
+            echo 'The website has NOT been changed. It is still showing the'
+            echo 'previous version, and visitors see nothing wrong.'
+            echo
+            echo 'The most likely cause is the Drive folder no longer being'
+            echo 'shared with "Anyone with the link". Here is what happened:'
+            echo
+            echo '```'
+            cat photos.log 2>/dev/null || echo '(the sync failed before producing any output)'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # No settle-and-confirm wait here, unlike the content sync. That exists
+      # because Google republishes a document as it is typed, so a half-written
+      # sentence can be caught mid-edit. A photo is either uploaded or it is
+      # not; there is no half-uploaded state to catch.
+      - name: Commit the change, if there is one
+        id: commit
+        run: |
+          if git diff --quiet -- content/ public/images/photos/; then
+            echo 'No photo changes. Not committing, not deploying.'
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          ADDED=$(git status --porcelain -- public/images/photos/ | grep -c '^??' || true)
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add content/ public/images/photos/
+          git commit \
+            -m 'Update photos from Drive' \
+            -m "${ADDED} new image file(s). Pulled from the club Drive folder by the scheduled sync."
+
+          git pull --rebase origin main
+          git push origin HEAD:main
+          echo 'changed=true' >> "$GITHUB_OUTPUT"
+
+      - name: Record what happened
+        if: always()
+        run: |
+          if [ '${{ steps.commit.outputs.changed }}' = 'true' ]; then
+            echo '## Photos updated' >> "$GITHUB_STEP_SUMMARY"
+            echo 'The site is rebuilding now and will be live in a few minutes.' >> "$GITHUB_STEP_SUMMARY"
+          elif [ '${{ job.status }}' = 'success' ]; then
+            echo '## No photo changes' >> "$GITHUB_STEP_SUMMARY"
+            echo 'The Drive folder matches what the website is already showing.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          # Anything the sync decided not to use — a HEIC, a folder that
+          # matches no page — is worth seeing without opening the log.
+          if grep -q '^NOTE:' photos.log 2>/dev/null; then
+            {
+              echo
+              echo '### Photos that were skipped'
+              echo
+              grep '^NOTE:' photos.log | sed 's/^NOTE: /- /'
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  deploy:
+    name: Build and deploy the update
+    needs: photos
+    # A push made with GITHUB_TOKEN does not trigger deploy.yml's own `on:
+    # push`, so it is called explicitly here — the same reason the content
+    # sync does. "Run workflow" also deploys unconditionally, so the button
+    # doubles as "rebuild and republish".
+    if: needs.photos.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/deploy.yml
+    with:
+      ref: main
+    permissions:
+      contents: write
+      pages: write
+      id-token: write

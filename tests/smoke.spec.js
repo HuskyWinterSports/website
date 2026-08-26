@@ -79,8 +79,17 @@ test('every image has meaningful alt text', async ({ page }) => {
     expect(count).toBeGreaterThan(0);
 
     for (let i = 0; i < count; i++) {
-        const alt = await images.nth(i).getAttribute('alt');
+        const image = images.nth(i);
+        const alt = await image.getAttribute('alt');
         expect(alt, `image ${i} is missing an alt attribute`).not.toBeNull();
+
+        // An empty alt is the CORRECT markup for a decorative image, and the
+        // carousel has one per slide: a blurred copy of the photo, filling the
+        // band either side of it. Describing that to a screen reader would be
+        // worse than saying nothing, so the pairing of alt="" with
+        // aria-hidden is what exempts it — not the absence of a rule.
+        if (alt === '' && await image.getAttribute('aria-hidden') === 'true') continue;
+
         // "image", "footer image", "logo" alone describe nothing to a
         // screen reader. Require something more specific.
         expect(alt.trim().length, `image ${i} has an empty alt`).toBeGreaterThan(0);

@@ -463,6 +463,30 @@
       ]
     },
     {
+      "slug": "2026",
+      "name": "2026",
+      "alt": "Husky Winter Sports, 2026",
+      "year": "2026",
+      "shape": "landscape",
+      "width": 4032,
+      "height": 3024,
+      "ratio": 1.333,
+      "sources": [
+        {
+          "src": "/images/photos/our-history/2026-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/our-history/2026-1280.avif",
+          "width": 1280
+        },
+        {
+          "src": "/images/photos/our-history/2026-2240.avif",
+          "width": 2240
+        }
+      ]
+    },
+    {
       "slug": "newspaper-1",
       "name": "newspaper 1",
       "alt": "Newspaper 1",

@@ -167,25 +167,32 @@ function Buttons({ buttons }) {
  *
  * Fitted rather than cropped, like the carousel, and linked to the full-size
  * file — a scan of 1996 newsprint is only worth having if it can be read.
+ *
+ * No visible caption. A file name is a handle, not a caption, and printing it
+ * under the photograph produced "Newspaper 1" — worse than nothing. It stays
+ * the alt text, where a name that is merely serviceable still does its job.
  */
 function Figures({ figures }) {
     return (
         <div className={`figures figures-${Math.min(figures.length, 3)}`}>
             {figures.map((figure) => (
-                <figure key={figure.src}>
-                    <a href={figure.src} target="_blank" rel="noopener noreferrer">
-                        <img
-                            style={{ maxWidth: `min(100%, ${figure.width}px)` }}
-                            src={figure.src}
-                            srcSet={figure.srcset}
-                            sizes="(max-width: 700px) 92vw, 46vw"
-                            alt={figure.alt}
-                            loading="lazy"
-                            decoding="async"
-                        />
-                    </a>
-                    <figcaption>{figure.caption ?? figure.alt}</figcaption>
-                </figure>
+                <a
+                    className="figure"
+                    key={figure.src}
+                    href={figure.src}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <img
+                        style={{ maxWidth: `min(100%, ${figure.width}px)` }}
+                        src={figure.src}
+                        srcSet={figure.srcset}
+                        sizes="(max-width: 700px) 92vw, 46vw"
+                        alt={figure.alt}
+                        loading="lazy"
+                        decoding="async"
+                    />
+                </a>
             ))}
         </div>
     );

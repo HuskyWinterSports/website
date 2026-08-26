@@ -7,13 +7,14 @@
   },
   "blocks": [
     {
-      "_note": "Left-aligned at a reading measure: the longest run of prose on the site, and centred text makes the eye hunt for the start of each line. The two newspaper clippings sit inside this panel, under the history they illustrate, rather than in a band of their own at the foot of the page — they are part of the article, not an appendix to it. \"undated\" is everything in the \"our history\" Drive folder NOT named after a year, so another clipping dropped in joins them.",
+      "_note": "Left-aligned at a reading measure: the longest run of prose on the site, and centred text makes the eye hunt for the start of each line. The newspaper clippings sit inside this panel, under the history they illustrate, rather than in a band of their own at the foot of the page. \"undated\" is everything in the \"our history\" Drive folder NOT named after a year, so another clipping dropped in joins them. Their alt text is set here rather than taken from the file name: \"newspaper 1\" is a handle, not a description, and nobody should have to rename a file to make a screen reader work.",
       "type": "white-stripe qa",
       "showTitle": true,
       "lead": true,
       "photos": {
         "use": "figures",
-        "only": "undated"
+        "only": "undated",
+        "alt": "Historical newspaper clipping about Husky Winter Sports"
       }
     },
     {

@@ -455,8 +455,8 @@ ul {
   max-width: 1120px;
 }
 
-.figures figure {
-  margin: 0;
+.figures .figure {
+  display: block;
   flex: 1 1 380px;
   max-width: 520px;
 }
@@ -468,14 +468,7 @@ ul {
   border-radius: 4px;
 }
 
-.figures figcaption {
-  margin-top: 8px;
-  font-size: 0.9em;
-  letter-spacing: 1px;
-  opacity: 0.85;
-}
-
-.figures a:focus-visible {
+.figures .figure:focus-visible {
   outline: 3px solid rgb(80, 44, 132);
   outline-offset: 3px;
 }

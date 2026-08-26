@@ -140,6 +140,23 @@ describe('turning photos into a block', () => {
         assert.match(slide.wash, /640/);
     });
 
+    test('the layout can name the alt text for a group of pictures', () => {
+        // Two scans of newsprint called "newspaper 1" and "newspaper 2"
+        // describe nothing to somebody who cannot see them, and nobody should
+        // have to rename a file to make a screen reader work.
+        const block = photoBlock(
+            { photos: { use: 'figures', only: 'undated', alt: 'Historical newspaper clipping' } },
+            history, 'our-history'
+        );
+        assert.deepEqual(block.figures.map((f) => f.alt), ['Historical newspaper clipping']);
+    });
+
+    test('without one, the file name is still the alt text', () => {
+        // The default keeps alt text in the hands of whoever uploads a photo.
+        const block = photoBlock({ photos: { use: 'carousel', only: 'dated' } }, history, 'x');
+        assert.equal(block.slider.slides[0].alt, '2024');
+    });
+
     test('an empty folder loses a picture, not the website', () => {
         // An officer clearing a folder, or filling it with files the site
         // cannot read, must not be able to take a page down.

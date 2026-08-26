@@ -23,7 +23,13 @@
                 "bold": false,
                 "italic": false,
                 "href": null,
-                "text": "Email: huskywslessons@gmail.com"
+                "text": "Email: "
+              },
+              {
+                "bold": false,
+                "italic": false,
+                "href": "mailto:huskywslessons@gmail.com",
+                "text": "huskywslessons@gmail.com"
               }
             ],
             [

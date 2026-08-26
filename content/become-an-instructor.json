@@ -50,15 +50,15 @@
       "section": "I’m a student, how do I join?",
       "figures": [
         {
-          "alt": "Sitting in line",
+          "alt": "Ullr basement",
           "caption": null,
           "ratio": 1.333,
           "shape": "landscape",
-          "width": 5712,
-          "height": 4284,
-          "src": "/images/photos/become-an-instructor/sitting-in-line-2240.avif",
-          "srcset": "/images/photos/become-an-instructor/sitting-in-line-640.avif 640w, /images/photos/become-an-instructor/sitting-in-line-1280.avif 1280w, /images/photos/become-an-instructor/sitting-in-line-2240.avif 2240w",
-          "wash": "/images/photos/become-an-instructor/sitting-in-line-640.avif"
+          "width": 4032,
+          "height": 3024,
+          "src": "/images/photos/become-an-instructor/ullr-basement-2240.avif",
+          "srcset": "/images/photos/become-an-instructor/ullr-basement-640.avif 640w, /images/photos/become-an-instructor/ullr-basement-1280.avif 1280w, /images/photos/become-an-instructor/ullr-basement-2240.avif 2240w",
+          "wash": "/images/photos/become-an-instructor/ullr-basement-640.avif"
         }
       ],
       "heading": "I’m a student, how do I join?",
@@ -204,15 +204,15 @@
       ],
       "figures": [
         {
-          "alt": "Ullr basement",
+          "alt": "Sitting in line",
           "caption": null,
           "ratio": 1.333,
           "shape": "landscape",
-          "width": 4032,
-          "height": 3024,
-          "src": "/images/photos/become-an-instructor/ullr-basement-2240.avif",
-          "srcset": "/images/photos/become-an-instructor/ullr-basement-640.avif 640w, /images/photos/become-an-instructor/ullr-basement-1280.avif 1280w, /images/photos/become-an-instructor/ullr-basement-2240.avif 2240w",
-          "wash": "/images/photos/become-an-instructor/ullr-basement-640.avif"
+          "width": 5712,
+          "height": 4284,
+          "src": "/images/photos/become-an-instructor/sitting-in-line-2240.avif",
+          "srcset": "/images/photos/become-an-instructor/sitting-in-line-640.avif 640w, /images/photos/become-an-instructor/sitting-in-line-1280.avif 1280w, /images/photos/become-an-instructor/sitting-in-line-2240.avif 2240w",
+          "wash": "/images/photos/become-an-instructor/sitting-in-line-640.avif"
         }
       ],
       "heading": "I’m a student, how do I learn?",

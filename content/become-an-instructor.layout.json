@@ -7,19 +7,21 @@
   },
   "blocks": [
     {
-      "_note": "Rounded boxes alternating white and purple. The four sections are questions a student asks in order, so they read as a sequence. Each carries one photo from the \"become an instructor\" Drive folder, in name order — inline with the words rather than gathered into a carousel, so a visitor sees all four without clicking anything. A fifth photo would join the last section rather than shuffling the others.",
+      "_note": "Rounded boxes alternating white and purple. The four sections are questions a student asks in order, so they read as a sequence. Each carries one photo from the \"become an instructor\" Drive folder, inline with the words rather than gathered into a carousel, so a visitor sees all four without clicking anything. Every section names its photograph, because which one belongs beside which question was chosen by eye and folder order is not it — see §7A.2. Naming all four rather than only the pair that moved keeps a deletion in Drive from shuffling the ones that did not. A fifth photo joins the last section.",
       "type": "big-white-box",
       "showTitle": true,
       "section": "How can I ski for free?",
       "photos": {
-        "use": "inline"
+        "use": "inline",
+        "only": ["close up"]
       }
     },
     {
       "type": "big-purple-box",
       "section": "I’m a student, how do I join?",
       "photos": {
-        "use": "inline"
+        "use": "inline",
+        "only": ["ullr basement"]
       }
     },
     {
@@ -33,7 +35,8 @@
         }
       ],
       "photos": {
-        "use": "inline"
+        "use": "inline",
+        "only": ["sitting in line"]
       }
     },
     {
@@ -41,7 +44,8 @@
       "type": "big-purple-box",
       "section": "Check out how we teach!",
       "photos": {
-        "use": "inline"
+        "use": "inline",
+        "only": ["ussie"]
       }
     }
   ]

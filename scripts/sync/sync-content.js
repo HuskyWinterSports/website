@@ -175,19 +175,25 @@ async function syncLayout(layoutPath, photos) {
     // page-level pass: how many photos each gets depends on how many sections
     // asked, which no single block can know.
     const inline = assignInline(resolved.blocks, photos[layoutName], layoutName);
-    if (inline.slots && (photos[layoutName]?.length ?? 0) > inline.slots) {
-        emptyPhotos.push(`spare:${(photos[layoutName].length - inline.slots)}`);
-    }
+    if (inline.spare) emptyPhotos.push(`spare:${inline.spare}`);
 
     resolved = {
         ...resolved,
-        blocks: inline.blocks.map((entry) => {
-            if (!entry.photos) return entry;
-            const block = photoBlock(entry, photos[layoutName], layoutName);
-            if (block.empty) emptyPhotos.push(block.empty);
-            return block;
-        }),
+        blocks: inline.blocks.map((entry) => (
+            entry.photos ? photoBlock(entry, photos[layoutName], layoutName) : entry
+        )),
     };
+
+    // Read once, over the finished blocks: the inline slots were filled by the
+    // pass above and carry their own report already.
+    const missingPhotos = [];
+    for (const block of resolved.blocks) {
+        // `empty` marks a block the page loses; `_empty` one that stays
+        // without its picture. Both are the same line in the log.
+        const report = block.empty ?? block._empty;
+        if (report) emptyPhotos.push(report);
+        if (block._missing) missingPhotos.push(...block._missing);
+    }
 
     const { blocks: joined, auto, warnings } = joinSections(resolved, parsed, layoutName);
 
@@ -212,7 +218,8 @@ async function syncLayout(layoutPath, photos) {
     const unstyled = looksLikeHeadings(parsed);
     const stale = staleYears(blocks, CLOCK.year);
     const result = {
-        layoutName, auto, warnings, tabs, sheetWarnings, notes, unstyled, emptyPhotos, stale,
+        layoutName, auto, warnings, tabs, sheetWarnings, notes, unstyled,
+        emptyPhotos, missingPhotos, stale,
     };
 
     if (previous === serialised) return { ...result, changed: false };
@@ -317,6 +324,21 @@ async function main() {
                 `its Drive folder has no ${only === 'all' ? '' : only + ' '}` +
                 `photos the website can use, so nothing has been drawn there. ` +
                 `Run "npm run sync:photos" after adding some.`
+            );
+        }
+
+        // A layout naming a photograph that is not in the folder. Almost
+        // always a renamed or deleted file, which nobody would connect to a
+        // picture quietly going missing from one paragraph.
+        for (const name of result.missingPhotos) {
+            console.log(
+                `NOTE: the ${result.layoutName} page asks for a photo called ` +
+                `"${name}", and there is no file of that name in its Drive folder ` +
+                `— so that section is showing one fewer picture. The photo itself ` +
+                `is not lost: a photo nobody asks for by name joins the last ` +
+                `section on the page, which is probably where it has gone. Rename ` +
+                `the file back, or ask a developer to change which photo that ` +
+                `section asks for.`
             );
         }
 

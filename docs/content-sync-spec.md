@@ -425,6 +425,11 @@ alarming to a newcomer.
 
 We solve it by failing loudly with an actionable message. See §7.
 
+**There is now a second join key of the same kind**: a photo's file name, where
+a layout names the photographs a section shows. It is weaker on purpose —
+missing means one fewer picture and a line in the log, never a failed build —
+but it is the same trap. See §7A.2.
+
 ### 5.4 Sheets schema
 
 > **⚠️ Superseded by §5.4a.** The club built the sheet before this was
@@ -956,7 +961,7 @@ sprite (cosmetic) or the `aria-label` (localised).
 One folder ID lives in the repo. Everything else — which pages have photos,
 how many, what they are called — is decided by what officers put in it.
 
-### 7A.2 One subfolder per page, and the file name is the alt text
+### 7A.2 One subfolder per page, and the file name is the alt text — and, sometimes, a join key
 
 A subfolder named `our history` supplies `/our-history`. Loose files at the top
 level are ignored, which is what lets the club keep a staging area there.
@@ -970,6 +975,34 @@ taught a single new concept:
   joins the history archive in chronological order.
 
 Adding next season's group photo is uploading a file called `2027`.
+
+**⚠️ Since 2026-08-26 it can also be a fourth thing: a join key.** A layout may
+name the photographs a section shows, in the order it shows them:
+
+```json
+{ "photos": { "use": "inline", "only": ["sts 3", "sts 1"] } }
+```
+
+That exists because an arrangement chosen by eye — this picture beside that
+paragraph, that one on the left — cannot be expressed as a rule about folder
+order. Diversity and Inclusion is arranged that way.
+
+It has exactly the weakness §5.3 describes for headings, and for the same
+reason: **renaming a file now moves a photograph**, and renaming a photo well
+is otherwise the accessibility fix this section encourages. The consequences
+are deliberately mild — a name that matches nothing is a line in the log, never
+a failure, and the photo is not lost, because one that no section asks for by
+name joins the last section on the page. But an officer improving alt text on a
+named photo will move it, and nothing warns them beforehand.
+
+Only name photographs where the arrangement matters, and say so in the layout's
+`_note` — every other page still takes whatever is in the folder, in name
+order, which is the behaviour worth defaulting to.
+
+**A section keeps its words when its photograph goes.** A block whose photo
+request matches nothing is dropped only if the photographs were all it ever
+was; Our History asks for its clippings on the block carrying the whole
+article, and tidying two scans out of Drive must not empty the page.
 
 ### 7A.3 The frame fits the photo, never the other way round
 

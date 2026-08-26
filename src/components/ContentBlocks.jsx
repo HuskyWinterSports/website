@@ -32,6 +32,16 @@ function Spans({ spans }) {
     });
 }
 
+/**
+ * A run of the document's own blocks — paragraphs, headings, lists.
+ *
+ * Exported because the footer is built from the same document by the same
+ * sync, and renders the same three things inside its own markup.
+ */
+export function Blocks({ content }) {
+    return (content ?? []).map((block, index) => <Block key={index} block={block} />);
+}
+
 function Block({ block }) {
     switch (block.type) {
         case 'paragraph':

@@ -7,21 +7,25 @@
   },
   "blocks": [
     {
-      "_note": "Left-aligned at a reading measure: the longest run of prose on the site, and centred text makes the eye hunt for the start of each line. The newspaper clippings sit inside this panel, under the history they illustrate, rather than in a band of their own at the foot of the page. \"undated\" is everything in the \"our history\" Drive folder NOT named after a year, so another clipping dropped in joins them. Their alt text is set here rather than taken from the file name: \"newspaper 1\" is a handle, not a description, and nobody should have to rename a file to make a screen reader work.",
-      "type": "white-stripe qa",
-      "showTitle": true,
-      "lead": true,
-      "photos": {
-        "use": "figures",
-        "only": "undated",
-        "alt": "Historical newspaper clipping about Husky Winter Sports"
-      }
+      "_note": "The title on its own, so the group photos can come before the article rather than after all of it. This page is the longest run of prose on the site and the photographs are the reason most people open it; making them scroll past nine hundred words to reach them put the best thing on the page last.",
+      "type": "big-white-box",
+      "showTitle": true
     },
     {
       "_note": "The season group photo, one per year, oldest first. \"dated\" picks up any photo in the \"our history\" Drive folder whose name is a year — so adding next season's shot means naming a file 2027 and nothing else. The year prints under the frame rather than over the photograph.",
       "photos": {
         "use": "carousel",
         "only": "dated"
+      }
+    },
+    {
+      "_note": "Left-aligned at a reading measure: the longest run of prose on the site, and centred text makes the eye hunt for the start of each line. The newspaper clippings sit inside this panel, under the history they illustrate, rather than in a band of their own at the foot of the page. \"undated\" is everything in the \"our history\" Drive folder NOT named after a year, so another clipping dropped in joins them. Their alt text is set here rather than taken from the file name: \"newspaper 1\" is a handle, not a description, and nobody should have to rename a file to make a screen reader work.",
+      "type": "white-stripe qa",
+      "lead": true,
+      "photos": {
+        "use": "figures",
+        "only": "undated",
+        "alt": "Historical newspaper clipping about Husky Winter Sports"
       }
     }
   ]

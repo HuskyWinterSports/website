@@ -326,6 +326,7 @@ Deliberately minimal, because every rule is a rule an officer can get wrong:
 | **Heading 1** | Page title. One per tab. |
 | **Heading 2** | Starts a new block. **Its text is the join key.** |
 | **Heading 3** | A subheading inside the current block. |
+| **`~` in front of a Heading 2** | That heading names a part of the page without being printed on it. See §5.2d. |
 | Paragraphs, **bold**, *italic*, links, bulleted and numbered lists | Rendered as-is. |
 | **Title** style | ⚠️ Reserved — Google uses it to mark tabs. Never apply it by hand. |
 | Anything else — colours, fonts, sizes, images, tables | **Silently dropped.** |
@@ -375,6 +376,32 @@ an error only when the block carries something the document cannot supply:
 Losing the map from Location, or the buttons from the home banner, is a real
 regression that a log line would not save anyone from. No new configuration:
 the payload is already visible in the layout file.
+
+### 5.2d Headings that are addresses, not titles — implemented 2026-08-26
+
+Some Heading 2s are never printed. "Tagline" names the two lines under the home
+banner; "About" names the footer's legal paragraph. Both are load-bearing — a
+rename moves a piece of the site — and neither looks any different in the
+document from a heading a visitor reads.
+
+**A `~` in front says so**, and nothing else. It is a second prefix marker
+beside `--`, taken off before anything is matched, so:
+
+- layout files name sections without it: `"section": "About"` matches `~ About`
+- adding or removing one can never orphan a block
+- failure messages name sections **by join key**, without the marker — the
+  alternative is "rename it back to About" printed beside a list saying
+  "~ About", which reads as an instruction to undo it
+
+**The layout decides what is drawn; the marker only admits it.** A block with
+`"showHeading": false` is not given a heading to render. When the two disagree
+the sync says so in the log — the document is the thing misleading a reader, so
+that is what the warning asks to change. Neither direction is fatal, and
+neither changes the page.
+
+The one place the marker acts on its own is a marked heading **no layout
+claims**: it renders in the default style with no heading. There is no layout
+to consult, and a default style is not a reason to publish a label.
 
 ### 5.2c Headings that are not headings
 
@@ -582,6 +609,35 @@ from the **document**. The two behave differently on purpose:
 Freezing the whole site because somebody wrote "{warm} jacket" would be the
 tool getting in the way of the people it exists for. A developer's typo, by
 contrast, would publish braces to a visitor.
+
+**`{year}` is the one token that comes from the clock, not the sheet**, so it
+works on every page whether or not a sheet is attached. It exists for the
+footer's copyright line, which is the one fact on the site guaranteed to go
+wrong on a known date with nobody watching — it read "© 2025" throughout 2026.
+A literal year that has been overtaken is named in the log every run, and never
+corrected on the way through: a page silently disagreeing with the document
+leaves an editor with two answers and no way to tell which one is live.
+
+### 5.4d The footer is a layout with no route — implemented 2026-08-26
+
+`content/footer.layout.json` is built from a **Footer** tab exactly like a page
+is, and `src/components/Footer.jsx` renders it on every page. It has no
+`"route"`, because nothing reaches it by being visited and `src/routes.js`
+remains the list of what the site has.
+
+Two consequences worth knowing:
+
+- The address, the email, the Instagram handle and the Forest Service permit
+  wording are now edited in the document. They used to be typed into
+  JavaScript, where fixing a wrong address meant a pull request.
+- It is an eleventh source, so renaming the Footer tab stops the whole sync,
+  like renaming any other. That is the existing never-write-a-partial-result
+  rule rather than a new one, but it is new surface: the site keeps serving the
+  previous version, and the log names the tab.
+
+An email typed into the document is only a link if the document links it.
+Docs does that automatically when one is typed and followed by a space; a
+pasted address stays plain, and so does the footer's copy of it.
 
 ### 5.6 What each registration state puts on the page
 

@@ -7,11 +7,12 @@
   },
   "blocks": [
     {
-      "_note": "Lessons first: most visitors are parents and adults looking to book, not students looking to join. When registration opens, point the first button at /lesson-registration.",
+      "_note": "The banner draws the title over the two lines under \"Tagline\", and never the word Tagline itself — which is what the ~ in front of that heading in the document says. Lessons first: most visitors are parents and adults looking to book, not students looking to join. When registration opens, point the first button at /lesson-registration.",
       "type": "home-banner",
       "banner": true,
       "showTitle": true,
       "section": "Tagline",
+      "showHeading": false,
       "buttons": [
         { "label": "LESSON INFO", "href": "/lesson-info" },
         { "label": "BECOME AN INSTRUCTOR", "href": "/become-an-instructor" }

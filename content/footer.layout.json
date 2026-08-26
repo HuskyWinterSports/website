@@ -1,0 +1,21 @@
+{
+  "_note": "The footer, which is on every page and is therefore not a page. There is no \"route\": nothing renders this by visiting it, src/components/Footer.jsx does, and src/routes.js is still the list of what the site has. Everything else about it is an ordinary layout, so an officer changing the address or the legal wording edits the Footer tab like any other and never learns that this one is different.",
+  "source": {
+    "kind": "google-doc",
+    "publishedId": "2PACX-1vQ53bIBpIbYs7rqDxydTDD9aO20F7JeeqxmLwaH33FMV2dZ0MyEy9Pf8N6BRZgsdbtRGtdwS226v7Eh",
+    "tab": "Footer"
+  },
+  "blocks": [
+    {
+      "_note": "The address, the email and the Instagram handle, as a bulleted list. \"Contact Us\" is printed here — it is the one footer heading a visitor sees.",
+      "type": "contact-info",
+      "section": "Contact Us"
+    },
+    {
+      "_note": "The Forest Service permit wording and the non-discrimination clause, which are there because the club is required to say them. The heading names the section for the layout and is never drawn, which is what the ~ in front of it in the document says. Write {year} in the copyright line rather than a number: it is filled in when the sync runs, so it cannot go stale.",
+      "type": "copyright",
+      "section": "About",
+      "showHeading": false
+    }
+  ]
+}

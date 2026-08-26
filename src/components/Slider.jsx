@@ -15,6 +15,10 @@ import { useState, useEffect, useRef, useCallback } from 'react';
  * back row's heads and the year painted across the sky with it. Fitting means
  * nobody has to know the rules before uploading, which is the whole point.
  *
+ * It wraps: past the last photo is the first one again, and that one move goes
+ * straight there rather than sliding, because sweeping back across six
+ * photographs to reach the seventh reads as the page running away.
+ *
  * It moves sideways, as a scroll-snapping track rather than a crossfade. That
  * is what makes it swipeable on a phone and two-finger scrollable on a
  * trackpad without a line of code for either — the browser already knows how
@@ -48,15 +52,23 @@ export default function Slider({ slides, caption }) {
     const goTo = useCallback((next) => {
         const el = track.current;
         if (!el) return;
-        // Clamped, not wrapped. On a crossfade, going from the last photo to
-        // the first was a fade like any other; on a track it is a sweep past
-        // every photo in between, which reads as the page running away from
-        // you. The arrows stop at the ends and say so instead.
-        const to = Math.max(0, Math.min(next, slides.length - 1));
-        // scrollTo with no `behavior` uses the CSS `scroll-behavior`, which is
-        // set to `auto` under prefers-reduced-motion. Passing 'smooth' here
-        // would override that and animate for people who asked it not to.
-        el.scrollTo({ left: to * el.clientWidth });
+
+        // Wrapped: the last photo's right arrow goes back to the first. The
+        // ends of the run are not interesting enough to stop at, and an arrow
+        // that does nothing is a worse answer than one that starts over.
+        const to = (next + slides.length) % slides.length;
+
+        // But the wrap itself is a jump, not a scroll. Sliding from the last
+        // photo to the first sweeps past every photo in between, which reads
+        // as the page running away from you; going straight there reads as
+        // starting again, which is what it is.
+        //
+        // Only the wrap passes `behavior`. An ordinary move leaves it unset so
+        // the CSS `scroll-behavior` decides, and that is `auto` under
+        // prefers-reduced-motion — naming 'smooth' here would animate for
+        // exactly the people who asked it not to.
+        const left = to * el.clientWidth;
+        el.scrollTo(next === to ? { left } : { left, behavior: 'instant' });
     }, [slides.length]);
 
     // The scroll position is the source of truth: a swipe, a trackpad, the
@@ -134,13 +146,11 @@ export default function Slider({ slides, caption }) {
                         <button
                             className="left-arrow"
                             aria-label="Previous photo"
-                            disabled={index === 0}
                             onClick={() => goTo(index - 1)}
                         >&#10094;</button>
                         <button
                             className="right-arrow"
                             aria-label="Next photo"
-                            disabled={index === slides.length - 1}
                             onClick={() => goTo(index + 1)}
                         >&#10095;</button>
 

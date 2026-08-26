@@ -1,0 +1,76 @@
+{
+  "title": null,
+  "blocks": [
+    {
+      "type": "contact-info",
+      "section": "Contact Us",
+      "heading": "Contact Us",
+      "content": [
+        {
+          "type": "list",
+          "ordered": false,
+          "items": [
+            [
+              {
+                "bold": false,
+                "italic": false,
+                "href": null,
+                "text": "Address: 207 HUB SAO 130 Box 352238, Seattle, WA 98195"
+              }
+            ],
+            [
+              {
+                "bold": false,
+                "italic": false,
+                "href": null,
+                "text": "Email: huskywslessons@gmail.com"
+              }
+            ],
+            [
+              {
+                "bold": false,
+                "italic": false,
+                "href": null,
+                "text": "Instagram:"
+              },
+              {
+                "bold": false,
+                "italic": false,
+                "href": "https://www.instagram.com/huskywintersports/",
+                "text": " @huskywintersports"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "type": "copyright",
+      "section": "About",
+      "content": [
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "HWS operates under Ullr Inc. as a concessionaire under US Forest Service Permits issued to Ski Lifts Inc. partially operating within the Mt. Baker, Snoqualmie, and Wenatchee National Forests. Partners in Winter Recreation. This program provides employment, services, and privileges regardless of race, color, creed, sex, religion, age, or national origin."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "spans": [
+            {
+              "bold": false,
+              "italic": false,
+              "href": null,
+              "text": "© 2026 HWS. All rights reserved."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

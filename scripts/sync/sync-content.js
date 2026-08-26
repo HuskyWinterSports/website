@@ -3,7 +3,7 @@ import { join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseGoogleDoc } from './parse-google-doc.js';
 import { parseSheet } from './parse-sheet.js';
-import { joinSections, looksLikeHeadings, selectTab, ContentError } from './join-sections.js';
+import { joinSections, looksLikeHeadings, staleYears, selectTab, ContentError } from './join-sections.js';
 import { sheetBlock, fillLayoutTokens, applyStatus, derive, fillContentTokens } from './apply-sheet.js';
 import { seasonEndYear, endsOnSecondSaturdayOfMarch } from './lesson-dates.js';
 import { photoBlock, assignInline } from './apply-photos.js';
@@ -24,6 +24,16 @@ import { photoBlock, assignInline } from './apply-photos.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const CONTENT_DIR = join(ROOT, 'content');
+
+/**
+ * Available to every page as `{year}`, sheet or no sheet.
+ *
+ * A copyright line is the one fact on the site that goes wrong on a fixed date
+ * with nobody watching — the footer said "© 2025" throughout 2026. Read once
+ * per run so every page in a run agrees, even one started at midnight on the
+ * 31st of December.
+ */
+const CLOCK = { year: String(new Date().getFullYear()) };
 
 /**
  * Photos are synced separately — they change a few times a season and cost
@@ -117,7 +127,7 @@ async function syncLayout(layoutPath, photos) {
     // layout sets, so the layout has to be filled in before it is joined
     // against the document.
     let resolved = layout;
-    let settings = null;
+    let settings = CLOCK;
     const sheetWarnings = [];
     if (layout.sheet) {
         const csv = await fetchPublished(
@@ -128,7 +138,7 @@ async function syncLayout(layoutPath, photos) {
 
         // Derived values first: the layout's own strings may use them, and so
         // may the document's prose further down.
-        settings = derive(sheet.settings, layoutName);
+        settings = { ...CLOCK, ...derive(sheet.settings, layoutName) };
 
         // The club describes the season as ending on the second weekend in
         // March. That is a consequence of the six-weekend rule rather than the
@@ -183,7 +193,7 @@ async function syncLayout(layoutPath, photos) {
 
     // The document's own prose can quote a value too, so the club never has to
     // maintain the same date in two places.
-    const blocks = settings ? fillContentTokens(joined, settings) : joined;
+    const blocks = fillContentTokens(joined, settings);
 
     const output = {
         route: layout.route,
@@ -200,7 +210,10 @@ async function syncLayout(layoutPath, photos) {
 
     const notes = parsed.notes ?? [];
     const unstyled = looksLikeHeadings(parsed);
-    const result = { layoutName, auto, warnings, tabs, sheetWarnings, notes, unstyled, emptyPhotos };
+    const stale = staleYears(blocks, CLOCK.year);
+    const result = {
+        layoutName, auto, warnings, tabs, sheetWarnings, notes, unstyled, emptyPhotos, stale,
+    };
 
     if (previous === serialised) return { ...result, changed: false };
 
@@ -259,6 +272,17 @@ async function main() {
                 `document look like headings but are styled as normal text:\n` +
                 result.unstyled.map((t) => `      • ${t}`).join('\n') + `\n` +
                 `      Style them "Heading 2" to turn them into their own sections.`
+            );
+        }
+
+        // A year typed into the document, now overtaken. Not corrected on the
+        // way through: the page would then disagree with the document and
+        // nobody could tell which one the website believed.
+        for (const found of result.stale) {
+            console.log(
+                `NOTE: the ${result.layoutName} document says "${found}", and this ` +
+                `is ${CLOCK.year}. Write {year} in place of the number and it will ` +
+                `be right every year without anyone having to remember.`
             );
         }
 

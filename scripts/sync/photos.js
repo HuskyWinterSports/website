@@ -63,8 +63,7 @@ const PORTRAIT = 0.9;
 const SQUARISH = 1.15;
 
 /** A folder name maps to a layout by lowercasing and hyphenating it. */
-export const slugify = (name) =>
-    name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+export { slugify } from './names.js';
 
 /**
  * A photo whose name is a year or a decade labels itself.

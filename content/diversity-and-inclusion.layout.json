@@ -7,40 +7,27 @@
   },
   "blocks": [
     {
+      "_note": "The title on its own. It had a photograph until the club moved that one down to Spread The Shred, where it sits beside the section it was taken for.",
       "type": "big-white-box",
-      "showTitle": true,
-      "photos": {
-        "use": "inline"
-      }
+      "showTitle": true
     },
     {
+      "_note": "Two photographs, named rather than taken in folder order, because which one sits where was chosen by eye. \"sts 3\" is on the left. Renaming either file in Drive moves the picture off this section and says so in the log; it does not break the page.",
       "type": "white-stripe qa",
       "section": "Mission Statement",
-      "photos": {
-        "use": "inline"
-      }
+      "photos": { "use": "inline", "only": ["sts 3", "sts 1"] }
     },
     {
-      "_note": "The purple stripe between two white ones, so the three sections read as three rather than as one long page.",
       "type": "purple-stripe qa",
       "section": "What is T60?",
-      "photos": {
-        "use": "inline"
-      }
+      "photos": { "use": "inline", "only": ["sts 2"] }
     },
     {
-      "_note": "Spread the Shred, and the \"diversity and inclusion\" Drive folder is the photographs of it. The folder holds one more photo than this page has places for, so this last section shows two — nothing is ever dropped.",
+      "_note": "\"peace signs\" on the left, which is the photograph that used to open the page.",
       "type": "white-stripe qa",
       "section": "Spread The Shred",
-      "buttons": [
-        {
-          "label": "SUPPORT US",
-          "href": "/support-us"
-        }
-      ],
-      "photos": {
-        "use": "inline"
-      }
+      "buttons": [{ "label": "SUPPORT US", "href": "/support-us" }],
+      "photos": { "use": "inline", "only": ["peace signs", "sts 4"] }
     }
   ]
 }

@@ -4,25 +4,23 @@
   "blocks": [
     {
       "type": "big-white-box",
-      "showTitle": true,
-      "figures": [
-        {
-          "alt": "Peace signs",
-          "caption": null,
-          "ratio": 1.5,
-          "shape": "landscape",
-          "width": 6000,
-          "height": 4000,
-          "src": "/images/photos/diversity-and-inclusion/peace-signs-2240.avif",
-          "srcset": "/images/photos/diversity-and-inclusion/peace-signs-640.avif 640w, /images/photos/diversity-and-inclusion/peace-signs-1280.avif 1280w, /images/photos/diversity-and-inclusion/peace-signs-2240.avif 2240w",
-          "wash": "/images/photos/diversity-and-inclusion/peace-signs-640.avif"
-        }
-      ]
+      "showTitle": true
     },
     {
       "type": "white-stripe qa",
       "section": "Mission Statement",
       "figures": [
+        {
+          "alt": "STS 3",
+          "caption": null,
+          "ratio": 1.5,
+          "shape": "landscape",
+          "width": 6000,
+          "height": 4000,
+          "src": "/images/photos/diversity-and-inclusion/sts-3-2240.avif",
+          "srcset": "/images/photos/diversity-and-inclusion/sts-3-640.avif 640w, /images/photos/diversity-and-inclusion/sts-3-1280.avif 1280w, /images/photos/diversity-and-inclusion/sts-3-2240.avif 2240w",
+          "wash": "/images/photos/diversity-and-inclusion/sts-3-640.avif"
+        },
         {
           "alt": "STS 1",
           "caption": null,
@@ -103,15 +101,15 @@
       ],
       "figures": [
         {
-          "alt": "STS 3",
+          "alt": "Peace signs",
           "caption": null,
           "ratio": 1.5,
           "shape": "landscape",
           "width": 6000,
           "height": 4000,
-          "src": "/images/photos/diversity-and-inclusion/sts-3-2240.avif",
-          "srcset": "/images/photos/diversity-and-inclusion/sts-3-640.avif 640w, /images/photos/diversity-and-inclusion/sts-3-1280.avif 1280w, /images/photos/diversity-and-inclusion/sts-3-2240.avif 2240w",
-          "wash": "/images/photos/diversity-and-inclusion/sts-3-640.avif"
+          "src": "/images/photos/diversity-and-inclusion/peace-signs-2240.avif",
+          "srcset": "/images/photos/diversity-and-inclusion/peace-signs-640.avif 640w, /images/photos/diversity-and-inclusion/peace-signs-1280.avif 1280w, /images/photos/diversity-and-inclusion/peace-signs-2240.avif 2240w",
+          "wash": "/images/photos/diversity-and-inclusion/peace-signs-640.avif"
         },
         {
           "alt": "STS 4",

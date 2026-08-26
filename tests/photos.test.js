@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import sharp from 'sharp';
 import { parse } from 'node-html-parser';
 import { slugify, yearOf, describe as describeImage } from '../scripts/sync/photos.js';
-import { photoBlock } from '../scripts/sync/apply-photos.js';
+import { photoBlock, assignInline } from '../scripts/sync/apply-photos.js';
 import { ContentError } from '../scripts/sync/join-sections.js';
 
 /**
@@ -169,6 +169,122 @@ describe('turning photos into a block', () => {
         assert.throws(
             () => photoBlock({ photos: { use: 'mosaic' } }, history, 'home'),
             (error) => error instanceof ContentError && /carousel, figures/.test(error.message)
+        );
+    });
+});
+
+/**
+ * A block naming the photographs it wants.
+ *
+ * Which picture sits beside which paragraph is sometimes chosen by eye, and no
+ * rule about folder order can express that. The names are Drive file names.
+ */
+describe('photographs a block asks for by name', () => {
+    const photo = (name) => ({
+        slug: slugify(name), name, alt: name, year: null, shape: 'landscape',
+        width: 2000, height: 1500, ratio: 1.333,
+        sources: [{ src: `/images/photos/x/${slugify(name)}-640.avif`, width: 640 }],
+    });
+
+    const pool = ['peace signs', 'sts 1', 'sts 2', 'sts 3', 'sts 4'].map(photo);
+    const slot = (section, only) => ({
+        type: 'white-stripe', section, photos: { use: 'inline', ...(only ? { only } : {}) },
+    });
+
+    test('they come out in the order the layout asks for, not folder order', () => {
+        const block = photoBlock({ photos: { use: 'figures', only: ['sts 3', 'sts 1'] } }, pool, 'd');
+        assert.deepEqual(block.figures.map((f) => f.alt), ['sts 3', 'sts 1']);
+    });
+
+    test('a name is matched the way a folder name is', () => {
+        // "STS 3", "sts-3" and "sts 3" are the same file to everyone but a
+        // string comparison.
+        const block = photoBlock({ photos: { use: 'figures', only: ['STS 3'] } }, pool, 'd');
+        assert.deepEqual(block.figures.map((f) => f.alt), ['sts 3']);
+    });
+
+    test('a name matching no file is reported, not fatal', () => {
+        const block = photoBlock({ photos: { use: 'figures', only: ['sts 3', 'gone'] } }, pool, 'd');
+        assert.deepEqual(block.figures.map((f) => f.alt), ['sts 3']);
+        assert.deepEqual(block._missing, ['gone']);
+    });
+
+    test('a named slot takes its photographs wherever they sit in the folder', () => {
+        const { blocks } = assignInline([
+            slot('Mission Statement', ['sts 3', 'sts 1']),
+            slot('What is T60?', ['sts 2']),
+            slot('Spread The Shred', ['peace signs', 'sts 4']),
+        ], pool, 'd');
+        assert.deepEqual(blocks.map((b) => b.figures.map((f) => f.alt)), [
+            ['sts 3', 'sts 1'], ['sts 2'], ['peace signs', 'sts 4'],
+        ]);
+    });
+
+    test('what no slot named is shared out among the slots that named nothing', () => {
+        const { blocks } = assignInline([
+            slot('Mission Statement', ['sts 3']),
+            slot('What is T60?'),
+            slot('Spread The Shred'),
+        ], pool, 'd');
+        assert.deepEqual(blocks.map((b) => b.figures.map((f) => f.alt)), [
+            ['sts 3'], ['peace signs'], ['sts 1', 'sts 2', 'sts 4'],
+        ]);
+    });
+
+    test('an upload nobody asked for still lands somewhere', () => {
+        // Every slot names one, and then a sixth photo appears in Drive. It is
+        // not dropped and it is not guessed at: it joins the last section.
+        const { blocks, spare } = assignInline([
+            slot('a', ['sts 1']),
+            slot('b', ['sts 2']),
+        ], [photo('sts 1'), photo('sts 2'), photo('new one')], 'd');
+        assert.deepEqual(blocks.at(-1).figures.map((f) => f.alt), ['sts 2', 'new one']);
+        assert.equal(spare, 1);
+    });
+
+    test('no photograph is counted as spare just because a slot named it', () => {
+        // The old count was "photos minus slots", which stopped being the
+        // number that had doubled up the moment a slot asked for two.
+        const { spare } = assignInline([
+            slot('Mission Statement', ['sts 3', 'sts 1']),
+            slot('What is T60?', ['sts 2']),
+            slot('Spread The Shred', ['peace signs', 'sts 4']),
+        ], pool, 'd');
+        assert.equal(spare, 0);
+    });
+
+    test('a slot whose photograph has been renamed keeps its words and says so', () => {
+        const { blocks } = assignInline([
+            slot('Mission Statement', ['gone']),
+            slot('Spread The Shred', ['peace signs', 'sts 1', 'sts 2', 'sts 3', 'sts 4']),
+        ], pool, 'd');
+        assert.equal(blocks[0].section, 'Mission Statement');
+        assert.ok(!blocks[0].figures);
+        assert.ok(!('photos' in blocks[0]));
+        assert.deepEqual(blocks[0]._missing, ['gone']);
+    });
+
+    test('a section that also carries words survives losing its picture', () => {
+        // Our History asks for its clippings on the block that carries the
+        // whole article. Emptying that folder must not empty the page.
+        const block = photoBlock(
+            { type: 'white-stripe qa', lead: true, showTitle: true, photos: { use: 'figures', only: 'undated' } },
+            [], 'our-history'
+        );
+        assert.ok(!block.empty, 'the block would have been dropped, and the article with it');
+        assert.equal(block._empty, 'figures:undated');
+        assert.equal(block.lead, true);
+    });
+
+    test('a block that was only ever the photographs still goes', () => {
+        const block = photoBlock({ photos: { use: 'carousel' } }, [], 'home');
+        assert.equal(block.empty, 'carousel:all');
+    });
+
+    test('a layout naming something that is not a file name says so', () => {
+        assert.throws(
+            () => photoBlock({ photos: { use: 'figures', only: [3] } }, pool, 'd'),
+            (error) => error instanceof ContentError && /not a file name/.test(error.message)
         );
     });
 });

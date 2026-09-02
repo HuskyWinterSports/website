@@ -182,7 +182,7 @@ export default function Slider({ slides, caption }) {
                 image, so the name of the file is the only thing that dates
                 them. */}
             {slides[index]?.caption && (
-                <figcaption className="slide-year" aria-live="polite">{slides[index].caption}</figcaption>
+                <figcaption className="slide-year" aria-live="polite"><strong>{slides[index].caption}</strong></figcaption>
             )}
         </figure>
     );

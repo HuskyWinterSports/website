@@ -21,38 +21,24 @@
           "type": "paragraph",
           "spans": [
             {
-              "text": "You can ",
-              "bold": false,
-              "italic": false,
-              "href": null
-            },
-            {
-              "text": "open the registration form",
-              "bold": false,
-              "italic": false,
-              "href": "https://docs.google.com/forms/d/e/1FAIpQLSfjLegq7v2dtmjG_YTOisGHB9gBcoSKPdTvs9VDIEcfnHs-0Q/viewform"
-            },
-            {
-              "text": " to see what it asks for, though it will not accept answers until registration opens. ",
-              "bold": false,
-              "italic": false,
-              "href": null
-            },
-            {
               "text": "Join our mailing list",
               "bold": false,
               "italic": false,
               "href": "/join-our-mailing-list"
             },
             {
-              "text": " and we will email you when it does.",
+              "text": " for status updates.",
               "bold": false,
               "italic": false,
               "href": null
             }
           ]
         }
-      ]
+      ],
+      "form": {
+        "src": "https://docs.google.com/forms/d/e/1FAIpQLSfjLegq7v2dtmjG_YTOisGHB9gBcoSKPdTvs9VDIEcfnHs-0Q/viewform?embedded=true",
+        "title": "Lesson registration and waitlist form"
+      }
     },
     {
       "type": "white-stripe qa",
@@ -267,19 +253,19 @@
               "bold": false,
               "italic": false,
               "href": null,
-              "text": "Please reference the Summit at Snoqualmie website ("
+              "text": "Please reference the "
             },
             {
               "bold": false,
               "italic": false,
               "href": "https://www.summitatsnoqualmie.com/",
-              "text": "https://www.summitatsnoqualmie.com/"
+              "text": "Summit at Snoqualmie website"
             },
             {
               "bold": false,
               "italic": false,
               "href": null,
-              "text": ") for most current weather conditions. "
+              "text": " for most current weather conditions."
             }
           ]
         },

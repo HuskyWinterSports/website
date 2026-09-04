@@ -109,16 +109,12 @@ describe('registration status', () => {
             ],
             bothLabel: 'Ski and snowboard lessons',
             states: {
-                not_yet_open: { says: 'are not open yet', form: 'link' },
-                open: { says: 'are open', form: 'embed' },
-                waitlist: { says: 'are full, but you can join the waitlist', form: 'embed' },
-                full: { says: 'are full', form: false },
+                not_yet_open: { says: 'are not open yet' },
+                open: { says: 'are open' },
+                waitlist: { says: 'are full, but you can join the waitlist' },
+                full: { says: 'are full' },
             },
-            then: {
-                embed: 'Fill out the form below.',
-                link: 'You can [open the form]({form_url}) and wait for it.',
-                none: '[Join our mailing list](/join-our-mailing-list) later.',
-            },
+            then: '[Join our mailing list](/join-our-mailing-list) for status updates.',
         },
         form: { src: 'https://example/form?embedded=true', title: 'Form' },
     };
@@ -141,49 +137,68 @@ describe('registration status', () => {
     });
 
     test('says both when they differ — the reason they were separated', () => {
-        const { text, form } = render('full', 'open');
+        // Ski filling up must not turn away snowboarders.
+        const { text } = render('full', 'open');
         assert.match(text, /Ski lessons are full\. Snowboard lessons are open\./);
-        assert.ok(form, 'snowboard is open, so the form must be offered');
     });
 
-    test('embeds the form when ANY sport can take a signup', () => {
-        assert.ok(render('full', 'waitlist').form);
-        assert.ok(render('waitlist', 'full').form);
-        assert.ok(!render('full', 'not_yet_open').form);
-        assert.ok(!render('not_yet_open', 'not_yet_open').form);
-    });
+    const STATES = ['not_yet_open', 'open', 'waitlist', 'full'];
 
-    test('links to the form, without embedding it, before registration opens', () => {
-        // Embedding invites somebody to fill in a form that will not accept
-        // them; hiding it gives them nowhere to go. A link lets a parent look
-        // at what it asks and keep the tab.
-        const { text, form, links } = render('not_yet_open', 'not_yet_open');
-        assert.ok(!form, 'must not embed');
-        assert.match(text, /open the form/);
-        assert.ok(links.some((h) => h.includes('example/form')), 'the link must point at the form');
-        assert.ok(!links.some((h) => h.includes('embedded=true')), 'the embed URL is not the link URL');
-    });
-
-    test('the strongest treatment across the two sports wins', () => {
-        assert.ok(render('open', 'not_yet_open').form, 'embed beats link');
-        assert.match(render('full', 'not_yet_open').text, /open the form/, 'link beats none');
-    });
-
-    test('never embeds a form under wording that says you cannot sign up', () => {
-        // The pairing the hand-written page got wrong for months.
-        for (const ski of ['not_yet_open', 'open', 'waitlist', 'full']) {
-            for (const snowboard of ['not_yet_open', 'open', 'waitlist', 'full']) {
-                const { text, form } = render(ski, snowboard);
-                if (form) assert.match(text, /Fill out the form below/);
-                else assert.doesNotMatch(text, /Fill out the form below/);
+    test('the form is on the page in every state', () => {
+        // Google Forms is the authority on whether it will take an answer, and
+        // says so more precisely than this file could: measured 2026-09-04,
+        // the club's own form reads "This form will open September 1, 10:00
+        // a.m." A rule in the layout can only ever say less than that.
+        for (const ski of STATES) {
+            for (const snowboard of STATES) {
+                assert.ok(render(ski, snowboard).form, `${ski} + ${snowboard} lost the form`);
             }
         }
     });
 
+    test('the closing line never contradicts the sentence above it', () => {
+        // What replaced the three-treatment rule. The old page paired "you
+        // cannot sign up" with a signup form; the new one cannot, because the
+        // closing line says nothing about the form at all.
+        for (const ski of STATES) {
+            for (const snowboard of STATES) {
+                const { text } = render(ski, snowboard);
+                assert.doesNotMatch(text, /form below|fill out the form/i,
+                    `${ski} + ${snowboard} points at the form in words`);
+            }
+        }
+    });
+
+    test('the mailing list is offered whatever the state', () => {
+        // Somebody already signed up for lessons may still want to hear what
+        // happens next, so this is not conditional on having nothing to do.
+        for (const ski of STATES) {
+            for (const snowboard of STATES) {
+                const { links } = render(ski, snowboard);
+                assert.ok(links.includes('/join-our-mailing-list'), `${ski} + ${snowboard}`);
+            }
+        }
+    });
+
+    test('a state that still carries the old form setting is refused', () => {
+        // It would silently do nothing, which is how a file starts lying to
+        // whoever reads it next.
+        const stale = { ...STATUS, status: { ...STATUS.status,
+            states: { ...STATUS.status.states, full: { says: 'are full', form: false } } } };
+        assert.throws(
+            () => applyStatus(stale, { skiState: 'full', snowboardState: 'full' }, 'lesson-registration'),
+            (error) => {
+                assert.ok(error instanceof ContentError);
+                assert.match(error.message, /"full" state still gives|still gives the "full" state/);
+                assert.match(error.message, /always on the page/);
+                return true;
+            }
+        );
+    });
+
     test('a placeholder that survived filling in is caught, not printed', () => {
         // The club once published a literal "{}" this way and it sat live.
-        const broken = { ...STATUS, status: { ...STATUS.status,
-            then: { ...STATUS.status.then, none: 'Opens {some_day}.' } } };
+        const broken = { ...STATUS, status: { ...STATUS.status, then: 'Opens {some_day}.' } };
         assert.throws(
             () => applyStatus(broken, { skiState: 'full', snowboardState: 'full' }, 'lesson-registration'),
             (error) => {
@@ -342,19 +357,21 @@ describe('tokens in the document text', () => {
 
     test('the layout own strings it passes over are left alone', () => {
         // walk now touches every string, including ones that are not prose:
-        // block types, form URLs, sheet box items. None contain tokens, and
-        // {form_url} is resolved elsewhere, so none may be altered here.
+        // block types, form URLs, sheet box items. None contain tokens, and a
+        // token the sheet does not supply is left alone in a document's prose
+        // rather than failing the build — an officer writing "{warm} jacket"
+        // must not be able to freeze the site.
         const block = {
             type: 'big-white-box centered-text',
             form: { src: 'https://example/form?embedded=true', title: 'Form' },
             boxes: [{ heading: 'Session A', items: ['Lesson 1: Jan 30 - Jan 31'] }],
-            content: [para('Cancel by {form_url}.')],
+            content: [para('Cancel by {not_a_token}.')],
         };
         const filled = fillContentTokens([block], settings, 'lesson-registration');
         assert.equal(filled[0].type, block.type);
         assert.equal(filled[0].form.src, block.form.src);
         assert.deepEqual(filled[0].boxes, block.boxes);
-        assert.equal(textOf(filled), 'Cancel by {form_url}.');
+        assert.equal(textOf(filled), 'Cancel by {not_a_token}.');
     });
 
     test('text with no tokens comes back byte-identical', () => {

@@ -26,12 +26,6 @@ const TOKENS = {
 };
 
 /**
- * `{form_url}` is resolved per block by applyStatus, not from the sheet, so
- * the site-wide pass leaves it alone rather than rejecting it as unknown.
- */
-const DEFERRED = ['form_url'];
-
-/**
  * The sheet's own values, plus everything derivable from them.
  *
  * Dates are computed rather than typed so no date is maintained in two places.
@@ -50,8 +44,6 @@ export function derive(settings, layoutName) {
 
 export function fillTokens(value, settings, layoutName) {
     return value.replace(/\{([a-z_]+)\}/g, (whole, token) => {
-        if (DEFERRED.includes(token)) return whole;
-
         const key = TOKENS[token];
         if (!key) {
             throw new ContentError(
@@ -203,6 +195,19 @@ export function applyStatus(entry, settings, layoutName) {
         }
 
         const wording = status.states[state];
+        if (wording && 'form' in wording) {
+            // The three-treatment rule is gone: the form is always embedded,
+            // so a leftover setting here does nothing. Said out loud rather
+            // than ignored, because a key that quietly stopped mattering is
+            // exactly what misleads whoever reads this file next.
+            throw new ContentError(
+                `content/${layoutName}.layout.json still gives the "${state}" ` +
+                `state a "form" setting, which no longer does anything — the ` +
+                `registration form is now always on the page.\n\n` +
+                `Remove that line from the "status" block.\n\n` +
+                `The website has not been changed. It is still showing the previous version.`
+            );
+        }
         if (!wording) {
             throw new ContentError(
                 `The sheet says ${sport.label.toLowerCase()} are "${state.replace(/_/g, ' ')}", ` +
@@ -223,27 +228,14 @@ export function applyStatus(entry, settings, layoutName) {
         ? `${status.bothLabel} ${sports[0].wording.says}.`
         : sports.map((s) => `${s.label} ${s.wording.says}.`).join(' ');
 
-    // Three ways to treat the form, strongest wins across the two sports —
-    // the point of separating the states is that ski filling up must not turn
-    // away snowboarders.
+    // One closing line, the same in every state. It says nothing about the
+    // form, deliberately: the form is always on the page now, and a sentence
+    // pointing at it would contradict the status sentence above whenever
+    // lessons are full.
     //
-    //   embed  the form is the thing to do, so it is on the page
-    //   link   nothing to fill in yet, but a parent can open it and look, or
-    //          keep the tab for when it opens
-    //   false  not offered at all
-    //
-    // Embedding under "registration is not open yet" invites somebody to do
-    // something that will not work; hiding it entirely gives them nowhere to
-    // go. A link is the honest middle.
-    const modes = sports.map((s) => s.wording.form);
-    const mode = modes.includes('embed') ? 'embed'
-        : modes.includes('link') ? 'link'
-            : 'none';
-
-    // Written once in the layout, reused in the sentence, so the address of the
-    // form cannot drift between the link and the embed.
-    const openUrl = form ? form.src.replace(/[?&]embedded=true/, '') : '';
-    const then = status.then[mode].replaceAll('{form_url}', openUrl);
+    // The mailing list is offered whatever the state, because somebody who has
+    // already signed up for lessons may still want to hear what happens next.
+    const then = status.then;
 
     // Nothing may reach a reader still looking like a placeholder. The club
     // once published a literal "{}" this way, and it sat on the live site.
@@ -266,7 +258,11 @@ export function applyStatus(entry, settings, layoutName) {
             { type: 'paragraph', spans: linkedSpans(sentence) },
             { type: 'paragraph', spans: linkedSpans(then) },
         ],
-        ...(mode === 'embed' && form ? { form } : {}),
+        // Always, whatever the sheet says. Google Forms is the authority on
+        // whether it will take an answer, and it is more specific than
+        // anything this file could say — a form scheduled to open announces
+        // the date and time in its own words, and a closed one says so.
+        ...(form ? { form } : {}),
     };
 }
 

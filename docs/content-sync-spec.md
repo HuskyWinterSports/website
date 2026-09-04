@@ -656,52 +656,72 @@ Two sports across four states is sixteen combinations, so the sentence is
 clause; when both agree they are said once, because *"Ski lessons are full.
 Snowboard lessons are full."* reads like a mistake.
 
-| Sheet value | Sentence fragment | The form |
-|---|---|---|
-| `not yet open` | …are not open for registration yet | **linked** |
-| `open` | …are open for registration | **embedded** |
-| `waitlist` | …are full, but you can join the waitlist | **embedded** |
-| `full` | …are full for this season | not offered |
-
-**The form has three treatments, not two.** Embedding it under "registration
-is not open yet" invites a parent to do something that will not work; hiding it
-entirely gives them nowhere to go. A link is the honest middle — they can see
-what it asks for and keep the tab for when it opens.
-
-Then one closing line, chosen by the **strongest** treatment across the two
-sports, so snowboard being open still puts the form on the page while ski
-lessons are full:
-
-| Strongest treatment | Closing line |
+| Sheet value | Sentence fragment |
 |---|---|
-| embedded | Fill out the form below to sign up. |
-| linked | You can [open the registration form]({form_url}) to see what it asks for, though it will not accept answers until registration opens. [Join our mailing list](…) and we will email you when it does. |
-| none | [Join our mailing list](…) and we will email you when registration opens. |
+| `not yet open` | …are not open for registration yet |
+| `open` | …are open for registration |
+| `waitlist` | …are full, but you can join the waitlist |
+| `full` | …are full for this season |
 
-`{form_url}` is the block's own embed address with `embedded=true` stripped, so
-the linked and embedded addresses cannot drift apart. It is the one token
-resolved per block rather than from the sheet. **Anything still looking like a
-placeholder once filling in is done is refused rather than printed** — the club
-published a literal `{}` that way once, and it sat on the live site until
-somebody happened to read it.
+Then one closing line, **the same in every state**:
+
+> [Join our mailing list](/join-our-mailing-list) for status updates.
+
+It is offered whatever the sheet says, because somebody who has already signed
+up for lessons may still want to hear what happens next.
+
+**Anything still looking like a placeholder once filling in is done is refused
+rather than printed** — the club published a literal `{}` that way once, and it
+sat on the live site until somebody happened to read it.
+
+#### The form is on the page in every state — changed 2026-09-04
+
+**This reverses the three-treatment rule.** The form used to be embedded,
+linked, or absent depending on the strongest state across the two sports, on
+the reasoning that a signup form under *"registration is not open yet"* invites
+a parent to do something that will not work.
+
+That reasoning was sound and its premise was wrong. Loaded in a browser on
+2026-09-04, the club's own registration form reads:
+
+> HWS 2026 Season Lesson Registration
+> **This form will open September 1, 10:00 a.m.**
+
+No fields, no submit button. **Google Forms already refuses answers it will not
+take, and says why in words this file cannot improve on** — a scheduled form
+announces its own opening date and time; a closed one says it is closed. The
+layout could only ever say something vaguer, maintained in a second place, and
+liable to disagree with the form it describes.
+
+So the form is embedded unconditionally, and two things follow:
+
+- **The closing line says nothing about the form.** That is what keeps the old
+  pairing bug from coming back by another route: with the form always present,
+  a line reading *"the form is below"* would contradict *"lessons are full"* in
+  four of the sixteen combinations. Saying nothing cannot contradict anything,
+  and the embed speaks for itself.
+- **A state that still carries a `form` setting is refused**, rather than
+  ignored. A key that quietly stopped mattering is how a layout file starts
+  lying to whoever reads it next.
+
+The "open it in a new window" link the `link` treatment provided is not lost:
+`EmbeddedForm` renders one above every embed, derived from the embed address,
+so the two cannot drift apart.
+
+⚠️ **The state in the sheet is now wording only.** It no longer gates anything,
+so an officer who leaves it stale makes the page read wrong without making it
+behave wrong — a smaller failure than before, but a quieter one.
 
 Worked examples, all produced by the real code:
 
-| Ski | Snowboard | Page reads |
-|---|---|---|
-| not yet open | not yet open | Ski and snowboard lessons are not open for registration yet. Join our mailing list… |
-| open | open | Ski and snowboard lessons are open for registration. Fill out the form below to sign up. |
-| **full** | **open** | Ski lessons are full for this season. Snowboard lessons are open for registration. Fill out the form below to sign up. |
-| waitlist | open | Ski lessons are full, but you can join the waitlist. Snowboard lessons are open for registration. Fill out the form below to sign up. |
-| full | full | Ski and snowboard lessons are full for this season. Join our mailing list… |
-| full | not yet open | Ski lessons are full for this season. Snowboard lessons are not open for registration yet. You can open the registration form… |
-
-**The form appears only when some sport can actually take a signup.** A signup
-form underneath "registration is not open yet" invites a parent to do
-something that will not work. That pairing is the reason the wording lives in
-the layout file rather than the sheet: an officer changing one cell must not be
-able to leave the words and the form contradicting each other, which is exactly
-what the hand-written page did for months.
+| Ski | Snowboard | Page reads | Form |
+|---|---|---|---|
+| not yet open | not yet open | Ski and snowboard lessons are not open for registration yet. Join our mailing list for status updates. | yes |
+| open | open | Ski and snowboard lessons are open for registration. Join our mailing list for status updates. | yes |
+| **full** | **open** | Ski lessons are full for this season. Snowboard lessons are open for registration. Join our mailing list for status updates. | yes |
+| waitlist | open | Ski lessons are full, but you can join the waitlist. Snowboard lessons are open for registration. Join our mailing list for status updates. | yes |
+| full | full | Ski and snowboard lessons are full for this season. Join our mailing list for status updates. | yes |
+| full | not yet open | Ski lessons are full for this season. Snowboard lessons are not open for registration yet. Join our mailing list for status updates. | yes |
 
 #### Why this wording is not in the sheet, and how to change it
 
@@ -712,8 +732,9 @@ are not, for two reasons:
    code supplies — *"Ski lessons"* + *"are full"*. Exposing half a sentence for
    editing invites *"Ski lessons is full"*, or a fragment that reads fine alone
    and wrong once composed.
-2. **The form pairing above.** Words and form must stay consistent, and only
-   one of the two is being edited.
+2. **Grammar again, in the closing line.** It is one sentence shared by every
+   state, so it has to be true in all of them — the property that keeps it from
+   contradicting the status sentence above it.
 
 **To change the wording, edit `content/lesson-registration.layout.json`** — the
 whole mapping is in one `status` block, readable without knowing any code. It

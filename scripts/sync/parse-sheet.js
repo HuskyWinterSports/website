@@ -29,6 +29,7 @@ const SETTINGS = {
     'Season Year': 'seasonYear',
     'Ski Registration State': 'skiState',
     'Snowboard Registration State': 'snowboardState',
+    'Registration Form': 'registrationForm',
 };
 
 /**
@@ -159,6 +160,71 @@ function normaliseState(value, label) {
 }
 
 /**
+ * Turns whatever address an officer pasted into the published form's own.
+ *
+ * Google Forms has several addresses for the same form, and which one you get
+ * depends on when you copy it. Measured 2026-09-04, while the club's form was
+ * scheduled to open: /viewform answered 302 to /closedform, so copying the
+ * address out of the browser bar hands you today's state. Frozen into the
+ * sheet, that leaves a closed form still showing after it opens. /viewform is
+ * the address Google redirects FROM in every state, so it is the one that keeps
+ * working — everything after the form's id is discarded and rebuilt.
+ *
+ * Only the PUBLISHED address, /forms/d/e/<id>, is accepted. /forms/d/<id> is
+ * the form file, and it serves the form only if link sharing happens to be set
+ * to anyone; otherwise it answers with a sign-in page, which inside an iframe
+ * is indistinguishable from a blank box. The two cannot be told apart without
+ * fetching, so the one that can fail silently is refused.
+ */
+export function normaliseFormUrl(value, label) {
+    if (!value) return null;
+
+    const refuse = (what, how) => {
+        throw new ContentError(
+            `The sheet's "${label}" cell ${what}\n\n  ${value}\n\n${how}\n\n` +
+            `The website has not been changed. It is still showing the previous version.`
+        );
+    };
+
+    const paste = `To get the right address: open the form, press Send, choose ` +
+        `the link tab, turn OFF "Shorten URL", and copy what it shows.`;
+
+    const written = value.trim();
+
+    if (/^https?:\/\/forms\.gle\//i.test(written)) {
+        // Resolvable with one more request, deliberately not resolved: a short
+        // link is an indirection somebody can re-point without touching the
+        // sheet, which is the opposite of what a sheet cell is for.
+        refuse('holds a shortened link, which the website does not follow.', paste);
+    }
+    if (/\/edit\b/i.test(written)) {
+        refuse(
+            'holds the address for EDITING the form, not for filling it in.',
+            `Anyone sent there would be asked to sign in.\n\n${paste}`
+        );
+    }
+
+    const published =
+        /^https?:\/\/docs\.google\.com\/forms\/d\/e\/([A-Za-z0-9_-]+)(\/|$)/i.exec(written);
+    if (!published) {
+        const isFile =
+            /^https?:\/\/docs\.google\.com\/forms\/d\/([A-Za-z0-9_-]+)(\/|$)/i.test(written);
+        refuse(
+            isFile
+                ? 'holds the address of the form FILE rather than the published form.'
+                : 'does not look like a Google Forms address.',
+            isFile
+                ? `That address only works for people the form is already shared ` +
+                  `with. Everybody else gets a sign-in page, which on the website ` +
+                  `looks like an empty box rather than an error.\n\n${paste}`
+                : paste
+        );
+    }
+
+    return `https://docs.google.com/forms/d/e/${published[1]}/viewform`;
+}
+
+/**
  * @param {string} csv Raw body from /spreadsheets/d/e/<pubId>/pub?output=csv
  * @returns {{settings: object, prices: Array, warnings: string[]}}
  */
@@ -198,6 +264,9 @@ export function parseSheet(csv) {
     for (const key of STATE_KEYS) {
         settings[key] = normaliseState(settings[key], LABEL_BY_KEY.get(key));
     }
+    settings.registrationForm = normaliseFormUrl(
+        settings.registrationForm, LABEL_BY_KEY.get('registrationForm')
+    );
 
     const type = at('lesson type');
     const three = at('3 week price');

@@ -539,6 +539,7 @@ the sheet must not be able to take the site down.
 | `Season Year` | 2026/27 | The heading that still says 2025/2026 |
 | `Registration State` | Not yet open | Normalise to the enum; the site picks the sentence |
 | `Refund Deadline` | Dec 31 | Display text, not a date to compute with |
+| `Registration Form` | …/closedform | The form the page embeds. Normalised — see §5.4e |
 
 `Registration State` arrives as human text (`Not yet open`), so normalise —
 lowercase, spaces to underscores — and validate against the permitted set,
@@ -622,6 +623,51 @@ wrong on a known date with nobody watching — it read "© 2025" throughout 2026
 A literal year that has been overtaken is named in the log every run, and never
 corrected on the way through: a page silently disagreeing with the document
 leaves an editor with two answers and no way to tell which one is live.
+
+### 5.4e The registration form address lives in the sheet — moved 2026-09-04
+
+`content/lesson-registration.layout.json` used to carry the form's address on
+its `form.src` line. It is now the sheet's `Registration Form` cell, reached
+through `{registration_form}` — so replacing the form for a new season is one
+cell an officer already owns, rather than a pull request.
+
+**Whatever they paste is reduced to the form's id and rebuilt.** Google Forms
+has several addresses for one form, and which one you get depends on when you
+copy it:
+
+| Pasted | Stored |
+|---|---|
+| `…/d/e/<id>/viewform` | `…/d/e/<id>/viewform` |
+| `…/d/e/<id>/closedform` | `…/d/e/<id>/viewform` |
+| `…/d/e/<id>/viewform?usp=sf_link` | `…/d/e/<id>/viewform` |
+| `https://forms.gle/…` | **refused** — a short link can be re-pointed elsewhere without the sheet changing |
+| `…/d/<id>/…` | **refused** — see below |
+| `…/edit` | **refused** — sends a parent to a sign-in page |
+
+The club's own cell holds `/closedform`, because they copied it out of the
+browser bar while the form was scheduled to open. Measured 2026-09-04,
+`/viewform` answered **302 to `/closedform`** — so the browser bar hands you
+today's state. Stored as pasted, that would leave a closed form on the page
+after registration opened. `/viewform` is the address Google redirects *from*
+in every state, so it is the one that keeps working.
+
+**`/forms/d/<id>` is refused even though it often works.** That is the form
+*file*, and it serves the form only when link sharing happens to be set to
+anyone; otherwise it answers with a sign-in page — which inside an iframe is
+indistinguishable from a blank box. The two cannot be told apart without
+fetching, so the one that can fail invisibly is refused. `/forms/d/e/<id>` is
+the published address, the same shape every other source here uses.
+
+`embedded=true` is **not** stored. It is added where the form block is attached,
+so `{registration_form}` stays an address a person can be sent to: it strips
+the form's own chrome, which is right inside a frame and wrong in a link
+somebody follows. `EmbeddedForm` strips it again to build the "open in a new
+window" link, so the two can never drift apart.
+
+⚠️ **A missing `Registration Form` row is a warning in the sheet reader and
+fatal only where it is needed.** The same sheet builds Lesson Info, which does
+not embed the form and must not be taken down by its absence; Lesson
+Registration fails when the token cannot be filled, and says which row to add.
 
 ### 5.4d The footer is a layout with no route — implemented 2026-08-26
 

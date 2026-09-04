@@ -18,6 +18,7 @@ import { seasonEndYear, lessonWeekends, refundDeadline, lessonRange } from './le
  */
 const TOKENS = {
     year: 'year',
+    registration_form: 'registrationForm',
     season_year: 'seasonYear',
     lesson_director: 'lessonDirector',
     refund_deadline: 'refundDeadline',
@@ -174,6 +175,9 @@ export function linkedSpans(text) {
  * saying lessons were full in one paragraph and open for snowboarders two
  * paragraphs later.
  */
+/** The same address, asking Google to leave the page furniture off. */
+const embedded = (src) => (src.includes('embedded=true') ? src : `${src}?embedded=true`);
+
 export function applyStatus(entry, settings, layoutName) {
     const { status, form, ...rest } = entry;
 
@@ -262,7 +266,12 @@ export function applyStatus(entry, settings, layoutName) {
         // whether it will take an answer, and it is more specific than
         // anything this file could say — a form scheduled to open announces
         // the date and time in its own words, and a closed one says so.
-        ...(form ? { form } : {}),
+        //
+        // `embedded=true` is added here rather than stored in the sheet's
+        // value, so {registration_form} stays an address a person can be sent
+        // to. It strips the form's chrome, which is right inside the frame and
+        // wrong in a link somebody follows.
+        ...(form ? { form: { ...form, src: embedded(form.src) } } : {}),
     };
 }
 

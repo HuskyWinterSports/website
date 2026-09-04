@@ -4,7 +4,9 @@ import { readFileSync } from 'node:fs';
 import { parseSheet, parseCsv } from '../scripts/sync/parse-sheet.js';
 import { ContentError } from '../scripts/sync/join-sections.js';
 
-// The club's real published sheet, captured 2026-08-12.
+// The club's real published sheet. Captured 2026-08-12; the Registration
+// Form rows added 2026-09-04, as the club wrote them — the address is
+// /closedform because the form was scheduled to open when they copied it.
 const FIXTURE = readFileSync(
     new URL('./fixtures/published-sheet.csv', import.meta.url),
     'utf8'
@@ -33,6 +35,9 @@ describe('reading the real sheet', () => {
             seasonYear: '2026/27',
             skiState: 'not_yet_open',
             snowboardState: 'not_yet_open',
+            // Pasted as /closedform, stored as the address that keeps working.
+            registrationForm: 'https://docs.google.com/forms/d/e/1FAIpQLSfjLegq7v2dtmj' +
+                'G_YTOisGHB9gBcoSKPdTvs9VDIEcfnHs-0Q/viewform',
         });
     });
 
@@ -195,5 +200,105 @@ describe('failure messages', () => {
                 return true;
             }
         );
+    });
+});
+
+/**
+ * The address of the registration form, which moved out of the layout file and
+ * into the sheet so that replacing the form for a new season is one cell.
+ *
+ * Google Forms has several addresses for the same form, and which one an
+ * officer copies depends on when they copy it — so what they paste is reduced
+ * to the form's own id and rebuilt.
+ */
+describe('the registration form address', () => {
+    const ID = '1FAIpQLSfjLegq7v2dtmjG_YTOisGHB9gBcoSKPdTvs9VDIEcfnHs-0Q';
+    const CANONICAL = `https://docs.google.com/forms/d/e/${ID}/viewform`;
+
+    const paste = (url) =>
+        parseSheet(FIXTURE.replace(/https:\/\/docs\.google\.com\S*closedform/, url))
+            .settings.registrationForm;
+
+    test('a closed form pastes as /closedform, and is not stored that way', () => {
+        // Measured 2026-09-04: /viewform answered 302 to /closedform while the
+        // form was scheduled, so the browser bar hands you today's state.
+        // Storing it would leave the site showing a closed form after it opened.
+        assert.equal(paste(`https://docs.google.com/forms/d/e/${ID}/closedform`), CANONICAL);
+    });
+
+    test('every other address for the same form lands in the same place', () => {
+        for (const written of [
+            `https://docs.google.com/forms/d/e/${ID}/viewform`,
+            `https://docs.google.com/forms/d/e/${ID}/viewform?usp=sf_link`,
+            `http://docs.google.com/forms/d/e/${ID}/viewform`,
+        ]) {
+            assert.equal(paste(written), CANONICAL, written);
+        }
+    });
+
+    test('the form-FILE address is refused, because it can fail invisibly', () => {
+        // /forms/d/<id> serves the form only if link sharing happens to be set
+        // to anyone. Otherwise it answers with a sign-in page, and a sign-in
+        // page inside an iframe looks like an empty box rather than an error —
+        // the plausible wrong answer this codebase exists to refuse. It cannot
+        // be told from the working case without fetching it.
+        assert.throws(
+            () => paste('https://docs.google.com/forms/d/1abcDEF_ghi/viewform'),
+            (error) => {
+                assert.ok(error instanceof ContentError);
+                assert.match(error.message, /form FILE rather than the published form/);
+                assert.match(error.message, /looks like an empty box/);
+                return true;
+            }
+        );
+    });
+
+    test('the editing address is refused, because it would ask a parent to sign in', () => {
+        assert.throws(
+            () => paste('https://docs.google.com/forms/d/1abcDEF_ghi/edit'),
+            (error) => {
+                assert.ok(error instanceof ContentError);
+                assert.match(error.message, /EDITING the form/);
+                assert.match(error.message, /press Send/);
+                return true;
+            }
+        );
+    });
+
+    test('a shortened link is refused rather than followed', () => {
+        // One more request would resolve it. It is refused instead: a short
+        // link can be re-pointed somewhere else without the sheet changing,
+        // which is the opposite of what a sheet cell is for.
+        assert.throws(
+            () => paste('https://forms.gle/abc123'),
+            (error) => {
+                assert.match(error.message, /shortened link/);
+                assert.match(error.message, /Shorten URL/);
+                return true;
+            }
+        );
+    });
+
+    test('something that is not a form address says so, and quotes the cell back', () => {
+        assert.throws(
+            () => paste('ask charlotte'),
+            (error) => {
+                assert.match(error.message, /does not look like a Google Forms address/);
+                assert.match(error.message, /ask charlotte/);
+                assert.match(error.message, /"Registration Form" cell/);
+                return true;
+            }
+        );
+    });
+
+    test('a missing row is a warning here, and fatal only where it is needed', () => {
+        // Reported, not thrown: the same sheet builds Lesson Info, which does
+        // not embed the form and must not be taken down by its absence. The
+        // page that needs it fails when the token cannot be filled.
+        const without = FIXTURE.split('\n')
+            .filter((line) => !/^Registration Form|closedform/.test(line)).join('\n');
+        const { settings, warnings } = parseSheet(without);
+        assert.equal(settings.registrationForm, null);
+        assert.match(warnings.join('\n'), /no "Registration Form" row/);
     });
 });

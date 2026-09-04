@@ -116,7 +116,8 @@ describe('registration status', () => {
             },
             then: '[Join our mailing list](/join-our-mailing-list) for status updates.',
         },
-        form: { src: 'https://example/form?embedded=true', title: 'Form' },
+        // As the sheet supplies it: an address a person could be sent to.
+        form: { src: 'https://example/form/viewform', title: 'Form' },
     };
 
     const render = (skiState, snowboardState) => {
@@ -124,6 +125,7 @@ describe('registration status', () => {
         return {
             text: block.content.map((c) => c.spans.map((s) => s.text).join('')).join(' '),
             form: !!block.form,
+            src: block.form?.src,
             links: block.content.flatMap((c) => c.spans.filter((s) => s.href).map((s) => s.href)),
         };
     };
@@ -167,6 +169,22 @@ describe('registration status', () => {
                     `${ski} + ${snowboard} points at the form in words`);
             }
         }
+    });
+
+    test('the embed asks Google to leave the page furniture off', () => {
+        // Added here rather than stored in the sheet, so {registration_form}
+        // stays an address a person can follow — embedded=true strips the
+        // form's chrome, which is right in a frame and wrong in a link.
+        assert.equal(
+            render('open', 'open').src,
+            'https://example/form/viewform?embedded=true'
+        );
+    });
+
+    test('an address that already says so is not asked twice', () => {
+        const already = { ...STATUS, form: { src: 'https://example/f?embedded=true', title: 'F' } };
+        const block = applyStatus(already, { skiState: 'open', snowboardState: 'open' }, 'x');
+        assert.equal(block.form.src, 'https://example/f?embedded=true');
     });
 
     test('the mailing list is offered whatever the state', () => {

@@ -178,10 +178,16 @@
 .slide-year {
     margin: 10px auto 0;
     text-align: center;
+    text-decoration: bold;
     font-size: 1.05em;
     letter-spacing: 3px;
     font-variant-numeric: tabular-nums;
     color: rgb(80, 44, 132);
+}
+
+.slide-year strong {
+  border-radius: 5px;
+  background: white;
 }
 
 @media (prefers-reduced-motion: reduce) {

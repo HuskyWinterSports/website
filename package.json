@@ -13,6 +13,7 @@
     "test:unit": "node --test tests/**/*.test.js",
     "test:all": "npm run test:unit && playwright test",
     "test:report": "playwright show-report",
+    "test:a11y": "playwright test tests/a11y.spec.js",
     "sync": "node scripts/sync/sync-content.js",
     "audit:widows": "node scripts/audit/find-widows.js",
     "sync:photos": "node scripts/sync/sync-photos.js"
@@ -23,6 +24,7 @@
     "react-router-dom": "^7.8.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@eslint/js": "^9.32.0",
     "@playwright/test": "^1.62.1",
     "@types/react": "^19.1.9",

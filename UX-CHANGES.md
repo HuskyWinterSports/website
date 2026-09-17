@@ -14,6 +14,8 @@ listed at the bottom of each entry under "Behind the scenes" and can be skipped.
 
 ### 1. Four pages were impossible to reach on a phone. Now they work.
 
+Review: phones do have a hover ability, the webpage was reachable on mobile.
+
 **What was wrong:** The menu's sub-items only appeared when you *hovered a
 mouse over* them. Phones and tablets have no hover. So on a phone, tapping
 "Lessons" jumped straight to the Lesson Info page and the sub-items never

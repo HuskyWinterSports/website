@@ -25,7 +25,9 @@
   --hws-focus: #0b5fff;
   --hws-focus-halo: #ffffff;
 
-  /* The bar's minimum height. The menu panel hangs below it and subtracts it. */
+  /* The bar's minimum height, and the gap the open menu leaves for the close
+     button. Used twice in Navbar.css — removing it collapses the bar and puts
+     the menu links under the button. */
   --navbar-height: 60px;
 }
 
@@ -101,8 +103,6 @@ main:focus:not(:focus-visible) {
   outline: none;
 }
 
-/* A landmark, not a control: it keeps the browser's own ring rather than the
-   site one, so the skip link looks the same as it did. */
 main:focus-visible {
   outline: auto;
   box-shadow: none;

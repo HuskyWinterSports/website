@@ -8,6 +8,126 @@ listed at the bottom of each entry under "Behind the scenes" and can be skipped.
 
 ---
 
+## 2026-09-17 — Accessibility overhaul
+
+**Status:** ready to review, not yet live.
+
+The site was audited against WCAG 2.2 AA — the accessibility standard most
+public bodies and universities are held to. Everything below is either a fix
+for something that failed, or a change that makes a failure harder to
+reintroduce. Most of it is small and visible; one part is a thing officers can
+now do themselves.
+
+### 12. Links in body text are underlined now
+
+**What was wrong:** Links were marked only by being purple. That is not enough
+on its own — the standard asks that a link be distinguishable from the words
+around it by something other than colour, unless the two colours are far enough
+apart. Ours were not: the club purple against black body text measures 2.0,
+where 3.0 is the minimum.
+
+**Why this mattered:** Roughly one man in twelve has some form of colour vision
+deficiency. For them, several of our links were simply not visibly links.
+
+**What you'll notice:** Links inside paragraphs, in the FAQ and in the footer
+are now underlined. Buttons are not — a button already looks like a button.
+This is the most visible change in this batch and it does change the look of
+text-heavy pages.
+
+### 13. The keyboard outline is now visible everywhere
+
+**What was wrong:** People who navigate with the Tab key rather than a mouse
+need to see which item they are on. Ours was a thin purple or white line
+depending on where you were, and over a photograph it disappeared entirely —
+the carousel was the worst case.
+
+**What you'll notice:** A blue outline with a thin white edge on each side,
+the same everywhere on the site. The white edges are the point: they mean the
+blue never sits directly against the page, so it stays visible on a white
+panel, a purple stripe or a snowy photo alike. It only appears when navigating
+by keyboard, so mouse users will not see it.
+
+### 14. A "Skip to the main content" link
+
+**What was wrong:** Ten navigation links sit between the top of every page and
+its content. Anyone using a keyboard or a screen reader had to step through all
+ten, on every single page.
+
+**What you'll notice:** Nothing, unless you press Tab as a page loads — a
+purple box appears at the top left. Press Enter and it jumps past the menu.
+Press Tab again and it disappears.
+
+### 15. The menu now pushes the page down instead of covering it
+
+**What was wrong:** On a phone the menu appeared *over* the page. If the window
+was short — a phone held sideways, or a visitor using large text — the bottom
+of the menu ran off the screen and there was no way to scroll to it. Those
+links could not be reached at all.
+
+**What you'll notice:** Opening the menu pushes the page content down rather
+than covering it, and you scroll the page normally to see the rest of the menu.
+
+### 16. The carousel dots and arrows are easier to hit
+
+**What was wrong:** The dots under the home page photos were 9 pixels across
+and 9 pixels apart — well under the 24-pixel minimum the standard now sets, and
+genuinely fiddly with a thumb.
+
+**What you'll notice:** The dots look the same size but the area around each one
+that responds to a tap is much larger, so you are far less likely to hit the
+wrong photo.
+
+### 17. Smaller things
+
+- The **hover colour on buttons** was so pale that white text on it was
+  unreadable. It is now a darker purple.
+- The link above each **registration form** said "Click *here* to open the form
+  in a new window." It now reads "**Open the form in a new window**" as one
+  link. A screen reader user can call up a list of every link on a page; in that
+  list, "here" told them nothing.
+- Following a link now puts the keyboard cursor **at the start of the new
+  page's content** rather than back at the top of the menu.
+
+### 18. Two things an officer can now fix without a developer
+
+The hourly sync now checks the words as well as the structure, and writes a
+plain note in its log when it finds either of these:
+
+- **A photograph still named the way the camera named it** — `IMG_4821.jpg` and
+  the like. The file name in Drive *is* what a screen reader reads out in place
+  of the picture, so that photo currently announces itself as "Img 4821".
+  **Renaming the file in Drive to describe what is in it fixes it completely.**
+- **A link whose words are "here", "click here" or "read more".** Rewriting it
+  to name its destination — "read the refund policy" — is the whole fix, and it
+  is done in the document.
+
+Neither ever stops the site updating. They are notes, not errors.
+
+### Behind the scenes
+
+- An automated accessibility check now runs over every page on every change,
+  including the hourly content updates, so a document edit cannot quietly
+  reintroduce a problem this can see.
+- The colours are defined once in one place rather than scattered across four
+  stylesheets, with the measured contrast of each recorded beside it.
+- `docs/accessibility-manual-audit.md` is a step-by-step script for the checks
+  a machine cannot do — keyboard, zoom, screen reader — with a pass criterion
+  for each. Worth re-running before any release that touches the menu, the
+  carousel or the stylesheets.
+- Fixed a bug where the navigation bar was 40 pixels wider than the window,
+  which let the whole page scroll sideways.
+
+### Still outstanding
+
+- **The screen reader pass has not been completed.** Parts 1 to 4 and 6 of the
+  audit passed; Part 5 was deferred. The carousel and the two embedded Google
+  Forms are the most likely places for something to still be wrong.
+- The keyboard checks were run in Chrome and in Safari **with "Press Tab to
+  highlight each item on a webpage" switched on** — Safari ships with that off,
+  and skips links entirely when it is.
+
+---
+
 ## 2026-08-10 — Menu fixes
 
 **Status:** ready to review, not yet live.

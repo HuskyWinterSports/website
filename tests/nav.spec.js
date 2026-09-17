@@ -213,8 +213,13 @@ test.describe('skipping the navigation', () => {
         expect(atRest.y + atRest.height).toBeLessThanOrEqual(0);
 
         await skip.focus();
-        const shown = await skip.boundingBox();
-        expect(shown.y).toBeGreaterThanOrEqual(0);
+
+        // Polled, not read once: `.skip-link` has `transition: top 0.15s`, so
+        // immediately after focus it is still somewhere above the window and a
+        // single boundingBox() catches it mid-slide.
+        await expect
+            .poll(async () => (await skip.boundingBox()).y)
+            .toBeGreaterThanOrEqual(0);
     });
 
     test('following it puts focus past the menu, in the content', async ({ page }) => {
@@ -312,13 +317,25 @@ test.describe('the bar and the content do not overlap', () => {
     });
 
     test('and still does when the bar grows with larger text', async ({ page }) => {
+        // At phone width the bar holds nothing in normal flow — the hamburger
+        // is absolutely positioned and the menu is a fixed overlay — so it
+        // cannot grow with text and there is nothing here to measure.
+        test.skip(page.viewportSize().width < 768, 'the bar has no in-flow content at this width');
+
         await page.goto('/');
-        // The bar used to be a fixed 60px with `main { margin-top: 60px }`
-        // hardcoded to match. Anything that made the bar taller — enlarged
-        // text, a longer menu — put it on top of the page's first heading.
-        await page.addStyleTag({ content: '.navbar, .navbar * { font-size: 30px !important; }' });
-        const { top, barBottom } = await clears(page);
-        expect(barBottom).toBeGreaterThan(60);
-        expect(top).toBeGreaterThanOrEqual(barBottom - 1);
+        const before = await clears(page);
+
+        // 60px, because the bar has `min-height: 60px`: at 30px the line box is
+        // only about 36px and the bar does not move at all, which made the
+        // first version of this test fail on a page that was behaving.
+        await page.addStyleTag({ content: '.navbar, .navbar * { font-size: 60px !important; }' });
+        const after = await clears(page);
+
+        // Both halves matter. The bar used to be a fixed 60px with
+        // `main { margin-top: 60px }` hardcoded to match, so anything that made
+        // it taller landed on the page's first heading.
+        expect(after.barBottom, 'the bar did not grow, so this proves nothing')
+            .toBeGreaterThan(before.barBottom);
+        expect(after.top).toBeGreaterThanOrEqual(after.barBottom - 1);
     });
 });

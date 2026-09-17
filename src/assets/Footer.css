@@ -11,8 +11,8 @@ footer p {
 }
 
 footer a {
-  color: rgb(80, 44, 132);
-  text-decoration: none;
+  color: var(--hws-purple);
+  text-decoration: underline;
 }
 
 footer ul {

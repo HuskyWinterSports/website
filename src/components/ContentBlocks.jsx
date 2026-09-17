@@ -85,10 +85,11 @@ function EmbeddedForm({ form }) {
     const openUrl = form.src.replace(/[?&]embedded=true/, '');
     return (
         <>
+            {/* Can't be just "here" for screen readers */}
             <p>
-                Click{' '}
-                <a href={openUrl} target="_blank" rel="noopener noreferrer">here</a>
-                {' '}to open the form in a new window.
+                <a href={openUrl} target="_blank" rel="noopener noreferrer">
+                    Open the form in a new window
+                </a>
             </p>
             <iframe
                 className="embedded-form"

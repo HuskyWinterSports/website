@@ -3,14 +3,6 @@ import { test, expect } from '@playwright/test';
 /**
  * Navigation tests.
  *
- * WHY THIS FILE EXISTS
- * --------------------
- * The site once shipped a nav whose dropdowns opened only on mouse hover.
- * On phones there is no hover, which left four pages — including Lesson
- * Registration and the mailing list signup — unreachable from the menu.
- * It linted clean and built clean the whole time.
- *
- * These tests exist so that can never silently happen again.
  *
  * A NOTE FOR FUTURE MAINTAINERS
  * -----------------------------
@@ -197,5 +189,136 @@ test.describe('layout', () => {
             () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1
         );
         expect(overflows).toBe(false);
+    });
+});
+
+test.describe('skipping the navigation', () => {
+    const skipLink = (page) =>
+        page.getByRole('link', { name: /skip to the main content/i });
+
+    test('the skip link is the first thing focus reaches', async ({ page }) => {
+        await page.goto('/');
+        await page.keyboard.press('Tab');
+        await expect(skipLink(page)).toBeFocused();
+    });
+
+    test('it is off the top of the window until it is focused', async ({ page }) => {
+        await page.goto('/');
+        const skip = skipLink(page);
+
+        // Deliberately NOT toBeHidden(): Playwright counts an element parked
+        // off-screen as visible, which is the whole reason the closed-menu bug
+        // below went unnoticed. Assert the position instead.
+        const atRest = await skip.boundingBox();
+        expect(atRest.y + atRest.height).toBeLessThanOrEqual(0);
+
+        await skip.focus();
+        const shown = await skip.boundingBox();
+        expect(shown.y).toBeGreaterThanOrEqual(0);
+    });
+
+    test('following it puts focus past the menu, in the content', async ({ page }) => {
+        await page.goto('/');
+        await skipLink(page).focus();
+        await page.keyboard.press('Enter');
+        await expect(page.locator('main#main-content')).toBeFocused();
+    });
+});
+
+test.describe('a closed menu is really closed', () => {
+    /**
+     * The regression this guards is invisible by every other measure: the
+     * panel was hidden with `transform: translateY(-100%)`, which moves it out
+     * of sight but leaves every link in the tab order. On a phone that meant
+     * tabbing off the hamburger into five stops nobody could see.
+     */
+    test('it holds no tab stops', async ({ page }) => {
+        test.skip(page.viewportSize().width >= 768, 'no closed state at this width');
+        await page.goto('/');
+
+        await expect(page.locator('#navbar-menu')).toBeHidden();
+
+        for (let i = 1; i <= 5; i++) {
+            await page.keyboard.press('Tab');
+            const inMenu = await page.evaluate(() =>
+                !!document.getElementById('navbar-menu')?.contains(document.activeElement)
+            );
+            expect(inMenu, `tab stop ${i} landed inside the closed menu`).toBe(false);
+        }
+    });
+});
+
+test.describe('focus is never dropped', () => {
+    test('Escape hands focus back to the button that opened the menu', async ({ page }) => {
+        await page.goto('/');
+        const hamburger = page.getByRole('button', { name: /open menu/i });
+        const onPhone = await hamburger.isVisible();
+        if (onPhone) await activate(hamburger);
+
+        const group = page.getByRole('button', { name: 'Lessons' });
+        await activate(group);
+        await page.getByRole('link', { name: 'Lesson Registration' }).focus();
+
+        await page.keyboard.press('Escape');
+
+        // On a phone the whole panel closes, so the group toggle goes with it
+        // and the hamburger is what is left to return to. On desktop the bar
+        // never closes and the group toggle is still there.
+        await expect(
+            onPhone ? page.getByRole('button', { name: /open menu/i }) : group
+        ).toBeFocused();
+    });
+
+    test('following a nav link moves focus into the new page', async ({ page }) => {
+        await page.goto('/');
+        await openMenu(page);
+        await activate(page.getByRole('button', { name: 'Questions' }));
+        await activate(page.getByRole('link', { name: 'FAQ', exact: true }));
+
+        await expectPath(page, '/faq');
+        // Without this the menu closes around the link that had focus, focus
+        // falls back to <body>, and the next Tab starts from the top of the
+        // page — the exact problem the skip link exists to avoid.
+        await expect(page.locator('main#main-content')).toBeFocused();
+    });
+
+    test('a fresh page load does not steal focus into the content', async ({ page }) => {
+        // Only navigation within the app moves focus. On a first load it has
+        // to stay at the top of the document, where the page title is, or a
+        // screen reader is talked over as it announces which page this is.
+        await page.goto('/faq');
+        await expect(page.locator('main#main-content')).not.toBeFocused();
+    });
+
+    test('Escape elsewhere on the page leaves focus alone', async ({ page }) => {
+        await page.goto('/faq');
+        await page.locator('main#main-content').focus();
+        await page.keyboard.press('Escape');
+        await expect(page.locator('main#main-content')).toBeFocused();
+    });
+});
+
+test.describe('the bar and the content do not overlap', () => {
+    const clears = async (page) => {
+        const bar = await page.locator('nav.navbar').boundingBox();
+        const content = await page.locator('main').boundingBox();
+        return { top: content.y, barBottom: bar.y + bar.height };
+    };
+
+    test('content starts below the bar', async ({ page }) => {
+        await page.goto('/');
+        const { top, barBottom } = await clears(page);
+        expect(top).toBeGreaterThanOrEqual(barBottom - 1);
+    });
+
+    test('and still does when the bar grows with larger text', async ({ page }) => {
+        await page.goto('/');
+        // The bar used to be a fixed 60px with `main { margin-top: 60px }`
+        // hardcoded to match. Anything that made the bar taller — enlarged
+        // text, a longer menu — put it on top of the page's first heading.
+        await page.addStyleTag({ content: '.navbar, .navbar * { font-size: 30px !important; }' });
+        const { top, barBottom } = await clears(page);
+        expect(barBottom).toBeGreaterThan(60);
+        expect(top).toBeGreaterThanOrEqual(barBottom - 1);
     });
 });

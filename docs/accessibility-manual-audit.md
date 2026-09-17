@@ -1,5 +1,7 @@
 # The accessibility audit
 
+This file is written by claude and double checked by Jules.
+
 Automated tools find about a third of WCAG AA. The rest needs a person with a
 keyboard, a zoom level and a screen reader. This is the script for that person.
 

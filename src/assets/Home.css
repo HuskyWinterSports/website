@@ -97,8 +97,20 @@
 }
 
 .image-slider .slide-track:focus-visible {
-    outline: 3px solid #fff;
+    outline: 3px solid transparent;
     outline-offset: -3px;
+    box-shadow: none;
+}
+
+.image-slider:has(.slide-track:focus-visible)::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    border: 2px solid var(--hws-focus-halo);
+    box-shadow: inset 0 0 0 3px var(--hws-focus),
+                inset 0 0 0 5px var(--hws-focus-halo);
 }
 
 .image-slider .slide {
@@ -265,10 +277,6 @@
     transition-duration: 300ms;
 }
 
-.image-slider button:focus-visible {
-    outline: 3px solid #fff;
-    outline-offset: 2px;
-}
 
 .caption-text h2 {
     font-size: 1.2em;

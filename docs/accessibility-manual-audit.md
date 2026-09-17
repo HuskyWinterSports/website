@@ -13,6 +13,13 @@ Every check below says what to do, what counts as a pass, and what a failure
 looks like. If a check fails, note it and keep going — finish the sweep before
 fixing anything, or you will fix one thing three times.
 
+## Manual Audit log
+
+09/17/2026: Jules
+  - all reviewed sections passing after some edits. See commit "manual audit changes" on date.
+  - issues with screen readerand changing text spacing. 
+
+
 ---
 
 ## Part 0 — Get the site running locally
@@ -43,6 +50,8 @@ npx playwright install chromium webkit
 ---
 
 ## Part 1 — The automated pass
+
+09/17/2026: all passing
 
 ### 1.1 Run axe over every page
 
@@ -116,11 +125,14 @@ something inside the page content, not on a nav item.
 
 ### 2.2 Focus is visible at every single stop
 
+09/17/2026: Fail, change to blue and white contrast ring
+09/17/2026 round 2: Pass
+
 **Do:** from the top of the page, press `Tab` about twenty times, slowly.
 Watch every stop.
 
 **Pass:** at every stop you can see exactly what is focused — an outline, a
-ring, something. Including over the purple bar, over photographs, and inside the
+ring, something. Including over the nav bar, over photographs, and inside the
 white panels.
 
 **Fail:** any stop where you cannot tell what is focused, or where focus
@@ -129,6 +141,8 @@ visibly disappears off the screen.
 *WCAG 2.4.7 Focus Visible (AA), 2.4.11 Focus Not Obscured (AA)*
 
 ### 2.3 A closed menu holds no tab stops
+
+09/17/2026: Pass
 
 **Do:** narrow the window to phone width (under 768px — DevTools responsive
 mode at 390px is fine). Leave the menu closed. `Tab` from the address bar five
@@ -145,6 +159,8 @@ exact bug this site had before September 2026.
 
 ### 2.4 Every page is reachable without a mouse
 
+09/17/2026: Pass
+
 **Do:** at phone width, `Tab` to the hamburger, press `Enter`. `Tab` to
 "Lessons", press `Enter`. `Tab` to "Lesson Registration", press `Enter`.
 Repeat for one item in each of the other groups.
@@ -157,6 +173,8 @@ somewhere instead of opening.
 *WCAG 2.1.1 Keyboard (A)*
 
 ### 2.5 Escape closes, and focus comes back
+
+09/17/2026: Pass
 
 **Do:** open the menu, open the "Lessons" group, `Tab` down to a link inside
 it, then press `Escape`.
@@ -173,6 +191,8 @@ body.
 
 ### 2.6 Navigating moves focus into the new page
 
+09/17/2026: Pass
+
 **Do:** follow any nav link with the keyboard. Once the new page loads, press
 `Tab` once.
 
@@ -185,6 +205,8 @@ navigation and you have to walk through the whole menu again on every page.
 *WCAG 2.4.3 Focus Order (A)*
 
 ### 2.7 Nothing traps the keyboard
+
+09/17/2026: Pass
 
 **Do:** `Tab` all the way through the home page, then Lesson Registration, then
 Contact Us, until focus leaves the page and reaches the browser chrome. Pay
@@ -200,6 +222,8 @@ hits a trap cannot leave the page at all.
 *WCAG 2.1.2 No Keyboard Trap (A)*
 
 ### 2.8 The carousel works from the keyboard
+
+09/17/2026: Pass
 
 **Do:** `Tab` to the carousel, then press `→` and `←`. Then `Tab` on to the
 arrow buttons and the dots and press `Enter` on each.
@@ -218,6 +242,8 @@ two photos, or the dots cannot be reached.
 
 ### 3.1 200% zoom
 
+09/17/2026: Pass
+
 **Do:** at a normal desktop window size, press `Cmd +` until the browser reads
 200%. Visit the home page, Lesson Info and the FAQ.
 
@@ -230,6 +256,9 @@ underneath it.
 *WCAG 1.4.4 Resize Text (AA)*
 
 ### 3.2 400% zoom — one column, no sideways scrolling
+
+09/17/2026: Fail, no scroll navbar
+09/17/2026: round 2: Pass, navbar now part of main flow. had to sacrifice transition animation, can be added later with keyframes if desired.
 
 **Do:** set the window to 1280px wide, then zoom to 400%. This is the standard
 reflow test and is equivalent to a 320px-wide screen.
@@ -245,6 +274,8 @@ sideways scrollbar; the page body is not.
 ### 3.3 Text spacing
 
 **Do:** open DevTools → Console, and paste this in on the home page:
+
+09/17/2026: Issue testing, browser controls prohibited paste action
 
 ```js
 document.head.insertAdjacentHTML('beforeend', `<style>
@@ -329,6 +360,8 @@ purple stripe.
 ---
 
 ## Part 5 — Screen reader
+
+09/17/2026: Kind of?? I'm probably using voice over wrong and I couldn't get it to list links. Most seems fine. 
 
 Use **Safari with VoiceOver** on macOS: it is the best-supported pairing, and
 it is already installed. `Cmd + F5` toggles VoiceOver on and off. The VoiceOver
@@ -416,6 +449,8 @@ which is already there. Confirm that link works.
 
 ### 6.1 Reduced motion is respected
 
+09/17/2026: Pass
+
 **Do:** macOS → System Settings → Accessibility → Display → turn on **Reduce
 motion**. Reload the site. Navigate between pages, and step the carousel.
 
@@ -428,6 +463,8 @@ sliding, and the menu opens without animating.
 already do it)*
 
 ### 6.2 Nothing moves on its own
+
+09/17/2026: Pass
 
 **Do:** load the home page and leave it alone for a minute.
 

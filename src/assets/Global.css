@@ -22,10 +22,21 @@
   --hws-purple-veil: rgba(80, 44, 132, 0.8);
   --hws-purple-veil-strong: rgba(80, 44, 132, 0.85);
   --hws-scrim: rgba(20, 8, 36, 0.5);
+  --hws-focus: #0b5fff;
+  --hws-focus-halo: #ffffff;
+
+  /* The bar's minimum height. The menu panel hangs below it and subtracts it. */
+  --navbar-height: 60px;
 }
 
 /* Links are underlined everywhere WCAG 1.4.1 says colour alone may not be the only thing marking a
    link, unless the link colour clears 3:1 against the text around it. */
+
+:focus-visible {
+  outline: 3px solid var(--hws-focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 7px var(--hws-focus-halo);
+}
 
 /* Off-screen until focused. One stop over the ten nav links (WCAG 2.4.1). */
 .skip-link {
@@ -88,6 +99,13 @@ main {
 /* Focused on every route change, so no ring unless the visitor is on a keyboard. */
 main:focus:not(:focus-visible) {
   outline: none;
+}
+
+/* A landmark, not a control: it keeps the browser's own ring rather than the
+   site one, so the skip link looks the same as it did. */
+main:focus-visible {
+  outline: auto;
+  box-shadow: none;
 }
 
 h1 {
@@ -536,7 +554,3 @@ ul {
   border-radius: 4px;
 }
 
-.figures .figure:focus-visible {
-  outline: 3px solid var(--hws-purple);
-  outline-offset: 3px;
-}

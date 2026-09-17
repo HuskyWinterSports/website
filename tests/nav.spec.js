@@ -303,6 +303,28 @@ test.describe('focus is never dropped', () => {
     });
 });
 
+test.describe('a short window still reaches every menu item', () => {
+    /**
+     * The menu panel is `position: fixed`, so anything below the fold cannot be
+     * reached by scrolling the page. 320x180 is a 1280x720 window at 400% zoom,
+     * which is the WCAG 1.4.10 reflow target — and close to a phone held
+     * sideways, which is the case that actually happens.
+     */
+    test('the last item is reachable at 400% zoom', async ({ page }) => {
+        await page.setViewportSize({ width: 320, height: 180 });
+        await page.goto('/');
+
+        const hamburger = page.getByRole('button', { name: /open menu/i });
+        await expect(hamburger).toBeVisible();
+        await activate(hamburger);
+
+        // Playwright scrolls a target into view before acting. If the panel
+        // cannot scroll, this link stays outside the window and the click fails.
+        await activate(page.getByRole('link', { name: 'Support Us', exact: true }));
+        await expectPath(page, '/support-us');
+    });
+});
+
 test.describe('the bar and the content do not overlap', () => {
     const clears = async (page) => {
         const bar = await page.locator('nav.navbar').boundingBox();

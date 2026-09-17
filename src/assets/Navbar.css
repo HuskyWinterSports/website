@@ -1,8 +1,13 @@
+
+.navbar:has(.navbar-menu.is-active) {
+    position: relative;
+}
+
 .navbar {
     background-color: var(--hws-purple);
     position: sticky;
     top: 0;
-    min-height: 60px;
+    min-height: var(--navbar-height);
     color: #ffffff;
     z-index: 1200;
     display: flex;
@@ -15,12 +20,6 @@ nav a {
     text-decoration: none;
 }
 
-/* Visible keyboard focus everywhere in the nav */
-.navbar a:focus-visible,
-.navbar button:focus-visible {
-    outline: 2px solid #ffffff;
-    outline-offset: 2px;
-}
 
 .navbar-toggle {
   background: none;
@@ -62,25 +61,16 @@ nav a {
 }
 
 .navbar-menu {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background: var(--hws-purple);
-  transform: translateY(-100%);
-  /* visability needs to be hidden to prevent screen reader annoyance */
-  visibility: hidden;
-  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), visibility 0.4s;
-  z-index: 1000;
-  display: flex;
+  display: none;
   flex-direction: column;
   align-items: flex-start;
-  padding-top: 60px; 
+  width: 100%;
+  background: var(--hws-purple);
+  padding-top: var(--navbar-height);
 }
 
 .navbar-menu.is-active {
-  transform: translateY(0);
-  visibility: visible;
+  display: flex;
 }
 
 .dropdown {
@@ -147,9 +137,7 @@ nav ul li {
     }
 
     .navbar-menu {
-        position: static;
-        transform: translateY(0);
-        visibility: visible;
+        display: flex;
         flex-direction: row;
         background: none;
         width: auto;
@@ -199,8 +187,7 @@ nav ul li {
 
 @media (prefers-reduced-motion: reduce) {
     .bar,
-    .caret,
-    .navbar-menu {
+    .caret {
         transition: none;
     }
 }

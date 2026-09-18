@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import '../assets/Global.css';
 import Home from './routes/Home.jsx';
@@ -33,23 +33,36 @@ function useDocumentMeta(pathname) {
   }, [pathname]);
 }
 
-/** Land at the top of the page on navigation, not wherever the last page was. */
-function useScrollToTop(pathname) {
+/**
+ focuses content on main instead of the navbar when a new page is loaded, so screen reader users
+ can start reading the page content immediately instead of having to tab through the navigation links.
+ */
+function useLandOnNewPage(pathname, mainRef) {
+  const isFirstRender = useRef(true);
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [pathname]);
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    mainRef.current?.focus({ preventScroll: true });
+  }, [pathname, mainRef]);
 }
 
 function App() {
   const location = useLocation();
+  const mainRef = useRef(null);
   useDocumentMeta(location.pathname);
-  useScrollToTop(location.pathname);
+  useLandOnNewPage(location.pathname, mainRef);
 
   return (
     <>
+      {/* skip to main contnent must be first in DOM for screen readers */}
+      <a className="skip-link" href="#main-content">Skip to the main content</a>
       <Navbar />
       <div className="fade-wrapper" key={location.pathname}>
-        <main>
+        {/* tabIndex -1 so the skip link actually moves focus here*/}
+        <main id="main-content" tabIndex={-1} ref={mainRef}>
           <Routes location={location}>
             <Route path="/" element={<Home />} />
             <Route path="lesson-info" element={<LessonInfo />} />

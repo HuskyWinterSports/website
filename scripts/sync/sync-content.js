@@ -7,6 +7,7 @@ import { joinSections, looksLikeHeadings, staleYears, selectTab, ContentError } 
 import { sheetBlock, fillLayoutTokens, applyStatus, derive, fillContentTokens } from './apply-sheet.js';
 import { seasonEndYear, endsOnSecondSaturdayOfMarch } from './lesson-dates.js';
 import { photoBlock, assignInline } from './apply-photos.js';
+import { vagueLinks, bareUrlLinks, headingJumps, cameraNames } from './content-warnings.js';
 
 /**
  * Fetches published Google content, validates it against the repo's layout
@@ -217,9 +218,22 @@ async function syncLayout(layoutPath, photos) {
     const notes = parsed.notes ?? [];
     const unstyled = looksLikeHeadings(parsed);
     const stale = staleYears(blocks, CLOCK.year);
+
+    // Accessibility faults that live in the words rather than the code. Read
+    // off the finished page, so they describe what a visitor actually meets.
+    const a11y = {
+        vague: vagueLinks(output.blocks),
+        bareUrls: bareUrlLinks(output.blocks),
+        // Routed pages only. The footer is drawn by Footer.jsx rather than
+        // ContentBlocks, which renders its one heading as an h3 sitting inside
+        // whatever page it is on — so its outline is not its own to check.
+        jumps: layout.route ? headingJumps(output) : [],
+        cameraPhotos: cameraNames(photos[layoutName]),
+    };
+
     const result = {
         layoutName, auto, warnings, tabs, sheetWarnings, notes, unstyled,
-        emptyPhotos, missingPhotos, stale,
+        emptyPhotos, missingPhotos, stale, a11y,
     };
 
     if (previous === serialised) return { ...result, changed: false };
@@ -339,6 +353,49 @@ async function main() {
                 `section on the page, which is probably where it has gone. Rename ` +
                 `the file back, or ask a developer to change which photo that ` +
                 `section asks for.`
+            );
+        }
+
+        // Accessibility checks. See content-warnings.js for the details of what each one means and how to fix it.
+        for (const link of result.a11y.vague) {
+            console.log(
+                `NOTE: the ${result.layoutName} page has a link whose words are ` +
+                `"${link.text}". Someone using a screen reader can ask for a list ` +
+                `of the links on the page, and in that list this one says nothing ` +
+                `about where it goes. Rewrite it to name the destination — ` +
+                `"read the refund policy" rather than "click here".\n` +
+                `      It points at: ${link.href}`
+            );
+        }
+
+        for (const link of result.a11y.bareUrls) {
+            console.log(
+                `NOTE: the ${result.layoutName} page shows a web address as the ` +
+                `words of a link:\n      ${link.text}\n` +
+                `      Some screen readers read an address out one letter at a ` +
+                `time. Select the address in the document and retype it as a ` +
+                `description of what is at the other end.`
+            );
+        }
+
+        for (const jump of result.a11y.jumps) {
+            console.log(
+                `NOTE: the ${result.layoutName} page jumps from a level ` +
+                `${jump.from} heading straight to a level ${jump.to} one. People ` +
+                `who skim the page by its headings will read that as a section ` +
+                `that has gone missing. In the document, the heading concerned ` +
+                `should be "Heading ${jump.from + 1}".`
+            );
+        }
+
+        for (const name of result.a11y.cameraPhotos) {
+            console.log(
+                `NOTE: a photo in the ${result.layoutName} Drive folder is still ` +
+                `called "${name}", which is the name the camera gave it. That name ` +
+                `is what a screen reader reads out in place of the picture, so it ` +
+                `currently announces "${name}". Rename the file in Drive to ` +
+                `describe what is in it — "instructors on the summit" — and it is ` +
+                `fixed, with no developer involved.`
             );
         }
 

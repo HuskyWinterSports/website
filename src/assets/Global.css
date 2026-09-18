@@ -1,3 +1,63 @@
+/* ---------------------------------------------------------------------------
+   The club's colours, WCAG 2.1 AA compliant ratios for text on background
+   --------------------------------------------------------------------------- */
+:root {
+  /* The brand purple */
+  --hws-purple: rgb(80, 44, 132);
+
+  /* raised or hovered purple. Minimum contrast needed for white text */
+  --hws-purple-mid: #7f4ebe;
+
+  /* Too light to sit under white text — 2.32:1, Fills and dots only, never behind words. */
+  --hws-purple-pale: #c39ae4;
+
+  /* Behind the carousel, in the instant before a photo decodes. */
+  --hws-purple-deep: #2a1745;
+
+  /* Links on a purple ground: 6.36:1, where the pale purple was 4.45:1.
+     Always paired with an underline for compliance */
+  --hws-link-on-purple: #d9c2f2;
+
+  /* Over photographs. White text clears 4.5:1 on all of them. */
+  --hws-purple-veil: rgba(80, 44, 132, 0.8);
+  --hws-purple-veil-strong: rgba(80, 44, 132, 0.85);
+  --hws-scrim: rgba(20, 8, 36, 0.5);
+  --hws-focus: #0b5fff;
+  --hws-focus-halo: #ffffff;
+
+  /* The bar's minimum height, and the gap the open menu leaves for the close
+     button. Used twice in Navbar.css — removing it collapses the bar and puts
+     the menu links under the button. */
+  --navbar-height: 60px;
+}
+
+/* Links are underlined everywhere WCAG 1.4.1 says colour alone may not be the only thing marking a
+   link, unless the link colour clears 3:1 against the text around it. */
+
+:focus-visible {
+  outline: 3px solid var(--hws-focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 7px var(--hws-focus-halo);
+}
+
+/* Off-screen until focused. One stop over the ten nav links (WCAG 2.4.1). */
+.skip-link {
+  position: fixed;
+  left: 8px;
+  top: -100px;
+  z-index: 1300;
+  padding: 10px 16px;
+  background: var(--hws-purple);
+  color: white;
+  border: 2px solid white;
+  text-decoration: underline;
+  transition: top 0.15s ease-in-out;
+}
+
+.skip-link:focus {
+  top: 8px;
+}
+
 /* Fade in/out animation for route transitions */
 .fade-wrapper {
   animation: fadein 0.5s;
@@ -6,6 +66,12 @@
 @keyframes fadein {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+/* The fade and the skip link's slide are decoration. */
+@media (prefers-reduced-motion: reduce) {
+  .fade-wrapper { animation: none; }
+  .skip-link { transition: none; }
 }
 
 body {
@@ -29,7 +95,17 @@ body {
 }
 
 main {
-  margin-top: 60px;
+  scroll-margin-top: 72px;
+}
+
+/* Focused on every route change, so no ring unless the visitor is on a keyboard. */
+main:focus:not(:focus-visible) {
+  outline: none;
+}
+
+main:focus-visible {
+  outline: auto;
+  box-shadow: none;
 }
 
 h1 {
@@ -46,7 +122,7 @@ h2 {
 }
 
 .purple-stripe {
-  background-color: rgb(80, 44, 132);
+  background-color: var(--hws-purple);
   color: white;
   padding: 40px;
   text-align: center;
@@ -91,8 +167,8 @@ h2 {
 }
 
 .white-stripe a {
-  color: rgb(80, 44, 132);
-  text-decoration: none;
+  color: var(--hws-purple);
+  text-decoration: underline;
 }
 
 .white-stripe .card p {
@@ -109,8 +185,8 @@ h2 {
 }
 
 .big-white-box a {
-  color: rgb(80, 44, 132);
-  text-decoration: none;
+  color: var(--hws-purple);
+  text-decoration: underline;
 }
 
 .big-white-box h2 {
@@ -123,7 +199,7 @@ h2 {
 }
 
 .big-purple-box {
-  background-color: rgb(80, 44, 132);
+  background-color: var(--hws-purple);
   /* Phones first. 10% margins plus 50px padding left 212px of usable width on
      a 390px screen — 54% of the display — which cramped the directions text
      and the map. Desktop keeps the original spacing in the 768px block. */
@@ -145,8 +221,8 @@ h2 {
 }
 
 .big-purple-box a {
-  color: #c39ae4;
-  text-decoration: none;
+  color: var(--hws-link-on-purple);
+  text-decoration: underline;
 }
 
 /* Sized by ratio rather than the 600x450 Google's snippet hard-codes: a fixed
@@ -263,7 +339,7 @@ h4,
 /* The site link colour is a mid purple, which all but disappears on the
    purple stripe. */
 .purple-stripe.qa a {
-    color: #d9c2f2;
+    color: var(--hws-link-on-purple);
     text-decoration: underline;
 }
 
@@ -366,7 +442,7 @@ ul {
 }
 
 .button {
-    background-color: rgb(80, 44, 132);
+    background-color: var(--hws-purple);
     color: white;
     border: 2px solid white;
     padding: 10px 20px;
@@ -377,7 +453,7 @@ ul {
 }
 
 .button:hover {
-    background-color: #c39ae4;
+    background-color: var(--hws-purple-mid);
     transition-duration: 300ms;
 }
 
@@ -396,13 +472,15 @@ ul {
 .big-white-box .button,
 .white-stripe .button {
     color: white;
-    border-color: rgb(80, 44, 132);
+    border-color: var(--hws-purple);
+    text-decoration: none;
 }
 
 .big-purple-box .button,
 .purple-stripe .button {
     color: white;
     border-color: white;
+    text-decoration: none;
 }
 
 /* One embedded Google Form, sized with CSS.
@@ -457,6 +535,7 @@ ul {
 
 .figures .figure {
   display: block;
+  text-decoration: none;
   flex: 1 1 380px;
   max-width: 520px;
 }
@@ -475,7 +554,3 @@ ul {
   border-radius: 4px;
 }
 
-.figures .figure:focus-visible {
-  outline: 3px solid rgb(80, 44, 132);
-  outline-offset: 3px;
-}

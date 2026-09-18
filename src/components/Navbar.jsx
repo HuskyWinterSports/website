@@ -42,6 +42,8 @@ export default function Navbar() {
     const [openGroup, setOpenGroup] = useState(null);
     const location = useLocation();
     const navRef = useRef(null);
+    const toggleRef = useRef(null);
+    const lastTrigger = useRef(null);
 
     // NOTE: menus open on click/tap at every screen size, deliberately.
     // Mixing hover-to-open with click-to-toggle means a mouse user who hovers
@@ -59,8 +61,11 @@ export default function Navbar() {
     useEffect(() => {
         const onKeyDown = (e) => {
             if (e.key !== 'Escape') return;
+            const inside = navRef.current?.contains(document.activeElement);
             setOpenGroup(null);
             setIsOpen(false);
+            if (!inside) return;
+            (isOpen ? toggleRef.current : lastTrigger.current)?.focus();
         };
         const onPointerDown = (e) => {
             if (navRef.current?.contains(e.target)) return;
@@ -73,13 +78,17 @@ export default function Navbar() {
             document.removeEventListener('keydown', onKeyDown);
             document.removeEventListener('pointerdown', onPointerDown);
         };
-    }, []);
+    }, [isOpen]);
 
     return (
         <nav className="navbar" ref={navRef}>
             <button
+                ref={toggleRef}
                 className={`navbar-toggle ${isOpen ? 'is-active' : ''}`}
-                onClick={() => setIsOpen((open) => !open)}
+                onClick={(event) => {
+                    lastTrigger.current = event.currentTarget;
+                    setIsOpen((open) => !open);
+                }}
                 aria-expanded={isOpen}
                 aria-controls="navbar-menu"
                 aria-label={isOpen ? 'Close menu' : 'Open menu'}
@@ -96,9 +105,10 @@ export default function Navbar() {
                                 <>
                                     <button
                                         className="dropdown-toggle"
-                                        onClick={() =>
-                                            setOpenGroup((open) => (open === index ? null : index))
-                                        }
+                                        onClick={(event) => {
+                                            lastTrigger.current = event.currentTarget;
+                                            setOpenGroup((open) => (open === index ? null : index));
+                                        }}
                                         aria-expanded={openGroup === index}
                                         aria-controls={`dropdown-${index}`}
                                     >

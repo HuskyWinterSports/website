@@ -325,6 +325,32 @@ test.describe('a short window still reaches every menu item', () => {
     });
 });
 
+test.describe('the menu opens wherever the visitor is', () => {
+    /**
+     * The bar is sticky, so the menu has to appear over whatever is on screen.
+     * A rule that dropped the bar out of sticky while the menu was open snapped
+     * it back to the top of the document and took the just-opened menu with it,
+     * so the menu was only usable from the very top of a page.
+     *
+     * Every other test in this file does `goto` and then acts immediately, at
+     * scroll position zero — which is exactly why none of them saw it.
+     */
+    test('from the middle of a long page', async ({ page }) => {
+        test.skip(page.viewportSize().width >= 768, 'no hamburger at this width');
+        await page.goto('/lesson-info');
+
+        await page.evaluate(() => window.scrollTo(0, 1200));
+        const scrolled = await page.evaluate(() => window.scrollY);
+        expect(scrolled, 'the page must actually scroll or this proves nothing')
+            .toBeGreaterThan(400);
+
+        await activate(page.getByRole('button', { name: /open menu/i }));
+
+        await expect(page.getByRole('link', { name: 'Home', exact: true }))
+            .toBeInViewport();
+    });
+});
+
 test.describe('the bar and the content do not overlap', () => {
     const clears = async (page) => {
         const bar = await page.locator('nav.navbar').boundingBox();

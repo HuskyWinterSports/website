@@ -57,15 +57,17 @@ ten, on every single page.
 purple box appears at the top left. Press Enter and it jumps past the menu.
 Press Tab again and it disappears.
 
-### 15. The menu now pushes the page down instead of covering it
+### 15. The menu can be scrolled when it does not fit
 
-**What was wrong:** On a phone the menu appeared *over* the page. If the window
-was short — a phone held sideways, or a visitor using large text — the bottom
-of the menu ran off the screen and there was no way to scroll to it. Those
-links could not be reached at all.
+**What was wrong:** If the window was short — a phone held sideways, or a
+visitor using large text — the bottom of the menu ran off the screen and there
+was no way to reach it. Those links could not be got to at all.
 
-**What you'll notice:** Opening the menu pushes the page content down rather
-than covering it, and you scroll the page normally to see the rest of the menu.
+**Why this mattered:** "Support Us" is the last item, so on a sideways phone
+the donation page was unreachable from the menu.
+
+**What you'll notice:** Nothing on a normal screen. On a short one the menu now
+scrolls on its own, so every item can be reached however little room there is.
 
 ### 16. The carousel dots and arrows are easier to hit
 

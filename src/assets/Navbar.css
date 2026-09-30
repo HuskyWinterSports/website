@@ -1,8 +1,4 @@
 
-.navbar:has(.navbar-menu.is-active) {
-    position: relative;
-}
-
 .navbar {
     background-color: var(--hws-purple);
     position: sticky;
@@ -62,11 +58,18 @@ nav a {
 
 .navbar-menu {
   display: none;
+  position: fixed;
+  top: var(--navbar-height);
+  left: 0;
+  width: 100%;
+  z-index: 1000;
   flex-direction: column;
   align-items: flex-start;
-  width: 100%;
   background: var(--hws-purple);
-  padding-top: var(--navbar-height);
+  max-height: calc(100vh - var(--navbar-height));
+  max-height: calc(100dvh - var(--navbar-height));
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .navbar-menu.is-active {
@@ -138,10 +141,12 @@ nav ul li {
 
     .navbar-menu {
         display: flex;
+        position: static;
+        max-height: none;
+        overflow: visible;
         flex-direction: row;
         background: none;
         width: auto;
-        padding-top: 0;
     }
 
     .navbar-links {

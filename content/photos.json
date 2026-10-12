@@ -99,6 +99,30 @@
   ],
   "diversity-and-inclusion": [
     {
+      "slug": "copy-of-peace-signs",
+      "name": "Copy of peace signs",
+      "alt": "Copy of peace signs",
+      "year": null,
+      "shape": "landscape",
+      "width": 6000,
+      "height": 4000,
+      "ratio": 1.5,
+      "sources": [
+        {
+          "src": "/images/photos/diversity-and-inclusion/copy-of-peace-signs-640.avif",
+          "width": 640
+        },
+        {
+          "src": "/images/photos/diversity-and-inclusion/copy-of-peace-signs-1280.avif",
+          "width": 1280
+        },
+        {
+          "src": "/images/photos/diversity-and-inclusion/copy-of-peace-signs-2240.avif",
+          "width": 2240
+        }
+      ]
+    },
+    {
       "slug": "peace-signs",
       "name": "peace signs",
       "alt": "Peace signs",

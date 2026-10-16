@@ -83,11 +83,11 @@ async function derive(buffer, page, slug, meta) {
     return sources;
 }
 
-/** Remove derivatives for photos that are no longer in Drive. */
+/** Remove generated AVIF derivatives, preserving repo-managed assets such as diagrams. */
 function prune(page, keep) {
     const dir = join(OUT_DIR, page);
     if (!existsSync(dir)) return [];
-    const gone = readdirSync(dir).filter((f) => !keep.has(f));
+    const gone = readdirSync(dir).filter((f) => f.endsWith('.avif') && !keep.has(f));
     for (const file of gone) rmSync(join(dir, file));
     return gone;
 }

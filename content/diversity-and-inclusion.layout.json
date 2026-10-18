@@ -12,7 +12,7 @@
       "showTitle": true
     },
     {
-      "_note": "Two photographs, with \"sts 3\" on the left. Use explicit figures instead of inline allocation so unselected photos, including the duplicate \"peace signs\", are not added during sync.",
+      "_note": "Two photographs, with \"sts 3\" on the left. Use explicit figures instead of inline allocation so unselected photos, including \"Copy of peace signs\", are not added during sync.",
       "type": "white-stripe qa",
       "section": "Mission Statement",
       "photos": { "use": "figures", "only": ["sts 3", "sts 1"] }
@@ -31,11 +31,11 @@
       ]
     },
     {
-      "_note": "\"sts 2\" moves here from the T60 section, replacing the duplicate \"peace signs\" photograph.",
+      "_note": "\"sts 2\" and \"sts 4\" sit above one centered \"peace signs\" photograph.",
       "type": "white-stripe qa",
       "section": "Spread The Shred",
       "buttons": [{ "label": "SUPPORT US", "href": "/support-us" }],
-      "photos": { "use": "figures", "only": ["sts 2", "sts 4"] }
+      "photos": { "use": "figures", "only": ["sts 2", "sts 4", "peace signs"] }
     }
   ]
 }
